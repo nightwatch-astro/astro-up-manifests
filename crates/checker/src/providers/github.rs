@@ -36,22 +36,20 @@ pub async fn check(
         format!("https://api.github.com/repos/{owner}/{repo}/releases/latest")
     };
 
-    let resp = client
+    let mut req = client
         .get(&url)
         .header("Accept", "application/vnd.github+json")
-        .header("X-GitHub-Api-Version", "2022-11-28")
-        .send()
-        .await?;
+        .header("X-GitHub-Api-Version", "2022-11-28");
 
-    let status = resp.status();
-    if status == reqwest::StatusCode::TOO_MANY_REQUESTS {
-        let retry_after = resp
-            .headers()
-            .get("retry-after")
-            .and_then(|v| v.to_str().ok())
-            .map(|s| s.to_string());
-        return Err(CheckError::RateLimited { retry_after });
+    // Authenticate if GITHUB_TOKEN is available (5000 req/hr vs 60 unauthenticated)
+    if let Ok(token) = std::env::var("GITHUB_TOKEN") {
+        req = req.header("Authorization", format!("Bearer {token}"));
     }
+
+    let resp = req.send().await?;
+
+    super::check_rate_limit(&resp)?;
+    let status = resp.status();
     if !status.is_success() {
         return Err(CheckError::Other(format!(
             "GitHub API returned {status} for {owner}/{repo}"

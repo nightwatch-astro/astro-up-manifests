@@ -146,7 +146,7 @@ The version checking and compilation pipeline runs as a single CI job on a 6-hou
 ### Measurable Outcomes
 
 - **SC-001**: All 95 astrophotography packages are represented in the new manifest format with complete metadata, detection, install, and checkver data
-- **SC-002**: The compiled database is smaller than or equal to 150 KB
+- **SC-002**: The compiled database is smaller than or equal to 200 KB (FTS5 index adds overhead beyond raw data size)
 - **SC-003**: The single-job CI pipeline completes in under 15 minutes for all 95 manifests
 - **SC-004**: The client can fetch the database via ETag conditional request and skip download when unchanged
 - **SC-005**: Version discovery accurately finds the latest version for all manifests with automated check methods

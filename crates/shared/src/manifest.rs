@@ -85,6 +85,8 @@ pub struct Checkver {
     #[serde(default)]
     pub include_pre_release: bool,
     #[serde(default)]
+    pub css_selector: Option<String>,
+    #[serde(default)]
     pub hash: Option<HashConfig>,
     #[serde(default)]
     pub autoupdate: Option<Autoupdate>,

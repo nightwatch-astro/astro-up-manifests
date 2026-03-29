@@ -86,7 +86,7 @@ async fn main() -> anyhow::Result<()> {
     let state = Arc::new(Mutex::new(CheckerState::read(&cli.state)?));
 
     // 4. Build HTTP client with retry middleware
-    let retry_policy = ExponentialBackoff::builder().build_with_max_retries(3);
+    let retry_policy = ExponentialBackoff::builder().build_with_max_retries(2);
     let raw_client = reqwest::Client::builder()
         .user_agent("astro-up-checker/0.1")
         .timeout(std::time::Duration::from_secs(30))
@@ -292,7 +292,7 @@ async fn process_manifest(
     }
 }
 
-fn load_manifests(dir: &PathBuf) -> anyhow::Result<Vec<Manifest>> {
+fn load_manifests(dir: &Path) -> anyhow::Result<Vec<Manifest>> {
     let mut manifests = Vec::new();
     for entry in walkdir::WalkDir::new(dir).max_depth(1) {
         let entry = entry?;

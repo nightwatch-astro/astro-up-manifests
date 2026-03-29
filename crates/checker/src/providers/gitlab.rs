@@ -49,6 +49,7 @@ pub async fn check(
     );
 
     let resp = client.get(&url).send().await?;
+    super::check_rate_limit(&resp)?;
     let status = resp.status();
     if !status.is_success() {
         return Err(CheckError::Other(format!(

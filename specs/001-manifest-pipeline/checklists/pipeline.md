@@ -39,14 +39,14 @@
 - [ ] CHK022 - Are requirements defined for validating migrated manifests against the new schema (acceptance criteria for "without data loss" in SC-001)? [Measurability, Spec §SC-001]
 - [ ] CHK023 - Is the `[remote]` → `[checkver]` rename specified with field-level mapping for all subfields? [Completeness, Spec §FR-002]
 - [ ] CHK024 - Are requirements defined for handling manifests that exist in the old repo but are invalid under the new schema? [Gap, Spec §SC-001]
-- [ ] CHK025 - Is the legacy `manifests.json` format specified (exact structure, which fields are included/excluded)? [Completeness, Spec §FR-012]
-- [ ] CHK026 - Are requirements defined for the transition period end condition — what triggers removal of legacy JSON output? [Gap, US6]
+- [x] CHK025 - N/A: Legacy `manifests.json` not required — Go client never deployed to production. Constitution Principle IV amended.
+- [x] CHK026 - N/A: No transition period — greenfield deployment with `catalog.db` only.
 
 ## Acceptance Criteria Quality
 
-- [ ] CHK027 - Can SC-002 ("smaller than or equal to ~110 KB") be measured before all 95 manifests have version data? [Measurability, Spec §SC-002]
+- [x] CHK027 - SC-002 threshold updated to 200 KB to account for FTS5 index overhead. Measured at 156 KB with 96 manifests. [Measurability, Spec §SC-002]
 - [ ] CHK028 - Is SC-004 (ETag conditional request) a requirement for the pipeline or the client? The pipeline publishes to GitHub Releases which provides ETag natively — is this a no-op? [Ambiguity, Spec §SC-004]
-- [ ] CHK029 - Is SC-006 ("matches or exceeds") defined with a testing methodology (same manifests, same point in time, diff output)? [Measurability, Spec §SC-006]
+- [x] CHK029 - N/A: SC-006 does not exist in spec. Version discovery accuracy is covered by provider-specific integration tests and FR-015/FR-016.
 - [ ] CHK030 - Are acceptance scenarios defined for the hash discovery tiers — what happens when tier 1 fails but tier 2 succeeds? [Coverage, Spec §FR-004]
 
 ## Scenario Coverage

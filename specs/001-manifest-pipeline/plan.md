@@ -62,8 +62,7 @@ crates/
 │   ├── Cargo.toml
 │   └── src/
 │       ├── main.rs            # CLI entry point (clap)
-│       ├── manifest.rs        # TOML manifest types + serde
-│       ├── validate.rs        # Semantic validation (post-deserialization)
+│       ├── manifest.rs        # TOML manifest loading (delegates types to shared)
 │       ├── schema.rs          # SQLite schema creation + FTS5
 │       ├── compile.rs         # TOML → SQLite compilation logic
 │       └── version_file.rs    # Version JSON file reading + aggregation
@@ -80,18 +79,23 @@ crates/
 │       │   ├── http_head.rs   # HEAD request + header extraction
 │       │   ├── html_scrape.rs # reqwest + scraper
 │       │   ├── browser_scrape.rs  # chromiumoxide
-│       │   ├── pe_download.rs # Download + goblin PE parsing
+│       │   ├── pe_download.rs # Download + pelite PE version extraction
 │       │   └── manual.rs      # Skip + log
-│       ├── version.rs         # Version parsing (semver, date, custom)
 │       ├── hash.rs            # Hash discovery (url+regex, jsonpath, download)
-│       ├── state.rs           # checker-state.json read/write
 │       ├── rate_limit.rs      # Per-provider rate limit tracking
+│       ├── version_writer.rs  # Write discovered versions to JSON files
 │       └── issue.rs           # GitHub issue auto-create/close
 │
 └── shared/
     ├── Cargo.toml
     └── src/
         ├── lib.rs
+        ├── manifest.rs        # TOML manifest types + serde
+        ├── validate.rs        # Semantic validation (post-deserialization)
+        ├── version.rs         # Version parsing (semver, date, custom)
+        ├── version_file.rs    # Version JSON file reading
+        ├── template.rs        # URL template variable substitution
+        ├── state.rs           # checker-state.json read/write
         ├── manifest.rs        # Shared manifest types (re-exported)
         └── template.rs        # $version variable substitution
 

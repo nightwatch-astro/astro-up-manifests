@@ -52,13 +52,13 @@ broken manifest or unreachable vendor MUST NOT block the entire pipeline.
 
 ### IV. Manifest Compatibility
 
-During the migration period, backward compatibility with the existing Go client
-MUST be maintained.
+Version discovery MUST match or exceed the accuracy of the existing Go checker.
 
-- The compiler MUST produce both `catalog.db` (new) and `manifests.json`
-  (legacy) until the Rust client reaches feature parity
-- Version discovery MUST match or exceed the accuracy of the existing Go checker
-- Legacy JSON output is removed only after explicit deprecation
+- The Go client was never deployed to production, so no legacy `manifests.json`
+  output is required. The compiler produces `catalog.db` only.
+- If a legacy consumer is added in the future, a compatibility layer MUST be
+  introduced via a separate subcommand or post-processing step — not by
+  changing the primary output format
 
 ## Technical Constraints
 

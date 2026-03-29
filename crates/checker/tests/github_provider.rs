@@ -46,6 +46,7 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
             regex: None,
             version_format: Some("semver".into()),
             include_pre_release: false,
+            css_selector: None,
             hash: None,
             autoupdate: None,
         }),

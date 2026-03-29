@@ -14,6 +14,7 @@ pub async fn check(
         .ok_or_else(|| CheckError::MissingConfig("regex".into()))?;
 
     let resp = client.head(url).send().await?;
+    super::check_rate_limit(&resp)?;
 
     let re = regex::Regex::new(regex_pat)
         .map_err(|e| CheckError::Other(format!("invalid regex: {e}")))?;

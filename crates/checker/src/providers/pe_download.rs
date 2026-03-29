@@ -12,27 +12,31 @@ pub async fn check(
         .ok_or_else(|| CheckError::MissingConfig("url".into()))?;
 
     // Download the executable
-    let bytes = client.get(url).send().await?.bytes().await?;
+    let resp = client.get(url).send().await?;
+    super::check_rate_limit(&resp)?;
+    let bytes = resp.bytes().await?;
 
-    // Parse PE headers using goblin
-    let pe = goblin::pe::PE::parse(&bytes)
+    // Parse PE and extract FileVersion from VS_VERSION_INFO resource
+    let pe = pelite::PeFile::from_bytes(&bytes)
         .map_err(|e| CheckError::PeParse(format!("{e}")))?;
 
-    // Extract version from optional header — major/minor linker version
-    // as a best-effort. Real VS_VERSION_INFO parsing requires walking
-    // the resource directory which goblin doesn't directly expose.
-    let version = if let Some(header) = pe.header.optional_header {
-        let win = header.windows_fields;
-        format!(
-            "{}.{}.{}.{}",
-            win.major_image_version,
-            win.minor_image_version,
-            win.major_operating_system_version,
-            win.minor_operating_system_version,
-        )
-    } else {
-        return Err(CheckError::PeParse("no optional header in PE".into()));
-    };
+    let resources = pe.resources()
+        .map_err(|e| CheckError::PeParse(format!("no resource directory: {e}")))?;
+
+    let version_info = resources.version_info()
+        .map_err(|e| CheckError::PeParse(format!("no version info: {e}")))?;
+
+    // Extract fixed file info for the version numbers
+    let fixed = version_info.fixed()
+        .ok_or_else(|| CheckError::PeParse("no VS_FIXEDFILEINFO".into()))?;
+
+    let version = format!(
+        "{}.{}.{}.{}",
+        fixed.dwFileVersion.Major,
+        fixed.dwFileVersion.Minor,
+        fixed.dwFileVersion.Patch,
+        fixed.dwFileVersion.Build,
+    );
 
     Ok(CheckOutcome::Found(CheckResult {
         version,
