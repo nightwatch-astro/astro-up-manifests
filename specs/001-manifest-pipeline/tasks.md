@@ -131,10 +131,10 @@
 
 **Independent Test**: Trigger workflow manually. Verify it checks, compiles, signs, and publishes.
 
-- [ ] T043 [US5] Implement GitHub issue auto-create/close in `crates/checker/src/issue.rs`: after state update, for manifests with consecutive_failures >= 8 and no existing issue, create issue via GitHub REST API (reqwest, already a dependency). For manifests with issue_number and 0 failures, close issue via GitHub REST API. Update state with issue_number. Use `GITHUB_TOKEN` env var for authentication
-- [ ] T044 [US5] Implement checker summary output in `crates/checker/src/main.rs`: print summary to stdout after all checks (new versions found, failures, skipped, persistent failures with issue numbers)
-- [ ] T045 [US5] Create `.github/workflows/pipeline.yml`: single job on `schedule: cron '0 */6 * * *'` and `workflow_dispatch` with `filter` input (optional string, passed as `--filter` to checker — substring match on package ID, category, or provider). Steps: checkout, install Rust toolchain, cache Chromium binary, run checker (with filter if provided), run compiler, install minisign, sign catalog.db, create/upload to `catalog/latest` release via `gh release upload --clobber`, commit checker-state.json and new version files, push. Use concurrency group to prevent parallel runs
-- [ ] T046 [US5] Add Chromium binary caching to CI: download Chromium on first run, cache via `actions/cache` keyed on Chromium version
+- [x] T043 [US5] Implement GitHub issue auto-create/close in `crates/checker/src/issue.rs`: after state update, for manifests with consecutive_failures >= 8 and no existing issue, create issue via GitHub REST API (reqwest, already a dependency). For manifests with issue_number and 0 failures, close issue via GitHub REST API. Update state with issue_number. Use `GITHUB_TOKEN` env var for authentication
+- [x] T044 [US5] Implement checker summary output in `crates/checker/src/main.rs`: print summary to stdout after all checks (new versions found, failures, skipped, persistent failures with issue numbers)
+- [x] T045 [US5] Create `.github/workflows/pipeline.yml`: single job on `schedule: cron '0 */6 * * *'` and `workflow_dispatch` with `filter` input (optional string, passed as `--filter` to checker — substring match on package ID, category, or provider). Steps: checkout, install Rust toolchain, cache Chromium binary, run checker (with filter if provided), run compiler, install minisign, sign catalog.db, create/upload to `catalog/latest` release via `gh release upload --clobber`, commit checker-state.json and new version files, push. Use concurrency group to prevent parallel runs
+- [x] T046 [US5] Add Chromium binary caching to CI: download Chromium on first run, cache via `actions/cache` keyed on Chromium version
 
 **Checkpoint**: Full CI pipeline operational
 

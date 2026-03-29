@@ -119,7 +119,19 @@ async fn main() -> anyhow::Result<()> {
 
     drop(results);
 
-    // 6. Write updated state
+    // 6. Auto-create/close issues for persistent failures
+    {
+        let mut state_guard = state.lock().await;
+        let issue_report = astro_up_checker::issue::process_issues(&mut state_guard, &client).await?;
+        for (id, num) in &issue_report.created {
+            println!("  Issue created: #{num} for {id}");
+        }
+        for (id, num) in &issue_report.closed {
+            println!("  Issue closed: #{num} for {id}");
+        }
+    }
+
+    // 7. Write updated state
     let state = state.lock().await;
     state.write(&cli.state)?;
 
