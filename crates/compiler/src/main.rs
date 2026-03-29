@@ -1,5 +1,8 @@
+use astro_up_compiler::{compile, manifest, schema, version_file};
 use clap::Parser;
+use rusqlite::Connection;
 use std::path::PathBuf;
+use std::process::ExitCode;
 
 #[derive(Parser)]
 #[command(
@@ -29,7 +32,7 @@ struct Cli {
     verbose: bool,
 }
 
-fn main() -> anyhow::Result<()> {
+fn main() -> ExitCode {
     let cli = Cli::parse();
 
     tracing_subscriber::fmt()
@@ -43,13 +46,59 @@ fn main() -> anyhow::Result<()> {
 
     tracing::info!("astro-up-compiler {}", env!("CARGO_PKG_VERSION"));
 
-    // TODO: implement compilation pipeline
-    // 1. Load manifests from cli.manifests
-    // 2. Validate all manifests
-    // 3. If cli.validate: report results and exit
-    // 4. Create SQLite schema at cli.output
-    // 5. Compile manifests into tables
-    // 6. Aggregate version files from cli.versions
+    match run(cli) {
+        Ok(code) => code,
+        Err(e) => {
+            tracing::error!("{e:#}");
+            ExitCode::FAILURE
+        }
+    }
+}
 
-    Ok(())
+fn run(cli: Cli) -> anyhow::Result<ExitCode> {
+    // 1. Load and validate manifests
+    let result = manifest::load_manifests(&cli.manifests)?;
+
+    // 2. Validate-only mode
+    if cli.validate {
+        if result.errors.is_empty() {
+            println!("All {} manifests valid.", result.manifests.len());
+            return Ok(ExitCode::SUCCESS);
+        } else {
+            println!("{} errors found:", result.errors.len());
+            for err in &result.errors {
+                println!("  {err}");
+            }
+            return Ok(ExitCode::from(2));
+        }
+    }
+
+    // 3. Create SQLite database
+    if cli.output.exists() {
+        std::fs::remove_file(&cli.output)?;
+    }
+    let conn = Connection::open(&cli.output)?;
+    conn.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL;")?;
+
+    // 4. Create schema
+    schema::create_schema(&conn)?;
+
+    // 5. Compile manifests into tables
+    compile::compile_manifests(&conn, &result.manifests)?;
+
+    // 6. Aggregate version files
+    let version_count = version_file::aggregate_versions(&conn, &cli.versions)?;
+
+    // 7. Summary
+    println!(
+        "Compiled {} manifests, {} versions into {}",
+        result.manifests.len(),
+        version_count,
+        cli.output.display()
+    );
+    if !result.errors.is_empty() {
+        println!("  ({} manifests skipped due to errors)", result.errors.len());
+    }
+
+    Ok(ExitCode::SUCCESS)
 }

@@ -63,12 +63,12 @@
 
 **Independent Test**: Run compiler against manifests directory. Query `catalog.db` by ID and category.
 
-- [ ] T020 [US2] Implement SQLite schema creation in `crates/compiler/src/schema.rs`: create all 8 tables (packages, detection, install, checkver, hardware, backup, versions, meta) with indexes and FTS5 virtual table per data-model.md DDL
-- [ ] T021 [US2] Implement TOML → SQLite compilation in `crates/compiler/src/compile.rs`: iterate loaded manifests, insert into all relevant tables within a transaction. Write schema_version and compiled_at to meta table
-- [ ] T022 [US2] Implement version file aggregation in `crates/compiler/src/version_file.rs`: scan `versions/{id}/` directories, read JSON files, insert into versions table. Skip orphaned version dirs (no matching manifest)
-- [ ] T023 [US2] Wire up compiler main in `crates/compiler/src/main.rs`: load manifests → validate → create schema → compile → aggregate versions. Support --validate (dry-run, exit code 2 on errors) and --verbose
-- [ ] T024 [US2] Add integration test `crates/compiler/tests/compile.rs`: compile sample manifests to SQLite, query packages by ID, query by category, verify FTS5 search works for name/description/tags, verify version data is aggregated
-- [ ] T025 [P] [US2] Add integration test `crates/compiler/tests/validation_mode.rs`: run compiler with --validate against valid and invalid manifests, verify exit codes and error output
+- [x] T020 [US2] Implement SQLite schema creation in `crates/compiler/src/schema.rs`: create all 8 tables (packages, detection, install, checkver, hardware, backup, versions, meta) with indexes and FTS5 virtual table per data-model.md DDL
+- [x] T021 [US2] Implement TOML → SQLite compilation in `crates/compiler/src/compile.rs`: iterate loaded manifests, insert into all relevant tables within a transaction. Write schema_version and compiled_at to meta table
+- [x] T022 [US2] Implement version file aggregation in `crates/compiler/src/version_file.rs`: scan `versions/{id}/` directories, read JSON files, insert into versions table. Skip orphaned version dirs (no matching manifest)
+- [x] T023 [US2] Wire up compiler main in `crates/compiler/src/main.rs`: load manifests → validate → create schema → compile → aggregate versions. Support --validate (dry-run, exit code 2 on errors) and --verbose
+- [x] T024 [US2] Add integration test `crates/compiler/tests/compile.rs`: compile sample manifests to SQLite, query packages by ID, query by category, verify FTS5 search works for name/description/tags, verify version data is aggregated
+- [x] T025 [P] [US2] Add integration test `crates/compiler/tests/validation_mode.rs`: run compiler with --validate against valid and invalid manifests, verify exit codes and error output
 
 **Checkpoint**: Compiler produces queryable catalog.db from TOML manifests
 
