@@ -95,31 +95,31 @@
 
 ### Check Provider Infrastructure
 
-- [ ] T028 [US4] Define `CheckProvider` trait in `crates/checker/src/providers/mod.rs`: async fn `check(manifest, client) -> Result<CheckResult>` where CheckResult contains version, url, sha256, release_notes_url, pre_release. Implement provider dispatch based on `checkver.provider` field
-- [ ] T029 [US4] Implement hash discovery in `crates/checker/src/hash.rs`: given hash config from manifest, fetch hash via url+regex, jsonpath, or download-and-compute. One method per manifest based on which fields are present
+- [x] T028 [US4] Define `CheckProvider` trait in `crates/checker/src/providers/mod.rs`: async fn `check(manifest, client) -> Result<CheckResult>` where CheckResult contains version, url, sha256, release_notes_url, pre_release. Implement provider dispatch based on `checkver.provider` field
+- [x] T029 [US4] Implement hash discovery in `crates/checker/src/hash.rs`: given hash config from manifest, fetch hash via url+regex, jsonpath, or download-and-compute. One method per manifest based on which fields are present
 
 ### Individual Providers
 
-- [ ] T030 [P] [US4] Implement `github` provider in `crates/checker/src/providers/github.rs`: query GitHub Releases API, filter pre-releases based on `include_pre_release`, extract version from tag name, get download URL and release notes URL
-- [ ] T031 [P] [US4] Implement `gitlab` provider in `crates/checker/src/providers/gitlab.rs`: query GitLab Tags API, filter pre-releases based on `include_pre_release`, extract version from tag name
-- [ ] T032 [P] [US4] Implement `direct_url` provider in `crates/checker/src/providers/direct_url.rs`: fetch URL, extract version from response body using regex
-- [ ] T033 [P] [US4] Implement `http_head` provider in `crates/checker/src/providers/http_head.rs`: send HEAD request, extract version from Content-Disposition or Location headers using regex
-- [ ] T034 [P] [US4] Implement `html_scrape` provider in `crates/checker/src/providers/html_scrape.rs`: fetch HTML page with reqwest, parse with scraper, extract version using regex
-- [ ] T035 [P] [US4] Implement `browser_scrape` provider in `crates/checker/src/providers/browser_scrape.rs`: launch chromiumoxide browser, navigate to URL (60s timeout), wait for DOM (30s timeout), extract version using regex. Spawn handler on tokio
-- [ ] T036 [P] [US4] Implement `pe_download` provider in `crates/checker/src/providers/pe_download.rs`: download executable with reqwest, parse PE headers with goblin, extract FileVersion field
-- [ ] T037 [P] [US4] Implement `manual` provider in `crates/checker/src/providers/manual.rs`: skip check, log "manual: requires human update", return skip result
+- [x] T030 [P] [US4] Implement `github` provider in `crates/checker/src/providers/github.rs`: query GitHub Releases API, filter pre-releases based on `include_pre_release`, extract version from tag name, get download URL and release notes URL
+- [x] T031 [P] [US4] Implement `gitlab` provider in `crates/checker/src/providers/gitlab.rs`: query GitLab Tags API, filter pre-releases based on `include_pre_release`, extract version from tag name
+- [x] T032 [P] [US4] Implement `direct_url` provider in `crates/checker/src/providers/direct_url.rs`: fetch URL, extract version from response body using regex
+- [x] T033 [P] [US4] Implement `http_head` provider in `crates/checker/src/providers/http_head.rs`: send HEAD request, extract version from Content-Disposition or Location headers using regex
+- [x] T034 [P] [US4] Implement `html_scrape` provider in `crates/checker/src/providers/html_scrape.rs`: fetch HTML page with reqwest, parse with scraper, extract version using regex
+- [x] T035 [P] [US4] Implement `browser_scrape` provider in `crates/checker/src/providers/browser_scrape.rs`: launch chromiumoxide browser, navigate to URL (60s timeout), wait for DOM (30s timeout), extract version using regex. Spawn handler on tokio
+- [x] T036 [P] [US4] Implement `pe_download` provider in `crates/checker/src/providers/pe_download.rs`: download executable with reqwest, parse PE headers with goblin, extract FileVersion field
+- [x] T037 [P] [US4] Implement `manual` provider in `crates/checker/src/providers/manual.rs`: skip check, log "manual: requires human update", return skip result
 
 ### Concurrency and Resilience
 
-- [ ] T038 [US4] Implement rate limiting in `crates/checker/src/rate_limit.rs`: track per-provider pause windows from HTTP 429 and retry-after headers. Checker skips providers in their pause window
-- [ ] T039 [US4] Wire up parallel checking in `crates/checker/src/main.rs`: load manifests, create reqwest client with retry middleware (3 attempts, 1s/2s/4s backoff), run checks with `futures::stream::buffer_unordered(concurrency)`, collect results. Support --filter and --concurrency flags
-- [ ] T040 [US4] Implement checker state management in `crates/checker/src/state.rs`: load `checker-state.json`, update failure counts after each check, reset on success, write back after all checks complete
+- [x] T038 [US4] Implement rate limiting in `crates/checker/src/rate_limit.rs`: track per-provider pause windows from HTTP 429 and retry-after headers. Checker skips providers in their pause window
+- [x] T039 [US4] Wire up parallel checking in `crates/checker/src/main.rs`: load manifests, create reqwest client with retry middleware (3 attempts, 1s/2s/4s backoff), run checks with `futures::stream::buffer_unordered(concurrency)`, collect results. Support --filter and --concurrency flags
+- [x] T040 [US4] Implement checker state management in `crates/checker/src/state.rs`: load `checker-state.json`, update failure counts after each check, reset on success, write back after all checks complete
 
 ### Tests
 
-- [ ] T041 [US4] Add integration test `crates/checker/tests/github_provider.rs`: test github provider against a known public repo (e.g., nightwatch-astro/astro-up-manifests) to verify version extraction
-- [ ] T042 [P] [US4] Add integration test `crates/checker/tests/version_format.rs`: test version parsing and ordering for semver, date, and custom regex formats
-- [ ] T042a [P] [US4] Add integration test `crates/checker/tests/template_e2e.rs`: end-to-end test — manifest with `$version` in `checkver.autoupdate` URL, checker discovers version, template variables resolve in the written version file URL
+- [x] T041 [US4] Add integration test `crates/checker/tests/github_provider.rs`: test github provider against a known public repo (e.g., nightwatch-astro/astro-up-manifests) to verify version extraction
+- [x] T042 [P] [US4] Add integration test `crates/checker/tests/version_format.rs`: test version parsing and ordering for semver, date, and custom regex formats
+- [x] T042a [P] [US4] Add integration test `crates/checker/tests/template_e2e.rs`: end-to-end test — manifest with `$version` in `checkver.autoupdate` URL, checker discovers version, template variables resolve in the written version file URL
 
 **Checkpoint**: Checker discovers versions for all provider types with bounded concurrency
 
