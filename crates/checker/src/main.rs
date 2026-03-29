@@ -216,6 +216,38 @@ async fn process_manifest(
             )
             .await;
 
+            // Hash mismatch check: if we got a hash from an external source AND
+            // the result includes a download URL, verify by downloading and comparing.
+            // Skip if hash was computed by downloading (no external source to mismatch).
+            let has_external_hash_source = manifest
+                .checkver
+                .as_ref()
+                .and_then(|cv| cv.hash.as_ref())
+                .map_or(false, |h| h.url.is_some() || h.jsonpath.is_some());
+
+            if has_external_hash_source {
+                if let Some(ref hash) = sha256 {
+                    if let Some(ref download_url) = url {
+                        if let Ok(bytes) = client.get(download_url).send().await.and_then(|r| Ok(r)) {
+                            if let Ok(body) = bytes.bytes().await {
+                                use sha2::{Digest, Sha256};
+                                let computed = format!("{:x}", Sha256::digest(&body));
+                                if computed != *hash {
+                                    tracing::error!(
+                                        "{}: hash mismatch — expected {hash}, got {computed}. Version file NOT written.",
+                                        manifest.id
+                                    );
+                                    state.lock().await.record_failure(&manifest.id, "hash mismatch");
+                                    let mut sum = summary.lock().await;
+                                    sum.failed.push(manifest.id.clone());
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             let discovered = DiscoveredVersion {
                 package_id: manifest.id.clone(),
                 version: result.version.clone(),
@@ -248,13 +280,9 @@ async fn process_manifest(
         }
         Err(e) => {
             // Detect rate limiting and pause the provider
-            if let CheckError::Reqwest(ref reqwest_err) = e {
-                if let Some(status) = reqwest_err.status() {
-                    if status == reqwest::StatusCode::TOO_MANY_REQUESTS {
-                        let mut rl = rate_limiter.lock().await;
-                        rl.record_rate_limit(provider, None);
-                    }
-                }
+            if let CheckError::RateLimited { ref retry_after } = e {
+                let mut rl = rate_limiter.lock().await;
+                rl.record_rate_limit(provider, retry_after.as_deref());
             }
             tracing::warn!("{}: {e}", manifest.id);
             state.lock().await.record_failure(&manifest.id, &e.to_string());

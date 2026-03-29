@@ -39,9 +39,10 @@ pub async fn check(
     // URL-encode owner/repo for GitLab API
     let project_path = format!("{owner}%2F{repo}");
 
-    // Fetch latest tag
+    // Fetch tags (enough to find a stable one if filtering)
+    let per_page = if checkver.include_pre_release { 1 } else { 20 };
     let url = format!(
-        "https://gitlab.com/api/v4/projects/{project_path}/repository/tags?per_page=1&order_by=version"
+        "https://gitlab.com/api/v4/projects/{project_path}/repository/tags?per_page={per_page}&order_by=version"
     );
 
     let resp = client.get(&url).send().await?;
@@ -53,19 +54,27 @@ pub async fn check(
     }
 
     let tags: Vec<Tag> = resp.json().await?;
-    let tag = tags.into_iter().next()
-        .ok_or(CheckError::NoMatch)?;
+
+    // Find the first matching tag based on pre-release preference
+    let (tag, pre_release) = if checkver.include_pre_release {
+        let tag = tags.into_iter().next().ok_or(CheckError::NoMatch)?;
+        let version = tag.name.strip_prefix('v').unwrap_or(&tag.name);
+        let pre = version.contains('-');
+        (tag, pre)
+    } else {
+        // Skip pre-release tags, find first stable
+        tags.into_iter()
+            .find(|t| {
+                let v = t.name.strip_prefix('v').unwrap_or(&t.name);
+                !v.contains('-')
+            })
+            .map(|t| (t, false))
+            .ok_or(CheckError::NoMatch)?
+    };
 
     let version = tag.name.strip_prefix('v')
         .unwrap_or(&tag.name)
         .to_string();
-
-    // Detect pre-release from version string
-    let pre_release = version.contains('-');
-
-    if pre_release && !checkver.include_pre_release {
-        return Err(CheckError::NoMatch);
-    }
 
     let release_url = format!(
         "https://gitlab.com/{owner}/{repo}/-/tags/{}", tag.name

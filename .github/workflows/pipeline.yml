@@ -94,8 +94,18 @@ jobs:
           # Create release if it doesn't exist
           gh release view catalog/latest > /dev/null 2>&1 || \
             gh release create catalog/latest --title "Catalog (latest)" --notes "Rolling release of the compiled catalog database."
-          # Upload artifacts (clobber existing)
-          gh release upload catalog/latest catalog.db catalog.db.minisig --clobber
+          # Upload artifacts with retry (3 attempts, exponential backoff)
+          for attempt in 1 2 3; do
+            if gh release upload catalog/latest catalog.db catalog.db.minisig --clobber; then
+              echo "Published successfully on attempt $attempt"
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "Failed to publish after 3 attempts"
+              exit 1
+            fi
+            sleep $((attempt * 2))
+          done
 
       - name: Commit state and version files
         run: |

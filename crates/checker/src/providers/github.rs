@@ -43,6 +43,14 @@ pub async fn check(
         .await?;
 
     let status = resp.status();
+    if status == reqwest::StatusCode::TOO_MANY_REQUESTS {
+        let retry_after = resp
+            .headers()
+            .get("retry-after")
+            .and_then(|v| v.to_str().ok())
+            .map(|s| s.to_string());
+        return Err(CheckError::RateLimited { retry_after });
+    }
     if !status.is_success() {
         return Err(CheckError::Other(format!(
             "GitHub API returned {status} for {owner}/{repo}"

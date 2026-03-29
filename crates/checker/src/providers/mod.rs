@@ -32,6 +32,8 @@ pub enum CheckError {
     Http(#[from] reqwest_middleware::Error),
     #[error("reqwest error: {0}")]
     Reqwest(#[from] reqwest::Error),
+    #[error("rate limited (retry-after: {retry_after:?})")]
+    RateLimited { retry_after: Option<String> },
     #[error("no version match found in response")]
     NoMatch,
     #[error("provider not configured: missing {0}")]
