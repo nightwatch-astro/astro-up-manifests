@@ -15,12 +15,12 @@
 
 **Purpose**: Cargo workspace, shared crate, and project scaffolding
 
-- [ ] T001 Create `crates/shared/Cargo.toml` with dependencies: serde, serde_json, toml, semver, lenient_semver, chrono, regex, tracing
-- [ ] T002 Create `crates/compiler/Cargo.toml` with dependencies: shared (path), rusqlite (bundled), clap (derive), tracing-subscriber
-- [ ] T003 Create `crates/checker/Cargo.toml` with dependencies: shared (path), reqwest (json), reqwest-middleware, reqwest-retry, tokio (full), futures, scraper, chromiumoxide, goblin, sha2, clap (derive), tracing-subscriber
-- [ ] T004 Update root `Cargo.toml` workspace members to add `crates/shared` alongside existing `crates/compiler` and `crates/checker` entries
-- [ ] T005 Create `crates/compiler/src/main.rs` with clap CLI skeleton (--manifests, --versions, --output, --validate, --verbose)
-- [ ] T006 Create `crates/checker/src/main.rs` with clap + tokio CLI skeleton (--manifests, --versions, --state, --concurrency, --filter, --verbose)
+- [x] T001 Create `crates/shared/Cargo.toml` with dependencies: serde, serde_json, toml, semver, lenient_semver, chrono, regex, tracing
+- [x] T002 Create `crates/compiler/Cargo.toml` with dependencies: shared (path), rusqlite (bundled), clap (derive), tracing-subscriber
+- [x] T003 Create `crates/checker/Cargo.toml` with dependencies: shared (path), reqwest (json), reqwest-middleware, reqwest-retry, tokio (full), futures, scraper, chromiumoxide, goblin, sha2, clap (derive), tracing-subscriber
+- [x] T004 Update root `Cargo.toml` workspace members to add `crates/shared` alongside existing `crates/compiler` and `crates/checker` entries
+- [x] T005 Create `crates/compiler/src/main.rs` with clap CLI skeleton (--manifests, --versions, --output, --validate, --verbose)
+- [x] T006 Create `crates/checker/src/main.rs` with clap + tokio CLI skeleton (--manifests, --versions, --state, --concurrency, --filter, --verbose)
 
 ---
 
@@ -28,15 +28,15 @@
 
 **Purpose**: Manifest types and template engine used by both compiler and checker. MUST complete before any user story.
 
-- [ ] T007 Define manifest TOML types in `crates/shared/src/manifest.rs`: top-level metadata struct with all required/optional fields, nested structs for Detection, Install, Checkver, Hardware, Backup, Dependencies sections. Include serde Deserialize/Serialize derives
-- [ ] T008 [P] Implement custom validation functions in `crates/shared/src/validate.rs`: validate manifest_version is supported, validate required fields (id, name, category, type, slug), validate install method is known (inno_setup, msi, nsis, zip_wrap, download_only, exe), validate checkver provider is known, validate URL fields are valid. Include default installer switches per method (FR-005) that are applied when manifest omits switches
-- [ ] T009 [P] Implement `$version` template variable substitution in `crates/shared/src/template.rs`: parse `$version`, `$majorVersion`, `$minorVersion`, `$patchVersion`, `$cleanVersion`, `$underscoreVersion`, `$dashVersion`, `$preReleaseVersion`, `$buildVersion` from version strings
-- [ ] T010 [P] Implement version parsing in `crates/shared/src/version.rs`: parse semver (via lenient_semver), parse date format, parse custom regex format. Implement ordering for each format type. Handle `version_format` field dispatch
-- [ ] T011 [P] Define version file types in `crates/shared/src/version_file.rs`: VersionEntry struct (url, sha256, discovered_at, release_notes_url, pre_release), read/write JSON
-- [ ] T012 [P] Define checker state types in `crates/shared/src/state.rs`: CheckerState struct with per-manifest failure count, last_checked, last_error, issue_number. Read/write JSON
-- [ ] T013 Create `crates/shared/src/lib.rs` re-exporting all public types and modules
-- [ ] T014 Add integration test `crates/shared/tests/manifest_parse.rs`: deserialize a sample TOML manifest, verify all fields round-trip correctly
-- [ ] T015 [P] Add integration test `crates/shared/tests/template_substitution.rs`: verify all `$version` variables resolve correctly for version "3.1.2", test edge cases (missing minor, pre-release, build metadata)
+- [x] T007 Define manifest TOML types in `crates/shared/src/manifest.rs`: top-level metadata struct with all required/optional fields, nested structs for Detection, Install, Checkver, Hardware, Backup, Dependencies sections. Include serde Deserialize/Serialize derives
+- [x] T008 [P] Implement custom validation functions in `crates/shared/src/validate.rs`: validate manifest_version is supported, validate required fields (id, name, category, type, slug), validate install method is known (inno_setup, msi, nsis, zip_wrap, download_only, exe), validate checkver provider is known, validate URL fields are valid. Include default installer switches per method (FR-005) that are applied when manifest omits switches
+- [x] T009 [P] Implement `$version` template variable substitution in `crates/shared/src/template.rs`: parse `$version`, `$majorVersion`, `$minorVersion`, `$patchVersion`, `$cleanVersion`, `$underscoreVersion`, `$dashVersion`, `$preReleaseVersion`, `$buildVersion` from version strings
+- [x] T010 [P] Implement version parsing in `crates/shared/src/version.rs`: parse semver (via lenient_semver), parse date format, parse custom regex format. Implement ordering for each format type. Handle `version_format` field dispatch
+- [x] T011 [P] Define version file types in `crates/shared/src/version_file.rs`: VersionEntry struct (url, sha256, discovered_at, release_notes_url, pre_release), read/write JSON
+- [x] T012 [P] Define checker state types in `crates/shared/src/state.rs`: CheckerState struct with per-manifest failure count, last_checked, last_error, issue_number. Read/write JSON
+- [x] T013 Create `crates/shared/src/lib.rs` re-exporting all public types and modules
+- [x] T014 Add integration test `crates/shared/tests/manifest_parse.rs`: deserialize a sample TOML manifest, verify all fields round-trip correctly
+- [x] T015 [P] Add integration test `crates/shared/tests/template_substitution.rs`: verify all `$version` variables resolve correctly for version "3.1.2", test edge cases (missing minor, pre-release, build metadata)
 
 **Checkpoint**: Shared crate complete — compiler and checker implementation can begin
 

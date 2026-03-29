@@ -13,6 +13,7 @@ serde_json.workspace = true
 toml.workspace = true
 thiserror.workspace = true
 semver.workspace = true
+lenient_semver.workspace = true
 chrono.workspace = true
 regex.workspace = true
 tracing.workspace = true
