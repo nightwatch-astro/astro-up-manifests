@@ -1,0 +1,24 @@
+[package]
+name = "astro-up-compiler"
+version = "0.1.0"
+description = "Compiles TOML manifests into SQLite catalog for astro-up"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+rusqlite.workspace = true
+thiserror.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+walkdir.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+sha2.workspace = true
+semver.workspace = true
+chrono.workspace = true
+minisign-verify.workspace = true
