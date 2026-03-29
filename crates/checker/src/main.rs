@@ -9,7 +9,7 @@ use clap::Parser;
 use futures::stream::{self, StreamExt};
 use reqwest_middleware::ClientBuilder;
 use reqwest_retry::{policies::ExponentialBackoff, RetryTransientMiddleware};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -171,7 +171,7 @@ async fn process_manifest(
     client: &reqwest_middleware::ClientWithMiddleware,
     state: &Arc<Mutex<CheckerState>>,
     summary: &Arc<Mutex<Summary>>,
-    versions_dir: &PathBuf,
+    versions_dir: &Path,
     rate_limiter: &Arc<Mutex<RateLimiter>>,
 ) {
     let mut sum = summary.lock().await;
@@ -223,12 +223,12 @@ async fn process_manifest(
                 .checkver
                 .as_ref()
                 .and_then(|cv| cv.hash.as_ref())
-                .map_or(false, |h| h.url.is_some() || h.jsonpath.is_some());
+                .is_some_and(|h| h.url.is_some() || h.jsonpath.is_some());
 
             if has_external_hash_source {
                 if let Some(ref hash) = sha256 {
                     if let Some(ref download_url) = url {
-                        if let Ok(bytes) = client.get(download_url).send().await.and_then(|r| Ok(r)) {
+                        if let Ok(bytes) = client.get(download_url).send().await {
                             if let Ok(body) = bytes.bytes().await {
                                 use sha2::{Digest, Sha256};
                                 let computed = format!("{:x}", Sha256::digest(&body));
@@ -316,5 +316,5 @@ fn matches_filter(manifest: &Manifest, filter: &str) -> bool {
         || manifest
             .checkver
             .as_ref()
-            .map_or(false, |cv| cv.provider.to_lowercase().contains(&filter_lower))
+            .is_some_and(|cv| cv.provider.to_lowercase().contains(&filter_lower))
 }

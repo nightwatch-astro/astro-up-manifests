@@ -71,7 +71,7 @@ fn insert_package(
             manifest.license,
             serde_json::to_string(&manifest.tags).ok(),
             serde_json::to_string(&manifest.aliases).ok(),
-            manifest.dependencies.as_ref().map(|d| serde_json::to_string(&d.requires).ok()).flatten(),
+            manifest.dependencies.as_ref().and_then(|d| serde_json::to_string(&d.requires).ok()),
         ],
     )
 }

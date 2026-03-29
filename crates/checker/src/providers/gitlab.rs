@@ -9,6 +9,7 @@ struct Tag {
     name: String,
 }
 
+#[allow(dead_code)]
 #[derive(Deserialize)]
 struct TagRelease {
     tag_name: String,
@@ -16,11 +17,13 @@ struct TagRelease {
     assets: Option<ReleaseAssets>,
 }
 
+#[allow(dead_code)]
 #[derive(Deserialize)]
 struct ReleaseAssets {
     links: Vec<AssetLink>,
 }
 
+#[allow(dead_code)]
 #[derive(Deserialize)]
 struct AssetLink {
     url: String,

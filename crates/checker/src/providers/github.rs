@@ -13,6 +13,7 @@ struct Release {
 }
 
 #[derive(Deserialize)]
+#[allow(dead_code)]
 struct Asset {
     browser_download_url: String,
     name: String,

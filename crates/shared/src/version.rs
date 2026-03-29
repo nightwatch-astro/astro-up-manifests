@@ -104,7 +104,7 @@ fn parse_semver(version: &str) -> Result<ParsedVersion, VersionError> {
 
 fn parse_date(version: &str) -> Result<ParsedVersion, VersionError> {
     // Support YYYY.MM.DD, YYYY-MM-DD, YYYY.MM, YYYY-MM
-    let parts: Vec<&str> = version.split(|c| c == '.' || c == '-').collect();
+    let parts: Vec<&str> = version.split(['.', '-']).collect();
     let year = parts.first()
         .and_then(|s| s.parse().ok())
         .ok_or_else(|| VersionError::DateParse(version.into()))?;

@@ -1,6 +1,4 @@
 use astro_up_shared::version_file::VersionEntry;
-use std::path::Path;
-
 // Import from the checker crate
 use astro_up_checker::version_writer::DiscoveredVersion;
 

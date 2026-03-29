@@ -65,7 +65,7 @@ impl CheckerState {
 
     /// Check if a manifest has reached the persistent failure threshold (8 consecutive).
     pub fn needs_issue(&self, id: &str) -> bool {
-        self.manifests.get(id).map_or(false, |s| {
+        self.manifests.get(id).is_some_and(|s| {
             s.consecutive_failures >= 8 && s.issue_number.is_none()
         })
     }

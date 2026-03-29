@@ -12,7 +12,7 @@ impl RateLimiter {
     pub fn is_paused(&self, provider: &str) -> bool {
         self.paused_until
             .get(provider)
-            .map_or(false, |until| Instant::now() < *until)
+            .is_some_and(|until| Instant::now() < *until)
     }
 
     /// Pause a provider for a given duration (from retry-after or backoff).
