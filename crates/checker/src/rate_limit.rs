@@ -18,7 +18,10 @@ impl RateLimiter {
     /// Pause a provider for a given duration (from retry-after or backoff).
     pub fn pause(&mut self, provider: &str, duration: Duration) {
         let until = Instant::now() + duration;
-        tracing::warn!("rate limited: pausing {provider} for {}s", duration.as_secs());
+        tracing::warn!(
+            "rate limited: pausing {provider} for {}s",
+            duration.as_secs()
+        );
         self.paused_until.insert(provider.to_string(), until);
     }
 

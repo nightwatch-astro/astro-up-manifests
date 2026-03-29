@@ -1,4 +1,4 @@
-use astro_up_shared::version::{parse, ParsedVersion};
+use astro_up_shared::version::{ParsedVersion, parse};
 
 #[test]
 fn semver_ordering() {
@@ -31,7 +31,15 @@ fn lenient_semver_with_v_prefix() {
 #[test]
 fn date_format_parsing() {
     let v = parse("2026.03.29", Some("date")).unwrap();
-    assert!(matches!(v, ParsedVersion::Date { year: 2026, month: 3, day: 29, .. }));
+    assert!(matches!(
+        v,
+        ParsedVersion::Date {
+            year: 2026,
+            month: 3,
+            day: 29,
+            ..
+        }
+    ));
 }
 
 #[test]
@@ -46,7 +54,15 @@ fn date_ordering() {
 #[test]
 fn date_partial_year_month() {
     let v = parse("2026.03", Some("date")).unwrap();
-    assert!(matches!(v, ParsedVersion::Date { year: 2026, month: 3, day: 1, .. }));
+    assert!(matches!(
+        v,
+        ParsedVersion::Date {
+            year: 2026,
+            month: 3,
+            day: 1,
+            ..
+        }
+    ));
 }
 
 #[test]

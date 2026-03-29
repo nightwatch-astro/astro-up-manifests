@@ -28,7 +28,8 @@ impl VersionEntry {
     /// Read a version entry from a JSON file.
     pub fn read(path: &Path) -> Result<Self, std::io::Error> {
         let data = std::fs::read_to_string(path)?;
-        serde_json::from_str(&data).map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
+        serde_json::from_str(&data)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
     }
 
     /// Write this version entry to a JSON file, creating parent directories.

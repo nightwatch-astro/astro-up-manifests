@@ -109,5 +109,8 @@ fn date_version_format() {
 
     let result = discovered.write(dir.path()).unwrap();
     let path = result.unwrap();
-    assert_eq!(path.file_name().unwrap().to_str().unwrap(), "2026.03.29.json");
+    assert_eq!(
+        path.file_name().unwrap().to_str().unwrap(),
+        "2026.03.29.json"
+    );
 }

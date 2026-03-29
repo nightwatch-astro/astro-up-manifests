@@ -1,6 +1,6 @@
 use astro_up_shared::manifest::Manifest;
 use chrono::Utc;
-use rusqlite::{params, Connection};
+use rusqlite::{Connection, params};
 
 const SCHEMA_VERSION: &str = "1";
 
@@ -51,10 +51,7 @@ pub fn compile_manifests(conn: &Connection, manifests: &[Manifest]) -> anyhow::R
     Ok(())
 }
 
-fn insert_package(
-    conn: &Connection,
-    manifest: &Manifest,
-) -> rusqlite::Result<usize> {
+fn insert_package(conn: &Connection, manifest: &Manifest) -> rusqlite::Result<usize> {
     conn.execute(
         "INSERT INTO packages (id, manifest_version, name, description, publisher, homepage, category, type, slug, license, tags, aliases, dependencies)
          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)",
@@ -164,9 +161,6 @@ fn insert_backup(
 ) -> rusqlite::Result<usize> {
     conn.execute(
         "INSERT INTO backup (package_id, config_paths) VALUES (?1, ?2)",
-        params![
-            package_id,
-            serde_json::to_string(&backup.config_paths).ok(),
-        ],
+        params![package_id, serde_json::to_string(&backup.config_paths).ok(),],
     )
 }

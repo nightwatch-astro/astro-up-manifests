@@ -8,7 +8,9 @@ pub async fn check(
     checkver: &Checkver,
     client: &ClientWithMiddleware,
 ) -> Result<CheckOutcome, CheckError> {
-    let url = checkver.url.as_deref()
+    let url = checkver
+        .url
+        .as_deref()
         .ok_or_else(|| CheckError::MissingConfig("url".into()))?;
 
     // Download the executable
@@ -17,17 +19,19 @@ pub async fn check(
     let bytes = resp.bytes().await?;
 
     // Parse PE and extract FileVersion from VS_VERSION_INFO resource
-    let pe = pelite::PeFile::from_bytes(&bytes)
-        .map_err(|e| CheckError::PeParse(format!("{e}")))?;
+    let pe = pelite::PeFile::from_bytes(&bytes).map_err(|e| CheckError::PeParse(format!("{e}")))?;
 
-    let resources = pe.resources()
+    let resources = pe
+        .resources()
         .map_err(|e| CheckError::PeParse(format!("no resource directory: {e}")))?;
 
-    let version_info = resources.version_info()
+    let version_info = resources
+        .version_info()
         .map_err(|e| CheckError::PeParse(format!("no version info: {e}")))?;
 
     // Extract fixed file info for the version numbers
-    let fixed = version_info.fixed()
+    let fixed = version_info
+        .fixed()
         .ok_or_else(|| CheckError::PeParse("no VS_FIXEDFILEINFO".into()))?;
 
     let version = format!(

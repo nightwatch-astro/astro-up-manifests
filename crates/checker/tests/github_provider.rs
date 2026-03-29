@@ -1,7 +1,7 @@
 use astro_up_checker::providers::{self, CheckOutcome};
 use astro_up_shared::manifest::{Checkver, Install, Manifest};
 use reqwest_middleware::ClientBuilder;
-use reqwest_retry::{policies::ExponentialBackoff, RetryTransientMiddleware};
+use reqwest_retry::{RetryTransientMiddleware, policies::ExponentialBackoff};
 
 fn test_client() -> reqwest_middleware::ClientWithMiddleware {
     let retry_policy = ExponentialBackoff::builder().build_with_max_retries(2);
@@ -68,7 +68,10 @@ async fn github_provider_finds_version() {
     match result {
         CheckOutcome::Found(cr) => {
             assert!(!cr.version.is_empty(), "version should not be empty");
-            assert!(cr.release_notes_url.is_some(), "should have release notes URL");
+            assert!(
+                cr.release_notes_url.is_some(),
+                "should have release notes URL"
+            );
         }
         CheckOutcome::Skipped { reason } => {
             panic!("expected Found, got Skipped: {reason}");

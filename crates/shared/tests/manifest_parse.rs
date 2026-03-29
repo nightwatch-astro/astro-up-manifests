@@ -78,7 +78,10 @@ fn parse_checkver_section() {
     let checkver = manifest.checkver.unwrap();
 
     assert_eq!(checkver.provider, "html_scrape");
-    assert_eq!(checkver.url.unwrap(), "https://nighttime-imaging.eu/download/");
+    assert_eq!(
+        checkver.url.unwrap(),
+        "https://nighttime-imaging.eu/download/"
+    );
     assert!(checkver.regex.is_some());
     assert_eq!(checkver.version_format.unwrap(), "semver");
     assert!(checkver.include_pre_release);

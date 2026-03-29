@@ -97,7 +97,10 @@ fn run(cli: Cli) -> anyhow::Result<ExitCode> {
         cli.output.display()
     );
     if !result.errors.is_empty() {
-        println!("  ({} manifests skipped due to errors)", result.errors.len());
+        println!(
+            "  ({} manifests skipped due to errors)",
+            result.errors.len()
+        );
     }
 
     Ok(ExitCode::SUCCESS)

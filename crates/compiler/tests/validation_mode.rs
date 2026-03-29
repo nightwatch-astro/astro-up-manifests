@@ -36,7 +36,11 @@ fn validate_invalid_manifest_exits_2() {
         .output()
         .unwrap();
 
-    assert_eq!(output.status.code(), Some(2), "exit code should be 2 for validation errors");
+    assert_eq!(
+        output.status.code(),
+        Some(2),
+        "exit code should be 2 for validation errors"
+    );
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(stdout.contains("error"), "should report errors");
 }
@@ -50,5 +54,8 @@ fn validate_nonexistent_dir_exits_1() {
         .output()
         .unwrap();
 
-    assert!(!output.status.success(), "should fail for nonexistent directory");
+    assert!(
+        !output.status.success(),
+        "should fail for nonexistent directory"
+    );
 }

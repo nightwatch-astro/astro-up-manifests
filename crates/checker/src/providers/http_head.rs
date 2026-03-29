@@ -8,9 +8,13 @@ pub async fn check(
     checkver: &Checkver,
     client: &ClientWithMiddleware,
 ) -> Result<CheckOutcome, CheckError> {
-    let url = checkver.url.as_deref()
+    let url = checkver
+        .url
+        .as_deref()
         .ok_or_else(|| CheckError::MissingConfig("url".into()))?;
-    let regex_pat = checkver.regex.as_deref()
+    let regex_pat = checkver
+        .regex
+        .as_deref()
         .ok_or_else(|| CheckError::MissingConfig("regex".into()))?;
 
     let resp = client.head(url).send().await?;

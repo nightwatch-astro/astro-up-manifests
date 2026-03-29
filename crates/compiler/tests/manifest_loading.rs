@@ -35,7 +35,11 @@ fn default_switches_applied() {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../manifests");
     let result = load_manifests(&dir).unwrap();
 
-    let nina = result.manifests.iter().find(|m| m.id == "nina-app").unwrap();
+    let nina = result
+        .manifests
+        .iter()
+        .find(|m| m.id == "nina-app")
+        .unwrap();
     assert!(
         !nina.install.switches.is_empty(),
         "default inno_setup switches should be applied"
@@ -47,8 +51,15 @@ fn driver_has_hardware_section() {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../manifests");
     let result = load_manifests(&dir).unwrap();
 
-    let driver = result.manifests.iter().find(|m| m.id == "zwo-asi-driver").unwrap();
-    let hw = driver.hardware.as_ref().expect("driver should have hardware section");
+    let driver = result
+        .manifests
+        .iter()
+        .find(|m| m.id == "zwo-asi-driver")
+        .unwrap();
+    let hw = driver
+        .hardware
+        .as_ref()
+        .expect("driver should have hardware section");
     assert_eq!(hw.device_class.as_deref(), Some("Camera"));
     assert!(!hw.vid_pid.is_empty());
 }
@@ -58,7 +69,11 @@ fn manual_provider_accepted() {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../manifests");
     let result = load_manifests(&dir).unwrap();
 
-    let prolific = result.manifests.iter().find(|m| m.id == "prolific-drivers").unwrap();
+    let prolific = result
+        .manifests
+        .iter()
+        .find(|m| m.id == "prolific-drivers")
+        .unwrap();
     let checkver = prolific.checkver.as_ref().unwrap();
     assert_eq!(checkver.provider, "manual");
 }

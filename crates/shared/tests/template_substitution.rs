@@ -2,7 +2,8 @@ use astro_up_shared::template::substitute;
 
 #[test]
 fn full_version_url_template() {
-    let template = "https://github.com/daleghent/nina/releases/download/v$version/NINA-$version-Setup.exe";
+    let template =
+        "https://github.com/daleghent/nina/releases/download/v$version/NINA-$version-Setup.exe";
     let result = substitute(template, "3.1.2");
     assert_eq!(
         result,

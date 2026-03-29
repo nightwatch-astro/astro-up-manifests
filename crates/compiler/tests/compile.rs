@@ -152,9 +152,7 @@ fn version_aggregation() {
         release_notes_url: Some("https://example.com/release".into()),
         pre_release: false,
     };
-    entry
-        .write(&nina_versions.join("3.1.2.json"))
-        .unwrap();
+    entry.write(&nina_versions.join("3.1.2.json")).unwrap();
 
     // Compile with versions
     let manifests_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../manifests");

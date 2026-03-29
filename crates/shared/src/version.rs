@@ -55,12 +55,23 @@ impl Ord for ParsedVersion {
     fn cmp(&self, other: &Self) -> Ordering {
         match (self, other) {
             (Self::Semver(a), Self::Semver(b)) => a.cmp(b),
-            (Self::Date { year: y1, month: m1, day: d1, .. },
-             Self::Date { year: y2, month: m2, day: d2, .. }) => {
-                y1.cmp(y2).then(m1.cmp(m2)).then(d1.cmp(d2))
-            }
+            (
+                Self::Date {
+                    year: y1,
+                    month: m1,
+                    day: d1,
+                    ..
+                },
+                Self::Date {
+                    year: y2,
+                    month: m2,
+                    day: d2,
+                    ..
+                },
+            ) => y1.cmp(y2).then(m1.cmp(m2)).then(d1.cmp(d2)),
             (Self::Custom { components: a, .. }, Self::Custom { components: b, .. }) => {
-                a.iter().zip(b.iter())
+                a.iter()
+                    .zip(b.iter())
                     .map(|(x, y)| {
                         // Try numeric comparison first
                         match (x.parse::<u64>(), y.parse::<u64>()) {
@@ -105,15 +116,12 @@ fn parse_semver(version: &str) -> Result<ParsedVersion, VersionError> {
 fn parse_date(version: &str) -> Result<ParsedVersion, VersionError> {
     // Support YYYY.MM.DD, YYYY-MM-DD, YYYY.MM, YYYY-MM
     let parts: Vec<&str> = version.split(['.', '-']).collect();
-    let year = parts.first()
+    let year = parts
+        .first()
         .and_then(|s| s.parse().ok())
         .ok_or_else(|| VersionError::DateParse(version.into()))?;
-    let month = parts.get(1)
-        .and_then(|s| s.parse().ok())
-        .unwrap_or(1);
-    let day = parts.get(2)
-        .and_then(|s| s.parse().ok())
-        .unwrap_or(1);
+    let month = parts.get(1).and_then(|s| s.parse().ok()).unwrap_or(1);
+    let day = parts.get(2).and_then(|s| s.parse().ok()).unwrap_or(1);
 
     Ok(ParsedVersion::Date {
         year,
@@ -127,10 +135,12 @@ fn parse_custom(version: &str, pattern: &str) -> Result<ParsedVersion, VersionEr
     let re = regex::Regex::new(pattern)
         .map_err(|e| VersionError::RegexParse(format!("{pattern}: {e}")))?;
 
-    let caps = re.captures(version)
+    let caps = re
+        .captures(version)
         .ok_or_else(|| VersionError::RegexParse(format!("{version} doesn't match {pattern}")))?;
 
-    let components: Vec<String> = caps.iter()
+    let components: Vec<String> = caps
+        .iter()
         .skip(1) // skip full match
         .filter_map(|m| m.map(|m| m.as_str().to_string()))
         .collect();
@@ -187,7 +197,15 @@ mod tests {
     #[test]
     fn date_format() {
         let v = parse("2026.03.29", Some("date")).unwrap();
-        assert!(matches!(v, ParsedVersion::Date { year: 2026, month: 3, day: 29, .. }));
+        assert!(matches!(
+            v,
+            ParsedVersion::Date {
+                year: 2026,
+                month: 3,
+                day: 29,
+                ..
+            }
+        ));
     }
 
     #[test]

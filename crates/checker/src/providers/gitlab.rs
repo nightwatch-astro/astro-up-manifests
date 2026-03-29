@@ -34,9 +34,13 @@ pub async fn check(
     checkver: &Checkver,
     client: &ClientWithMiddleware,
 ) -> Result<CheckOutcome, CheckError> {
-    let owner = checkver.owner.as_deref()
+    let owner = checkver
+        .owner
+        .as_deref()
         .ok_or_else(|| CheckError::MissingConfig("owner".into()))?;
-    let repo = checkver.repo.as_deref()
+    let repo = checkver
+        .repo
+        .as_deref()
         .ok_or_else(|| CheckError::MissingConfig("repo".into()))?;
 
     // URL-encode owner/repo for GitLab API
@@ -76,13 +80,9 @@ pub async fn check(
             .ok_or(CheckError::NoMatch)?
     };
 
-    let version = tag.name.strip_prefix('v')
-        .unwrap_or(&tag.name)
-        .to_string();
+    let version = tag.name.strip_prefix('v').unwrap_or(&tag.name).to_string();
 
-    let release_url = format!(
-        "https://gitlab.com/{owner}/{repo}/-/tags/{}", tag.name
-    );
+    let release_url = format!("https://gitlab.com/{owner}/{repo}/-/tags/{}", tag.name);
 
     Ok(CheckOutcome::Found(CheckResult {
         version,

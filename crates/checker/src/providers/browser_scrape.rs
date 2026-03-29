@@ -4,13 +4,14 @@ use std::time::Duration;
 
 use super::{CheckError, CheckOutcome, CheckResult};
 
-pub async fn check(
-    _manifest: &Manifest,
-    checkver: &Checkver,
-) -> Result<CheckOutcome, CheckError> {
-    let url = checkver.url.as_deref()
+pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOutcome, CheckError> {
+    let url = checkver
+        .url
+        .as_deref()
         .ok_or_else(|| CheckError::MissingConfig("url".into()))?;
-    let regex_pat = checkver.regex.as_deref()
+    let regex_pat = checkver
+        .regex
+        .as_deref()
         .ok_or_else(|| CheckError::MissingConfig("regex".into()))?;
 
     let page_timeout = Duration::from_secs(60);
@@ -27,34 +28,29 @@ pub async fn check(
     .map_err(|e| CheckError::Browser(format!("launch error: {e}")))?;
 
     // Handler must be spawned or browser deadlocks
-    let handler_task = tokio::spawn(async move {
-        while handler.next().await.is_some() {}
-    });
+    let handler_task = tokio::spawn(async move { while handler.next().await.is_some() {} });
 
     let result = async {
-        let page = browser.new_page(url).await
+        let page = browser
+            .new_page(url)
+            .await
             .map_err(|e| CheckError::Browser(format!("navigation error: {e}")))?;
 
-        page.wait_for_navigation().await
+        page.wait_for_navigation()
+            .await
             .map_err(|e| CheckError::Browser(format!("wait error: {e}")))?;
 
         // Extract page content with extraction timeout
-        let content = tokio::time::timeout(
-            extraction_timeout,
-            page.content(),
-        )
-        .await
-        .map_err(|_| CheckError::Browser("DOM extraction timeout (30s)".into()))?
-        .map_err(|e| CheckError::Browser(format!("content error: {e}")))?;
+        let content = tokio::time::timeout(extraction_timeout, page.content())
+            .await
+            .map_err(|_| CheckError::Browser("DOM extraction timeout (30s)".into()))?
+            .map_err(|e| CheckError::Browser(format!("content error: {e}")))?;
 
         let re = regex::Regex::new(regex_pat)
             .map_err(|e| CheckError::Other(format!("invalid regex: {e}")))?;
 
         let caps = re.captures(&content).ok_or(CheckError::NoMatch)?;
-        let version = caps.get(1)
-            .ok_or(CheckError::NoMatch)?
-            .as_str()
-            .to_string();
+        let version = caps.get(1).ok_or(CheckError::NoMatch)?.as_str().to_string();
 
         Ok(CheckOutcome::Found(CheckResult {
             version,

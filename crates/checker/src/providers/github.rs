@@ -24,9 +24,13 @@ pub async fn check(
     checkver: &Checkver,
     client: &ClientWithMiddleware,
 ) -> Result<CheckOutcome, CheckError> {
-    let owner = checkver.owner.as_deref()
+    let owner = checkver
+        .owner
+        .as_deref()
         .ok_or_else(|| CheckError::MissingConfig("owner".into()))?;
-    let repo = checkver.repo.as_deref()
+    let repo = checkver
+        .repo
+        .as_deref()
         .ok_or_else(|| CheckError::MissingConfig("repo".into()))?;
 
     let url = if checkver.include_pre_release {
@@ -58,19 +62,22 @@ pub async fn check(
 
     let release = if checkver.include_pre_release {
         let releases: Vec<Release> = resp.json().await?;
-        releases.into_iter().next()
-            .ok_or(CheckError::NoMatch)?
+        releases.into_iter().next().ok_or(CheckError::NoMatch)?
     } else {
         resp.json::<Release>().await?
     };
 
     // Strip leading 'v' from tag
-    let version = release.tag_name.strip_prefix('v')
+    let version = release
+        .tag_name
+        .strip_prefix('v')
         .unwrap_or(&release.tag_name)
         .to_string();
 
     // Find download URL from assets (first .exe, .msi, .zip, or first asset)
-    let download_url = release.assets.first()
+    let download_url = release
+        .assets
+        .first()
         .map(|a| a.browser_download_url.clone());
 
     Ok(CheckOutcome::Found(CheckResult {

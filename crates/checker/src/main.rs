@@ -8,7 +8,7 @@ use astro_up_shared::template;
 use clap::Parser;
 use futures::stream::{self, StreamExt};
 use reqwest_middleware::ClientBuilder;
-use reqwest_retry::{policies::ExponentialBackoff, RetryTransientMiddleware};
+use reqwest_retry::{RetryTransientMiddleware, policies::ExponentialBackoff};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -80,7 +80,11 @@ async fn main() -> anyhow::Result<()> {
         all_manifests.iter().collect()
     };
 
-    tracing::info!("checking {} manifests ({} concurrent)", manifests.len(), cli.concurrency);
+    tracing::info!(
+        "checking {} manifests ({} concurrent)",
+        manifests.len(),
+        cli.concurrency
+    );
 
     // 3. Load state
     let state = Arc::new(Mutex::new(CheckerState::read(&cli.state)?));
@@ -113,7 +117,15 @@ async fn main() -> anyhow::Result<()> {
             let versions_dir = versions_dir.clone();
             let rate_limiter = rate_limiter.clone();
             async move {
-                process_manifest(manifest, &client, &state, &summary, &versions_dir, &rate_limiter).await;
+                process_manifest(
+                    manifest,
+                    &client,
+                    &state,
+                    &summary,
+                    &versions_dir,
+                    &rate_limiter,
+                )
+                .await;
             }
         })
         .buffer_unordered(cli.concurrency)
@@ -125,7 +137,8 @@ async fn main() -> anyhow::Result<()> {
     // 6. Auto-create/close issues for persistent failures
     {
         let mut state_guard = state.lock().await;
-        let issue_report = astro_up_checker::issue::process_issues(&mut state_guard, &client).await?;
+        let issue_report =
+            astro_up_checker::issue::process_issues(&mut state_guard, &client).await?;
         for (id, num) in &issue_report.created {
             println!("  Issue created: #{num} for {id}");
         }
@@ -145,10 +158,18 @@ async fn main() -> anyhow::Result<()> {
         summary.checked, cli.concurrency
     );
     if !summary.new_versions.is_empty() {
-        println!("  New versions: {} ({})", summary.new_versions.len(), summary.new_versions.join(", "));
+        println!(
+            "  New versions: {} ({})",
+            summary.new_versions.len(),
+            summary.new_versions.join(", ")
+        );
     }
     if !summary.failed.is_empty() {
-        println!("  Failed: {} ({})", summary.failed.len(), summary.failed.join(", "));
+        println!(
+            "  Failed: {} ({})",
+            summary.failed.len(),
+            summary.failed.join(", ")
+        );
     }
     if !summary.skipped.is_empty() {
         println!("  Skipped: {} (manual)", summary.skipped.len());
@@ -158,7 +179,10 @@ async fn main() -> anyhow::Result<()> {
     for (id, ms) in state.manifests.iter() {
         if ms.consecutive_failures >= 8 {
             if let Some(issue) = ms.issue_number {
-                println!("  Persistent failure: {id} — {} consecutive, issue #{issue}", ms.consecutive_failures);
+                println!(
+                    "  Persistent failure: {id} — {} consecutive, issue #{issue}",
+                    ms.consecutive_failures
+                );
             }
         }
     }
@@ -188,7 +212,11 @@ async fn process_manifest(
         let rl = rate_limiter.lock().await;
         if rl.is_paused(provider) {
             if let Some(remaining) = rl.remaining(provider) {
-                tracing::info!("{}: provider {provider} rate-limited, {}s remaining — skipping", manifest.id, remaining.as_secs());
+                tracing::info!(
+                    "{}: provider {provider} rate-limited, {}s remaining — skipping",
+                    manifest.id,
+                    remaining.as_secs()
+                );
                 let mut sum = summary.lock().await;
                 sum.skipped.push(manifest.id.clone());
                 return;
@@ -237,7 +265,10 @@ async fn process_manifest(
                                         "{}: hash mismatch — expected {hash}, got {computed}. Version file NOT written.",
                                         manifest.id
                                     );
-                                    state.lock().await.record_failure(&manifest.id, "hash mismatch");
+                                    state
+                                        .lock()
+                                        .await
+                                        .record_failure(&manifest.id, "hash mismatch");
                                     let mut sum = summary.lock().await;
                                     sum.failed.push(manifest.id.clone());
                                     return;
@@ -260,7 +291,8 @@ async fn process_manifest(
             match discovered.write(versions_dir) {
                 Ok(Some(_path)) => {
                     let mut sum = summary.lock().await;
-                    sum.new_versions.push(format!("{} {}", manifest.id, result.version));
+                    sum.new_versions
+                        .push(format!("{} {}", manifest.id, result.version));
                 }
                 Ok(None) => {
                     // Version already exists
@@ -285,7 +317,10 @@ async fn process_manifest(
                 rl.record_rate_limit(provider, retry_after.as_deref());
             }
             tracing::warn!("{}: {e}", manifest.id);
-            state.lock().await.record_failure(&manifest.id, &e.to_string());
+            state
+                .lock()
+                .await
+                .record_failure(&manifest.id, &e.to_string());
             let mut sum = summary.lock().await;
             sum.failed.push(manifest.id.clone());
         }

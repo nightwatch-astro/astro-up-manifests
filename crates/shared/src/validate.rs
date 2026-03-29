@@ -13,7 +13,11 @@ pub enum ValidationError {
     #[error("{file}: unknown checkver provider '{provider}'")]
     UnknownProvider { file: String, provider: String },
     #[error("{file}: invalid URL in field '{field}': {url}")]
-    InvalidUrl { file: String, field: String, url: String },
+    InvalidUrl {
+        file: String,
+        field: String,
+        url: String,
+    },
 }
 
 const SUPPORTED_MANIFEST_VERSIONS: &[u32] = &[1];
@@ -41,15 +45,12 @@ const KNOWN_PROVIDERS: &[&str] = &[
 /// Default silent install switches per installer type.
 pub fn default_switches(method: &str) -> HashMap<String, String> {
     match method {
-        "inno_setup" => HashMap::from([
-            ("silent".into(), "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES".into()),
-        ]),
-        "msi" => HashMap::from([
-            ("silent".into(), "/qn /norestart".into()),
-        ]),
-        "nsis" => HashMap::from([
-            ("silent".into(), "/S".into()),
-        ]),
+        "inno_setup" => HashMap::from([(
+            "silent".into(),
+            "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES".into(),
+        )]),
+        "msi" => HashMap::from([("silent".into(), "/qn /norestart".into())]),
+        "nsis" => HashMap::from([("silent".into(), "/S".into())]),
         _ => HashMap::new(),
     }
 }

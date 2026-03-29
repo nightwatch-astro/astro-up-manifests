@@ -8,9 +8,13 @@ pub async fn check(
     checkver: &Checkver,
     client: &ClientWithMiddleware,
 ) -> Result<CheckOutcome, CheckError> {
-    let url = checkver.url.as_deref()
+    let url = checkver
+        .url
+        .as_deref()
         .ok_or_else(|| CheckError::MissingConfig("url".into()))?;
-    let regex_pat = checkver.regex.as_deref()
+    let regex_pat = checkver
+        .regex
+        .as_deref()
         .ok_or_else(|| CheckError::MissingConfig("regex".into()))?;
 
     let resp = client.get(url).send().await?;
@@ -21,10 +25,7 @@ pub async fn check(
         .map_err(|e| CheckError::Other(format!("invalid regex: {e}")))?;
 
     let caps = re.captures(&body).ok_or(CheckError::NoMatch)?;
-    let version = caps.get(1)
-        .ok_or(CheckError::NoMatch)?
-        .as_str()
-        .to_string();
+    let version = caps.get(1).ok_or(CheckError::NoMatch)?.as_str().to_string();
 
     Ok(CheckOutcome::Found(CheckResult {
         version,

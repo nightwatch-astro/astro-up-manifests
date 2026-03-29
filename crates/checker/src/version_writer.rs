@@ -23,7 +23,11 @@ impl DiscoveredVersion {
             .join(format!("{safe_version}.json"));
 
         if path.exists() {
-            tracing::debug!("{}/{} already exists, skipping", self.package_id, safe_version);
+            tracing::debug!(
+                "{}/{} already exists, skipping",
+                self.package_id,
+                safe_version
+            );
             return Ok(None);
         }
 

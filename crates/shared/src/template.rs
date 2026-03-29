@@ -81,7 +81,10 @@ mod tests {
 
     #[test]
     fn standard_semver() {
-        let result = substitute("https://example.com/$version/app-$cleanVersion.exe", "3.1.2");
+        let result = substitute(
+            "https://example.com/$version/app-$cleanVersion.exe",
+            "3.1.2",
+        );
         assert_eq!(result, "https://example.com/3.1.2/app-312.exe");
     }
 

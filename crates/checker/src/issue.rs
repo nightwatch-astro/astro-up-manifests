@@ -122,7 +122,8 @@ async fn create_issue(
     }
 
     let json: serde_json::Value = resp.json().await?;
-    let number = json["number"].as_u64()
+    let number = json["number"]
+        .as_u64()
         .ok_or_else(|| anyhow::anyhow!("missing issue number in response"))?;
 
     Ok(number)
