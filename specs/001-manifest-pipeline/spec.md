@@ -115,9 +115,9 @@ The version checking and compilation pipeline runs as a single CI job on a 6-hou
 - **FR-005**: Default installer switches MUST be defined per installer type (InnoSetup: `/VERYSILENT /NORESTART /SUPPRESSMSGBOXES`, MSI: `/qn /norestart`, etc.) to reduce manifest verbosity. Manifests MAY override defaults
 - **FR-006**: The compiler MUST produce a SQLite database (`catalog.db`) with a pragmatic normalized schema (8 tables): `packages` (metadata columns + JSON for tags, aliases, dependencies), `detection` (method + method-specific columns, fallback fields flattened), `install` (method, scope, elevation + JSON for switches, exit_codes, success_codes), `checkver` (provider, owner, repo, url, regex, version_format + JSON for autoupdate, hash), `hardware` (device_class, inf_provider + JSON for vid_pid), `backup` (JSON for config_paths), `versions` (package_id + version as PK, url, sha256, discovered_at, release_notes_url, pre_release), `meta` (key-value for schema version and compilation timestamp). Indexes on `packages.category`, `packages.type`, `packages.slug`. FTS5 virtual table on `name`, `description`, `tags`, `publisher` for fuzzy search
 - **FR-007**: The compiler MUST produce a `catalog.db.minisig` signature file using the CI's minisign private key
-- **FR-008**: Discovered versions MUST be stored as individual JSON files at `versions/{package-id}/{semver}.json` with fields: `url`, `sha256`, `discovered_at`, `release_notes_url`, `pre_release` (boolean, true for versions matching pre-release semver patterns like `-rc`, `-beta`, `-alpha`)
+- **FR-008**: Discovered versions MUST be stored as individual JSON files at `versions/{package-id}/{version}.json` with fields: `url`, `sha256`, `discovered_at`, `release_notes_url`, `pre_release` (boolean, true for versions matching pre-release semver patterns like `-rc`, `-beta`, `-alpha`)
 - **FR-009**: The CI pipeline MUST run as a single job: iterate manifests → checkver → write version files → compile SQLite → sign → publish to GitHub Releases (`catalog/latest` tag, clobber mode). Publish MUST retry 3 times with backoff on failure; if all retries fail, the job MUST exit with error
-- **FR-010**: The CI pipeline MUST run on a 6-hour cron schedule and on manual dispatch with optional vendor/category filter
+- **FR-010**: The CI pipeline MUST run on a 6-hour cron schedule and on manual dispatch with an optional filter parameter (substring match on package ID, category, or provider name)
 - **FR-011**: The pipeline MUST auto-create GitHub issues when a vendor check fails for 8 consecutive pipeline runs (~2 days) and auto-close when the check succeeds again. Failure counts MUST be persisted in a committed state file (`checker-state.json`) updated each pipeline run. A single successful check MUST auto-close the issue and reset the failure count
 - **FR-013**: The manifest TOML format MUST include a `[hardware]` section for driver packages: `vid_pid` (USB VID:PID patterns), `device_class`, `inf_provider`
 - **FR-014**: The compiler and checker MUST be implemented as separate binaries in the manifest repository (replacing the current Go modules)
@@ -146,7 +146,7 @@ The version checking and compilation pipeline runs as a single CI job on a 6-hou
 ### Measurable Outcomes
 
 - **SC-001**: All 95 astrophotography packages are represented in the new manifest format with complete metadata, detection, install, and checkver data
-- **SC-002**: The compiled database is smaller than or equal to the combined size of `manifests.json` + `versions.json` (~110 KB)
+- **SC-002**: The compiled database is smaller than or equal to 150 KB
 - **SC-003**: The single-job CI pipeline completes in under 15 minutes for all 95 manifests
 - **SC-004**: The client can fetch the database via ETag conditional request and skip download when unchanged
 - **SC-005**: Version discovery accurately finds the latest version for all manifests with automated check methods

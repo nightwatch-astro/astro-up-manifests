@@ -18,7 +18,7 @@
 - [ ] T001 Create `crates/shared/Cargo.toml` with dependencies: serde, serde_json, toml, semver, lenient_semver, chrono, regex, tracing
 - [ ] T002 Create `crates/compiler/Cargo.toml` with dependencies: shared (path), rusqlite (bundled), clap (derive), tracing-subscriber
 - [ ] T003 Create `crates/checker/Cargo.toml` with dependencies: shared (path), reqwest (json), reqwest-middleware, reqwest-retry, tokio (full), futures, scraper, chromiumoxide, goblin, sha2, clap (derive), tracing-subscriber
-- [ ] T004 Update root `Cargo.toml` workspace members to include `crates/shared`
+- [ ] T004 Update root `Cargo.toml` workspace members to add `crates/shared` alongside existing `crates/compiler` and `crates/checker` entries
 - [ ] T005 Create `crates/compiler/src/main.rs` with clap CLI skeleton (--manifests, --versions, --output, --validate, --verbose)
 - [ ] T006 Create `crates/checker/src/main.rs` with clap + tokio CLI skeleton (--manifests, --versions, --state, --concurrency, --filter, --verbose)
 
@@ -29,7 +29,7 @@
 **Purpose**: Manifest types and template engine used by both compiler and checker. MUST complete before any user story.
 
 - [ ] T007 Define manifest TOML types in `crates/shared/src/manifest.rs`: top-level metadata struct with all required/optional fields, nested structs for Detection, Install, Checkver, Hardware, Backup, Dependencies sections. Include serde Deserialize/Serialize derives
-- [ ] T008 [P] Implement custom validation functions in `crates/shared/src/validate.rs`: validate manifest_version is supported, validate required fields (id, name, category, type, slug), validate install method is known, validate checkver provider is known, validate URL fields are valid
+- [ ] T008 [P] Implement custom validation functions in `crates/shared/src/validate.rs`: validate manifest_version is supported, validate required fields (id, name, category, type, slug), validate install method is known (inno_setup, msi, nsis, zip_wrap, download_only, exe), validate checkver provider is known, validate URL fields are valid. Include default installer switches per method (FR-005) that are applied when manifest omits switches
 - [ ] T009 [P] Implement `$version` template variable substitution in `crates/shared/src/template.rs`: parse `$version`, `$majorVersion`, `$minorVersion`, `$patchVersion`, `$cleanVersion`, `$underscoreVersion`, `$dashVersion`, `$preReleaseVersion`, `$buildVersion` from version strings
 - [ ] T010 [P] Implement version parsing in `crates/shared/src/version.rs`: parse semver (via lenient_semver), parse date format, parse custom regex format. Implement ordering for each format type. Handle `version_format` field dispatch
 - [ ] T011 [P] Define version file types in `crates/shared/src/version_file.rs`: VersionEntry struct (url, sha256, discovered_at, release_notes_url, pre_release), read/write JSON
@@ -51,7 +51,7 @@
 - [ ] T016 [US1] Create sample manifest `manifests/nina-app.toml` with all sections populated (metadata, detection, install, checkver with github provider and $version templates, hardware: none, backup with config paths)
 - [ ] T017 [P] [US1] Create 2-3 additional sample manifests in `manifests/`: one with `html_scrape` provider, one `manual` provider, one driver with `[hardware]` section
 - [ ] T018 [US1] Implement manifest loading in `crates/compiler/src/manifest.rs`: read all `.toml` files from manifests directory, deserialize via shared types, run validation, collect errors for invalid manifests and continue
-- [ ] T019 [US1] Add integration test `crates/compiler/tests/manifest_loading.rs`: load sample manifests directory, verify valid manifests parse, verify invalid manifest is skipped with error containing file path and field name
+- [ ] T019 [US1] Add integration test `crates/compiler/tests/manifest_loading.rs`: load sample manifests directory, verify valid manifests parse (including driver manifest with `[hardware]` section), verify invalid manifest is skipped with error containing file path and field name
 
 **Checkpoint**: Manifest format is defined and validated — US2 (compilation) can proceed
 
@@ -119,6 +119,7 @@
 
 - [ ] T041 [US4] Add integration test `crates/checker/tests/github_provider.rs`: test github provider against a known public repo (e.g., nightwatch-astro/astro-up-manifests) to verify version extraction
 - [ ] T042 [P] [US4] Add integration test `crates/checker/tests/version_format.rs`: test version parsing and ordering for semver, date, and custom regex formats
+- [ ] T042a [P] [US4] Add integration test `crates/checker/tests/template_e2e.rs`: end-to-end test — manifest with `$version` in `checkver.autoupdate` URL, checker discovers version, template variables resolve in the written version file URL
 
 **Checkpoint**: Checker discovers versions for all provider types with bounded concurrency
 
@@ -130,9 +131,9 @@
 
 **Independent Test**: Trigger workflow manually. Verify it checks, compiles, signs, and publishes.
 
-- [ ] T043 [US5] Implement GitHub issue auto-create/close in `crates/checker/src/issue.rs`: after state update, for manifests with consecutive_failures >= 8 and no existing issue, create issue via `gh` CLI. For manifests with issue_number and 0 failures, close issue via `gh` CLI. Update state with issue_number
+- [ ] T043 [US5] Implement GitHub issue auto-create/close in `crates/checker/src/issue.rs`: after state update, for manifests with consecutive_failures >= 8 and no existing issue, create issue via GitHub REST API (reqwest, already a dependency). For manifests with issue_number and 0 failures, close issue via GitHub REST API. Update state with issue_number. Use `GITHUB_TOKEN` env var for authentication
 - [ ] T044 [US5] Implement checker summary output in `crates/checker/src/main.rs`: print summary to stdout after all checks (new versions found, failures, skipped, persistent failures with issue numbers)
-- [ ] T045 [US5] Create `.github/workflows/pipeline.yml`: single job on `schedule: cron '0 */6 * * *'` and `workflow_dispatch` with optional filter input. Steps: checkout, install Rust toolchain, cache Chromium binary, run checker, run compiler, install minisign, sign catalog.db, create/upload to `catalog/latest` release via `gh release upload --clobber`, commit checker-state.json and new version files, push. Use concurrency group to prevent parallel runs
+- [ ] T045 [US5] Create `.github/workflows/pipeline.yml`: single job on `schedule: cron '0 */6 * * *'` and `workflow_dispatch` with `filter` input (optional string, passed as `--filter` to checker — substring match on package ID, category, or provider). Steps: checkout, install Rust toolchain, cache Chromium binary, run checker (with filter if provided), run compiler, install minisign, sign catalog.db, create/upload to `catalog/latest` release via `gh release upload --clobber`, commit checker-state.json and new version files, push. Use concurrency group to prevent parallel runs
 - [ ] T046 [US5] Add Chromium binary caching to CI: download Chromium on first run, cache via `actions/cache` keyed on Chromium version
 
 **Checkpoint**: Full CI pipeline operational
@@ -146,7 +147,7 @@
 - [ ] T047 [P] Configure tracing-subscriber in both `crates/compiler/src/main.rs` and `crates/checker/src/main.rs`: structured logging to stderr, respect --verbose flag for debug level
 - [ ] T048 [P] Ensure all error messages include file path and field name for manifest parsing errors across compiler and checker
 - [ ] T049 Port remaining astrophotography package data from old repo into `manifests/` TOML files (95 packages total, using old manifests as data reference)
-- [ ] T050 Run full pipeline end-to-end: checker against all 95 manifests, compiler to catalog.db, verify SC-002 (size <= 110KB), SC-003 (< 15 minutes)
+- [ ] T050 Run full pipeline end-to-end: checker against all 95 manifests, compiler to catalog.db, sign with minisign, verify signature round-trips (sign then verify with public key), verify SC-002 (size <= 150KB), SC-003 (< 15 minutes)
 
 ---
 
