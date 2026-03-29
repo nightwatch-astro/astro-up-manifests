@@ -64,5 +64,5 @@ async fn hash_from_jsonpath(
 async fn hash_from_download(url: &str, client: &ClientWithMiddleware) -> Option<String> {
     let bytes = client.get(url).send().await.ok()?.bytes().await.ok()?;
     let hash = Sha256::digest(&bytes);
-    Some(format!("{hash:x}"))
+    Some(hash.iter().map(|b| format!("{b:02x}")).collect())
 }
