@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "nina-framing-cache-northern"
+name = "NINA Framing Assistant Cache (Northern Sky)"
+description = "Northern sky narrowband offline cache for NINA Framing Assistant (1.4 GB, down to -17 Dec)"
+homepage = "https://nighttime-imaging.eu"
+category = "capture"
+type = "database"
+slug = "nina-framing-cache-northern"
+
+[detection]
+method = "file"
+path = "{config_dir}/NINA/FramingAssistantCache/NorthernSky"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "http_head"
+url = "https://nighttime-imaging.eu/downloads/Setup/Releases/FramingAssistantCache_NorthernSkyNarrowbandSurvey_OHS_withStars.zip"
+
+[checkver.autoupdate]
+url = "https://nighttime-imaging.eu/downloads/Setup/Releases/FramingAssistantCache_NorthernSkyNarrowbandSurvey_OHS_withStars.zip"
+
+[dependencies]
+requires = ["nina-app"]

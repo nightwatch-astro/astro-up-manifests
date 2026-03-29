@@ -1,0 +1,18 @@
+manifest_version = 1
+id = "synscan-pro-app"
+name = "SynScan Pro App"
+description = "SynScan Pro desktop application for mount control"
+homepage = "https://www.skywatcher.com"
+category = "driver"
+type = "application"
+slug = "synscan-pro-app"
+
+[detection]
+method = "file"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.skywatcher.com/download/software/synscan-app/"

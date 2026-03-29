@@ -1,0 +1,16 @@
+manifest_version = 1
+id = "astroasis-focuser-firmware"
+name = "Astroasis Focuser Firmware"
+description = "Firmware update for Astroasis motorized focusers"
+homepage = "https://www.astroasis.com"
+category = "driver"
+type = "resource"
+slug = "astroasis-focuser-firmware"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.astroasis.com/download/"
+regex = 'Ver_(\d+\.\d+\.\d+)'

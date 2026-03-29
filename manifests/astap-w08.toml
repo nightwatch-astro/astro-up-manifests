@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "astap-w08"
+name = "ASTAP W08 Wide Field Database"
+description = "Wide field star database for ASTAP plate solver"
+homepage = "https://www.hnsky.org/astap.htm"
+category = "platesolving"
+type = "database"
+slug = "astap-w08"
+
+[detection]
+method = "file"
+path = "{config_dir}/astap/w08"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "http_head"
+url = "https://sourceforge.net/projects/astap-program/files/star_databases/w08_star_database_mag08_astap.exe/download"
+
+[checkver.autoupdate]
+url = "https://sourceforge.net/projects/astap-program/files/star_databases/w08_star_database_mag08_astap.exe/download"
+
+[dependencies]
+requires = ["astap-app"]

@@ -1,0 +1,24 @@
+manifest_version = 1
+id = "phd2-app"
+name = "PHD2"
+description = "PHD2 — push here dummy autoguiding"
+homepage = "https://openphdguiding.org"
+category = "guiding"
+type = "application"
+slug = "phd2-app"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\PHDGuiding2"
+registry_value = "DisplayVersion"
+
+[install]
+method = "inno_setup"
+
+[install.switches]
+silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
+
+[checkver]
+provider = "github"
+owner = "OpenPHDGuiding"
+repo = "phd2"

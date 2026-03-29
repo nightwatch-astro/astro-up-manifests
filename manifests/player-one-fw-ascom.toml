@@ -1,0 +1,23 @@
+manifest_version = 1
+id = "player-one-fw-ascom"
+name = "Player One Filter Wheel ASCOM Driver"
+description = "ASCOM driver for Player One filter wheels"
+homepage = "https://player-one-astronomy.com"
+category = "driver"
+type = "driver"
+slug = "player-one-fw-ascom"
+
+[detection]
+method = "file"
+path = "{program_dir}/Common Files/ASCOM/FilterWheel/PlayerOne.FilterWheel.dll"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://player-one-astronomy.com/service/software/"
+regex = '_V(\d+\.\d+\.\d+\.\d+)\.'
+
+[dependencies]
+requires = ["ascom-platform"]

@@ -1,0 +1,19 @@
+manifest_version = 1
+id = "moonlite-single-focuser"
+name = "MoonLite Single Focuser Control"
+description = "Standalone control application for MoonLite single focuser"
+homepage = "https://focuser.com"
+category = "driver"
+type = "application"
+slug = "moonlite-single-focuser"
+
+[detection]
+method = "file"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://focuser.com/downloads.php"
+regex = '_v(\d+\.\d+)\.zip'

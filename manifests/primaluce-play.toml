@@ -1,0 +1,22 @@
+manifest_version = 1
+id = "primaluce-play"
+name = "PrimaLuce PLAY"
+description = "PrimaLuce Lab all-in-one control software for imaging and device management"
+homepage = "https://www.primalucelab.com"
+category = "capture"
+type = "application"
+slug = "primaluce-play"
+
+[detection]
+method = "file"
+path = "{program_dir}/PrimaLuceLab/PLAY/PLAY.exe"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.primalucelab.com/info/downloads.html"
+
+[checkver.autoupdate]
+url = "https://www.primalucelab.com/downloads/PLAY-1-9-7-Setup.zip"

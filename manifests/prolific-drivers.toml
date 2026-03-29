@@ -1,0 +1,23 @@
+manifest_version = 1
+id = "prolific-drivers"
+name = "Prolific PL2303 Drivers"
+description = "Prolific PL2303 USB-serial drivers"
+homepage = "https://www.prolific.com.tw"
+category = "usb"
+type = "usb_driver"
+slug = "prolific-drivers"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\Prolific\\PL2303"
+registry_value = "Version"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "manual"

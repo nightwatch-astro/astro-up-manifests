@@ -1,0 +1,24 @@
+manifest_version = 1
+id = "firecapture-app"
+name = "FireCapture"
+description = "FireCapture — planetary imaging capture"
+homepage = "https://www.firecapture.de"
+category = "capture"
+type = "application"
+slug = "firecapture-app"
+
+[detection]
+method = "file"
+path = "{program_dir}/FireCapture/FireCapture.exe"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.firecapture.de"
+regex = 'FireCapture_v(\d+\.\d+\.\d+)\.zip'

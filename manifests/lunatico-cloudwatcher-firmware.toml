@@ -1,0 +1,17 @@
+manifest_version = 1
+id = "lunatico-cloudwatcher-firmware"
+name = "Lunatico AAG CloudWatcher Firmware"
+description = "Firmware for Lunatico AAG CloudWatcher"
+homepage = "https://lunaticoastro.com"
+category = "driver"
+type = "resource"
+slug = "lunatico-cloudwatcher-firmware"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "html_scrape"
+url = "https://lunaticoastro.com/aag-cloud-watcher/software-other-downloads/"
+regex = 'CloudWatcher(\d+)\.has'

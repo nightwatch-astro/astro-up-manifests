@@ -1,0 +1,20 @@
+manifest_version = 1
+id = "qhy-polemaster"
+name = "QHY PoleMaster"
+description = "Polar alignment tool for QHY PoleMaster camera"
+homepage = "https://www.qhyccd.com"
+category = "utilities"
+type = "application"
+slug = "qhy-polemaster"
+
+[detection]
+method = "file"
+path = "{program_dir}/PoleMaster/PoleMaster.exe"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.qhyccd.com/download/"
+regex = '_V(\d+\.\d+\.\d+\.\d+)\.'

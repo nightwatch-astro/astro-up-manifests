@@ -1,0 +1,27 @@
+manifest_version = 1
+id = "qhy-qfocuser"
+name = "QHY QFocuser ASCOM Driver"
+description = "ASCOM driver for QHY QFocuser motorized focusers"
+homepage = "https://www.qhyccd.com"
+category = "driver"
+type = "driver"
+slug = "qhy-qfocuser"
+
+[detection]
+method = "file"
+path = "{program_dir}/Common Files/ASCOM/Focuser/QHYCCD.QFocuser.dll"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.qhyccd.com/download/"
+regex = '-V(\d+\.\d+\.\d+\.\d+)\.'
+
+[dependencies]
+requires = ["ascom-platform"]

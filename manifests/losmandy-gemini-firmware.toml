@@ -1,0 +1,19 @@
+manifest_version = 1
+id = "losmandy-gemini-firmware"
+name = "Losmandy Gemini 2 Firmware"
+description = "Combined firmware for Losmandy Gemini 2 controller"
+homepage = "https://gemini-2.com"
+category = "driver"
+type = "resource"
+slug = "losmandy-gemini-firmware"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "pe_download"
+url = "https://gemini-2.com/firmware1/combined.zip"
+
+[checkver.autoupdate]
+url = "https://gemini-2.com/firmware1/combined.zip"

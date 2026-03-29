@@ -1,0 +1,22 @@
+manifest_version = 1
+id = "primaluce-sesto-senso-2"
+name = "PrimaLuce SESTO SENSO 2 Software Package"
+description = "Driver and software package for PrimaLuce SESTO SENSO 2 focuser"
+homepage = "https://www.primalucelab.com"
+category = "driver"
+type = "driver"
+slug = "primaluce-sesto-senso-2"
+
+[detection]
+method = "file"
+path = "{program_dir}/PrimaLuceLab/SESTO-SENSO-2/SESTO-SENSO-2.exe"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.primalucelab.com/info/downloads.html"
+
+[checkver.autoupdate]
+url = "https://www.primalucelab.com/downloads/SESTO-SENSO-2-software-package-3-7.zip"

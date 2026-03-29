@@ -1,0 +1,19 @@
+manifest_version = 1
+id = "moonlite-nitecrawler-control"
+name = "MoonLite NiteCrawler Remote Control"
+description = "Standalone control application for MoonLite NiteCrawler"
+homepage = "https://focuser.com"
+category = "driver"
+type = "application"
+slug = "moonlite-nitecrawler-control"
+
+[detection]
+method = "file"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://focuser.com/downloads.php"
+regex = 'NC_Remote_(\d+_\d+_\d+)\.zip'

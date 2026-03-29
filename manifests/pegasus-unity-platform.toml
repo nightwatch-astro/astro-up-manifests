@@ -1,0 +1,29 @@
+manifest_version = 1
+id = "pegasus-unity-platform"
+name = "Pegasus Unity Platform"
+description = "Unity Platform 3 — all Pegasus devices with ASCOM support"
+homepage = "https://pegasusastro.com"
+category = "driver"
+type = "application"
+slug = "pegasus-unity-platform"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\Pegasus Astro\\Unity Platform"
+registry_value = "Version"
+fallback_method = "file"
+fallback_path = "{program_dir}/Pegasus Astro/Unity Platform/UnityPlatform.exe"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "pe_download"
+url = "https://pegasusastro.com/release/unity3/setup/PegasusAstroUnityPlatform.exe"
+
+[checkver.autoupdate]
+url = "https://pegasusastro.com/release/unity3/setup/PegasusAstroUnityPlatform.exe"

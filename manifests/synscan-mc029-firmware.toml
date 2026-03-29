@@ -1,0 +1,17 @@
+manifest_version = 1
+id = "synscan-mc029-firmware"
+name = "SynScan MC029 Firmware"
+description = "AZ-GTi/AZ-GTe/Fusion-120i firmware"
+homepage = "https://www.skywatcher.com"
+category = "driver"
+type = "resource"
+slug = "synscan-mc029-firmware"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.skywatcher.com/download/software/motor-control-firmware/"
+regex = 'version (\d+\.\d+)'

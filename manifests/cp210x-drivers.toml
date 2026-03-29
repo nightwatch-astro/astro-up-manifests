@@ -1,0 +1,27 @@
+manifest_version = 1
+id = "cp210x-drivers"
+name = "Silicon Labs CP210x Drivers"
+description = "Silicon Labs CP210x USB-serial bridge drivers"
+homepage = "https://www.silabs.com"
+category = "usb"
+type = "usb_driver"
+slug = "cp210x-drivers"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\SiLabs\\CP210x"
+registry_value = "Version"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "http_head"
+url = "https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip"
+
+[checkver.autoupdate]
+url = "https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip"

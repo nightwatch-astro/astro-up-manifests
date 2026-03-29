@@ -1,0 +1,24 @@
+manifest_version = 1
+id = "sharpcap-app"
+name = "SharpCap"
+description = "SharpCap — live stacking and planetary/DSO capture"
+homepage = "https://www.sharpcap.co.uk"
+category = "capture"
+type = "application"
+slug = "sharpcap-app"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\SharpCap"
+registry_value = "DisplayVersion"
+
+[install]
+method = "inno_setup"
+
+[install.switches]
+silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.sharpcap.co.uk/wp-json/wp/v2/pages/13"
+regex = 'version=(\d+\.\d+\.\d+\.\d+)'

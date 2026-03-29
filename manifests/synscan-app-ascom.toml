@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "synscan-app-ascom"
+name = "SynScan App ASCOM Driver"
+description = "ASCOM driver for SynScan App mount control"
+homepage = "https://www.skywatcher.com"
+category = "driver"
+type = "driver"
+slug = "synscan-app-ascom"
+
+[detection]
+method = "file"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.skywatcher.com/download/software/ascom-driver/"
+regex = 'Version (\d+\.\d+\.\d+)'
+
+[dependencies]
+requires = ["ascom-platform"]

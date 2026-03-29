@@ -146,7 +146,7 @@
 
 - [x] T047 [P] Configure tracing-subscriber in both `crates/compiler/src/main.rs` and `crates/checker/src/main.rs`: structured logging to stderr, respect --verbose flag for debug level
 - [x] T048 [P] Ensure all error messages include file path and field name for manifest parsing errors across compiler and checker
-- [ ] T049 Port remaining astrophotography package data from old repo into `manifests/` TOML files (95 packages total, using old manifests as data reference)
+- [x] T049 Port remaining astrophotography package data from old repo into `manifests/` TOML files (95 packages total, using old manifests as data reference)
 - [ ] T050 Run full pipeline end-to-end: checker against all 95 manifests, compiler to catalog.db, sign with minisign, verify signature round-trips (sign then verify with public key), verify SC-002 (size <= 150KB), SC-003 (< 15 minutes)
 
 ---

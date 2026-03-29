@@ -57,7 +57,7 @@ fn query_by_category() {
         .collect();
 
     assert!(ids.contains(&"nina-app".to_string()));
-    assert!(ids.contains(&"sharpcap".to_string()));
+    assert!(ids.contains(&"sharpcap-app".to_string()));
 }
 
 #[test]
@@ -73,7 +73,7 @@ fn fts5_search() {
         .filter_map(|r| r.ok())
         .collect();
 
-    assert!(ids.contains(&"phd2".to_string()));
+    assert!(ids.contains(&"phd2-app".to_string()));
 }
 
 #[test]

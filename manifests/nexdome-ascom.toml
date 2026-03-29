@@ -1,0 +1,23 @@
+manifest_version = 1
+id = "nexdome-ascom"
+name = "NexDome ASCOM Driver"
+description = "ASCOM driver for NexDome observatory dome"
+homepage = "https://nexdome.com"
+category = "driver"
+type = "driver"
+slug = "nexdome-ascom"
+
+[detection]
+method = "file"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "github"
+owner = "nexdome"
+repo = "ASCOM"
+
+[dependencies]
+requires = ["ascom-platform"]

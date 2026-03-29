@@ -1,0 +1,20 @@
+manifest_version = 1
+id = "wanderer-empire"
+name = "WandererEmpire"
+description = "WandererEmpire — all devices + ASCOM (rotators, covers, power boxes, ETA, filter wheel)"
+homepage = "https://www.wandererastro.com"
+category = "driver"
+type = "application"
+slug = "wanderer-empire"
+
+[detection]
+method = "file"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "browser_scrape"
+url = "https://www.wandererastro.com/en/h-col-106.html"
+regex = 'WandererEmpire-V(\d+\.\d+\.\d+)-Setup'

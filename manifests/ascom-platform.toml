@@ -1,0 +1,24 @@
+manifest_version = 1
+id = "ascom-platform"
+name = "ASCOM Platform"
+description = "ASCOM Standards for Astronomy — driver interface platform"
+homepage = "https://ascom-standards.org"
+category = "prerequisites"
+type = "runtime"
+slug = "ascom-platform"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\ASCOM"
+registry_value = "PlatformVersion"
+
+[install]
+method = "inno_setup"
+
+[install.switches]
+silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
+
+[checkver]
+provider = "github"
+owner = "ASCOMInitiative"
+repo = "ASCOMPlatform"

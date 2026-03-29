@@ -1,0 +1,29 @@
+manifest_version = 1
+id = "zwo-asistudio"
+name = "ZWO ASIStudio"
+description = "ZWO all-in-one imaging suite for ASI cameras"
+homepage = "https://www.zwoastro.com"
+category = "capture"
+type = "application"
+slug = "zwo-asistudio"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\ZWO\\ASIStudio"
+registry_value = "Version"
+fallback_method = "pe_file"
+fallback_path = "{program_dir}/ZWO/ASIStudio/ASIStudio.exe"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "direct_url"
+url = "https://dl.zwoastro.com/software?app=ASIStudio&platform=windows64&region=Overseas"
+
+[checkver.autoupdate]
+url = "https://dl.zwoastro.com/software?app=ASIStudio&platform=windows64&region=Overseas"

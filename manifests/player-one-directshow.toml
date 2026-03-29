@@ -1,0 +1,20 @@
+manifest_version = 1
+id = "player-one-directshow"
+name = "Player One Camera DirectShow Driver"
+description = "DirectShow video driver for Player One cameras"
+homepage = "https://player-one-astronomy.com"
+category = "driver"
+type = "driver"
+slug = "player-one-directshow"
+
+[detection]
+method = "file"
+path = "{program_dir}/Player One Astronomy\\DirectShow Driver\\PlayerOneDirectShow.dll"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://player-one-astronomy.com/service/software/"
+regex = '_V(\d+\.\d+\.\d+\.\d+)\.'

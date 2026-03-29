@@ -1,0 +1,27 @@
+manifest_version = 1
+id = "vcredist-runtime"
+name = "Visual C++ Redistributable"
+description = "Microsoft Visual C++ 2015-2022 Redistributable (x64)"
+homepage = "https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist"
+category = "prerequisites"
+type = "runtime"
+slug = "vcredist-runtime"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\Microsoft\\VisualStudio\\14.0\\VC\\Runtimes\\X64"
+registry_value = "Version"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/install /quiet /norestart"
+
+[checkver]
+provider = "direct_url"
+url = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
+
+[checkver.autoupdate]
+url = "https://aka.ms/vs/17/release/vc_redist.x64.exe"

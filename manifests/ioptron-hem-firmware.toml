@@ -1,0 +1,20 @@
+manifest_version = 1
+id = "ioptron-hem-firmware"
+name = "iOptron HEM Firmware"
+description = "Firmware for iOptron HEM mount"
+homepage = "https://www.ioptron.com"
+category = "driver"
+type = "resource"
+slug = "ioptron-hem-firmware"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "browser_scrape"
+url = "https://www.ioptron.com/Articles.asp?ID=345"
+regex = 'FW(\d{6})'
+
+[checkver.autoupdate]
+url = "https://www.ioptron.com/v/firmware/HEM_FW241201.bin"

@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "astap-d80"
+name = "ASTAP D80 Star Database"
+description = "Very large star database for ASTAP plate solver (1.2 GB)"
+homepage = "https://www.hnsky.org/astap.htm"
+category = "platesolving"
+type = "database"
+slug = "astap-d80"
+
+[detection]
+method = "file"
+path = "{config_dir}/astap/d80"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "http_head"
+url = "https://sourceforge.net/projects/astap-program/files/star_databases/d80_star_database.exe/download"
+
+[checkver.autoupdate]
+url = "https://sourceforge.net/projects/astap-program/files/star_databases/d80_star_database.exe/download"
+
+[dependencies]
+requires = ["astap-app"]

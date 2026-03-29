@@ -1,0 +1,20 @@
+manifest_version = 1
+id = "ioptron-cem40-firmware"
+name = "iOptron CEM40/GEM45 Firmware"
+description = "Firmware for iOptron CEM40 and GEM45 mounts"
+homepage = "https://www.ioptron.com"
+category = "driver"
+type = "resource"
+slug = "ioptron-cem40-firmware"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "browser_scrape"
+url = "https://www.ioptron.com/Articles.asp?ID=318"
+regex = 'FW(\d{6})'
+
+[checkver.autoupdate]
+url = "https://www.ioptron.com/v/firmware/CEM40_GEM45_FW230305.bin"

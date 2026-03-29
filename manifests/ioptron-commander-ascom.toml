@@ -1,0 +1,29 @@
+manifest_version = 1
+id = "ioptron-commander-ascom"
+name = "iOptron Commander with ASCOM Driver"
+description = "iOptron Commander mount control with ASCOM driver"
+homepage = "https://www.ioptron.com"
+category = "driver"
+type = "application"
+slug = "ioptron-commander-ascom"
+
+[detection]
+method = "file"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "browser_scrape"
+url = "https://www.ioptron.com/Articles.asp?ID=337"
+regex = 'Installer(\d+)\.exe'
+
+[checkver.autoupdate]
+url = "https://www.ioptron.com/v/ASCOM/iOptronCommander_ASCOM_DriverInstaller9201.exe"
+
+[dependencies]
+requires = ["ascom-platform"]

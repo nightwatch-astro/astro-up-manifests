@@ -1,0 +1,21 @@
+manifest_version = 1
+id = "player-one-native-driver"
+name = "Player One Native Camera Driver"
+description = "Native USB driver for Player One astronomy cameras"
+homepage = "https://player-one-astronomy.com"
+category = "driver"
+type = "usb_driver"
+slug = "player-one-native-driver"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\Player One Astronomy\\Camera Driver"
+registry_value = "Version"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://player-one-astronomy.com/service/software/"
+regex = '_V(\d+\.\d+\.\d+\.\d+)\.'

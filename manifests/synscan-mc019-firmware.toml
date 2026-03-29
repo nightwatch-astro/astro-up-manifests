@@ -1,0 +1,17 @@
+manifest_version = 1
+id = "synscan-mc019-firmware"
+name = "SynScan MC019 Firmware"
+description = "EQ3/EQ5/EQM35 firmware"
+homepage = "https://www.skywatcher.com"
+category = "driver"
+type = "resource"
+slug = "synscan-mc019-firmware"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.skywatcher.com/download/software/motor-control-firmware/"
+regex = 'version (\d+\.\d+)'

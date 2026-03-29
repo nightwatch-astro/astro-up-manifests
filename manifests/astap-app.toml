@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "astap-app"
+name = "ASTAP"
+description = "ASTAP — astrometric plate solver and FITS viewer"
+homepage = "https://www.hnsky.org/astap.htm"
+category = "platesolving"
+type = "application"
+slug = "astap-app"
+
+[detection]
+method = "file"
+path = "{program_dir}/astap/astap.exe"
+
+[install]
+method = "inno_setup"
+
+[install.switches]
+silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
+
+[checkver]
+provider = "html_scrape"
+url = "https://sourceforge.net/projects/astap-program/files/windows_installer/astap_setup.exe/download"
+regex = '\(v(\d{4}\.\d{2}\.\d{2})\)'
+
+[checkver.autoupdate]
+url = "https://sourceforge.net/projects/astap-program/files/windows_installer/astap_setup.exe/download"

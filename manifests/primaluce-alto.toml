@@ -1,0 +1,22 @@
+manifest_version = 1
+id = "primaluce-alto"
+name = "PrimaLuce ALTO Software Package"
+description = "Driver and software package for PrimaLuce ALTO telescope cover"
+homepage = "https://www.primalucelab.com"
+category = "driver"
+type = "driver"
+slug = "primaluce-alto"
+
+[detection]
+method = "file"
+path = "{program_dir}/PrimaLuceLab/ALTO/ALTO.exe"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.primalucelab.com/info/downloads.html"
+
+[checkver.autoupdate]
+url = "https://www.primalucelab.com/downloads/ALTO-software-package-1-4.zip"

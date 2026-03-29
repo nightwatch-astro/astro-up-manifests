@@ -1,0 +1,27 @@
+manifest_version = 1
+id = "astroasis-focuser-triple-ascom"
+name = "Astroasis Triple Focuser ASCOM Driver"
+description = "ASCOM driver for Astroasis triple-port focuser controller"
+homepage = "https://www.astroasis.com"
+category = "driver"
+type = "driver"
+slug = "astroasis-focuser-triple-ascom"
+
+[detection]
+method = "file"
+path = "{program_dir}/Common Files/ASCOM/Focuser/Astroasis.TripleFocuser.dll"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.astroasis.com/download/"
+regex = '_(\d+\.\d+\.\d+\.\d+)_'
+
+[dependencies]
+requires = ["ascom-platform"]

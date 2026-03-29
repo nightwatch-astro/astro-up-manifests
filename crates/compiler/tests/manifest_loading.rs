@@ -58,8 +58,8 @@ fn manual_provider_accepted() {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../manifests");
     let result = load_manifests(&dir).unwrap();
 
-    let sharpcap = result.manifests.iter().find(|m| m.id == "sharpcap").unwrap();
-    let checkver = sharpcap.checkver.as_ref().unwrap();
+    let prolific = result.manifests.iter().find(|m| m.id == "prolific-drivers").unwrap();
+    let checkver = prolific.checkver.as_ref().unwrap();
     assert_eq!(checkver.provider, "manual");
 }
 
