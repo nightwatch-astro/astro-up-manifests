@@ -30,7 +30,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Cache Rust build
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry
@@ -40,7 +40,7 @@ jobs:
           restore-keys: ${{ runner.os }}-cargo-
 
       - name: Cache Chromium binary
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/chromiumoxide
           key: ${{ runner.os }}-chromium-v1
