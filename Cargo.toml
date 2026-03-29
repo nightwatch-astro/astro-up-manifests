@@ -30,7 +30,7 @@ walkdir = "2"
 regex = "1"
 futures = "0.3"
 pelite = "0.10"
-reqwest-middleware = "0.4"
+reqwest-middleware = "0.5"
 reqwest-retry = "0.7"
 chromiumoxide = { version = "0.8", features = ["tokio"] }
 lenient_semver = "0.4"
