@@ -80,8 +80,8 @@
 
 **Independent Test**: Create a version file manually, run compiler, verify it appears in the database.
 
-- [ ] T026 [US3] Implement version file writing in `crates/checker/src/version_writer.rs`: given a package ID, version string, URL, sha256, release_notes_url, pre_release flag — write to `versions/{id}/{version}.json`. Sanitize version string for filesystem safety
-- [ ] T027 [US3] Add integration test `crates/checker/tests/version_writer.rs`: write a version file, read it back, verify fields. Test with semver, date, and unsafe characters in version string
+- [x] T026 [US3] Implement version file writing in `crates/checker/src/version_writer.rs`: given a package ID, version string, URL, sha256, release_notes_url, pre_release flag — write to `versions/{id}/{version}.json`. Sanitize version string for filesystem safety
+- [x] T027 [US3] Add integration test `crates/checker/tests/version_writer.rs`: write a version file, read it back, verify fields. Test with semver, date, and unsafe characters in version string
 
 **Checkpoint**: Version files can be written and read by the compiler
 
