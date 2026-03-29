@@ -1,0 +1,32 @@
+manifest_version = 1
+id = "phd2"
+name = "PHD2"
+description = "Push Here Dummy — open-source autoguiding software"
+publisher = "OpenPHD"
+homepage = "https://openphdguiding.org"
+category = "guiding"
+type = "application"
+slug = "phd2"
+tags = ["guiding", "autoguider"]
+license = "BSD-3-Clause"
+
+[detection]
+method = "file"
+path = "$PROGRAMFILES/PHDGuiding2/phd2.exe"
+
+[install]
+method = "exe"
+scope = "machine"
+elevation = true
+
+[checkver]
+provider = "github"
+owner = "OpenPHDGuiding"
+repo = "phd2"
+version_format = "semver"
+
+[checkver.autoupdate]
+url = "https://github.com/OpenPHDGuiding/phd2/releases/download/v$version/phd2-$version-installer.exe"
+
+[backup]
+config_paths = ["$APPDATA/phd2"]

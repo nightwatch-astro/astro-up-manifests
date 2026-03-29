@@ -1,0 +1,35 @@
+manifest_version = 1
+id = "nina-app"
+name = "N.I.N.A."
+description = "Nighttime Imaging 'N' Astronomy — astrophotography imaging suite"
+publisher = "NINA Contributors"
+homepage = "https://nighttime-imaging.eu"
+category = "capture"
+type = "application"
+slug = "nina-app"
+tags = ["imaging", "capture", "sequencer", "phd2", "platesolving"]
+aliases = ["nina"]
+license = "MPL-2.0"
+
+[detection]
+method = "registry"
+registry_key = "HKCU\\Software\\NINA"
+registry_value = "Version"
+
+[install]
+method = "inno_setup"
+scope = "user"
+elevation = false
+
+[checkver]
+provider = "html_scrape"
+url = "https://nighttime-imaging.eu/download/"
+regex = "NINA[\\s-]+v?(\\d+\\.\\d+\\.\\d+)"
+version_format = "semver"
+include_pre_release = true
+
+[checkver.autoupdate]
+url = "https://f000.backblazeb2.com/file/nina-releases/NINA-$version-Setup.exe"
+
+[backup]
+config_paths = ["$LOCALAPPDATA/NINA"]

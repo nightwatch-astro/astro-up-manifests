@@ -1,0 +1,31 @@
+manifest_version = 1
+id = "zwo-asi-driver"
+name = "ZWO ASI Camera Driver"
+description = "ASCOM and native driver for ZWO ASI cameras"
+publisher = "ZWO"
+homepage = "https://www.zwoastro.com"
+category = "driver"
+type = "driver"
+slug = "zwo-asi-driver"
+tags = ["driver", "camera", "zwo", "asi"]
+
+[detection]
+method = "file"
+path = "$PROGRAMFILES/ASIStudio/ASICamera2.dll"
+file_version = true
+
+[install]
+method = "exe"
+scope = "machine"
+elevation = true
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.zwoastro.com/software/"
+regex = "ASI Camera.*?v?(\\d+\\.\\d+\\.\\d+)"
+version_format = "semver"
+
+[hardware]
+device_class = "Camera"
+inf_provider = "ZWO"
+vid_pid = ["03c3:120e", "03c3:120f", "03c3:1210"]

@@ -48,10 +48,10 @@
 
 **Independent Test**: Write a NINA manifest TOML with `[checkver]` using `$version` variables. Compile it. Verify compiled output retains checkver data.
 
-- [ ] T016 [US1] Create sample manifest `manifests/nina-app.toml` with all sections populated (metadata, detection, install, checkver with github provider and $version templates, hardware: none, backup with config paths)
-- [ ] T017 [P] [US1] Create 2-3 additional sample manifests in `manifests/`: one with `html_scrape` provider, one `manual` provider, one driver with `[hardware]` section
-- [ ] T018 [US1] Implement manifest loading in `crates/compiler/src/manifest.rs`: read all `.toml` files from manifests directory, deserialize via shared types, run validation, collect errors for invalid manifests and continue
-- [ ] T019 [US1] Add integration test `crates/compiler/tests/manifest_loading.rs`: load sample manifests directory, verify valid manifests parse (including driver manifest with `[hardware]` section), verify invalid manifest is skipped with error containing file path and field name
+- [x] T016 [US1] Create sample manifest `manifests/nina-app.toml` with all sections populated (metadata, detection, install, checkver with github provider and $version templates, hardware: none, backup with config paths)
+- [x] T017 [P] [US1] Create 2-3 additional sample manifests in `manifests/`: one with `html_scrape` provider, one `manual` provider, one driver with `[hardware]` section
+- [x] T018 [US1] Implement manifest loading in `crates/compiler/src/manifest.rs`: read all `.toml` files from manifests directory, deserialize via shared types, run validation, collect errors for invalid manifests and continue
+- [x] T019 [US1] Add integration test `crates/compiler/tests/manifest_loading.rs`: load sample manifests directory, verify valid manifests parse (including driver manifest with `[hardware]` section), verify invalid manifest is skipped with error containing file path and field name
 
 **Checkpoint**: Manifest format is defined and validated — US2 (compilation) can proceed
 
