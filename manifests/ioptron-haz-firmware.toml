@@ -1,0 +1,20 @@
+manifest_version = 1
+id = "ioptron-haz-firmware"
+name = "iOptron HAZ Firmware"
+description = "Firmware for iOptron HAZ mount"
+homepage = "https://www.ioptron.com"
+category = "driver"
+type = "resource"
+slug = "ioptron-haz-firmware"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "browser_scrape"
+url = "https://www.ioptron.com/Articles.asp?ID=349"
+regex = 'FW(\d{6})'
+
+[checkver.autoupdate]
+url = "https://www.ioptron.com/v/firmware/HAZ_FW240121.bin"

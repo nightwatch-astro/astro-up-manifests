@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "zwo-firmware-tool"
+name = "ZWO Firmware Upgrade Tool"
+description = "Firmware update utility for ZWO devices"
+homepage = "https://www.zwoastro.com"
+category = "utilities"
+type = "application"
+slug = "zwo-firmware-tool"
+
+[detection]
+method = "file"
+path = "{program_dir}/ZWO/FirmwareUpgradeTool/FirmwareUpgradeTool.exe"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "direct_url"
+url = "https://dl.zwoastro.com/software?app=FirmwareUpgradeTool&platform=windows86&region=Overseas"
+
+[checkver.autoupdate]
+url = "https://dl.zwoastro.com/software?app=FirmwareUpgradeTool&platform=windows86&region=Overseas"

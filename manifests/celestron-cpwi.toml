@@ -1,0 +1,25 @@
+manifest_version = 1
+id = "celestron-cpwi"
+name = "Celestron CPWI"
+description = "CPWI mount control with ASCOM telescope/focuser"
+homepage = "https://www.celestron.com"
+category = "driver"
+type = "application"
+slug = "celestron-cpwi"
+
+[detection]
+method = "file"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "pe_download"
+url = "https://software.celestron.com/public_release/Setup_CPWI.exe"
+
+[checkver.autoupdate]
+url = "https://software.celestron.com/public_release/Setup_CPWI.exe"

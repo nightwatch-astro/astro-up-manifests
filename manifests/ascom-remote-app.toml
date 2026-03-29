@@ -1,0 +1,27 @@
+manifest_version = 1
+id = "ascom-remote-app"
+name = "ASCOM Remote Server"
+description = "ASCOM Remote Server — network access to ASCOM devices"
+homepage = "https://ascom-standards.org"
+category = "utilities"
+type = "application"
+slug = "ascom-remote-app"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\ASCOM\\Remote"
+registry_value = "DisplayVersion"
+
+[install]
+method = "inno_setup"
+
+[install.switches]
+silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
+
+[checkver]
+provider = "github"
+owner = "ASCOMInitiative"
+repo = "ASCOMRemote"
+
+[dependencies]
+requires = ["ascom-platform"]

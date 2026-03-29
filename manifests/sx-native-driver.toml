@@ -1,0 +1,24 @@
+manifest_version = 1
+id = "sx-native-driver"
+name = "Starlight Xpress Native Driver"
+description = "Native USB driver for Starlight Xpress CCD cameras"
+homepage = "https://www.sxccd.com"
+category = "driver"
+type = "usb_driver"
+slug = "sx-native-driver"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\Starlight Xpress\\CCD Drivers"
+registry_value = "Version"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.sxccd.com/support/resources/"
+regex = '_v(\d+\.\d+\.\d+\.\d+)\.'
+
+[checkver.autoupdate]
+url = "https://www.sxccd.com/wp-content/files/StarlightXpress_CCD_Drivers_v1.3.8.3.zip"

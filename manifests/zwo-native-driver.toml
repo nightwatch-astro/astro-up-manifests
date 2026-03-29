@@ -1,0 +1,27 @@
+manifest_version = 1
+id = "zwo-native-driver"
+name = "ZWO ASI Native Camera Driver"
+description = "Native USB camera driver for all ZWO ASI cameras"
+homepage = "https://www.zwoastro.com"
+category = "driver"
+type = "usb_driver"
+slug = "zwo-native-driver"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\ZWO\\ASICamera"
+registry_value = "Version"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "direct_url"
+url = "https://dl.zwoastro.com/software?app=AsiCameraDriver&platform=windows64&region=Overseas"
+
+[checkver.autoupdate]
+url = "https://dl.zwoastro.com/software?app=AsiCameraDriver&platform=windows64&region=Overseas"

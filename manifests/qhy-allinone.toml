@@ -1,0 +1,28 @@
+manifest_version = 1
+id = "qhy-allinone"
+name = "QHY AllInOne Driver Pack"
+description = "AllInOne pack: native USB driver, ASCOM camera, CFW, WDM driver, SDKs"
+homepage = "https://www.qhyccd.com"
+category = "driver"
+type = "driver"
+slug = "qhy-allinone"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\QHYCCD\\AllInOne"
+registry_value = "Version"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "browser_scrape"
+url = "https://www.qhyccd.com/download/"
+regex = 'Ver\. (\d{8}) \(Recommended\)'
+
+[dependencies]
+requires = ["ascom-platform"]

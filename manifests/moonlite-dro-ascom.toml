@@ -1,0 +1,24 @@
+manifest_version = 1
+id = "moonlite-dro-ascom"
+name = "MoonLite DRO Focuser ASCOM Driver"
+description = "ASCOM driver for MoonLite DRO focuser controllers"
+homepage = "https://focuser.com"
+category = "driver"
+type = "driver"
+slug = "moonlite-dro-ascom"
+
+[detection]
+method = "file"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "pe_download"
+url = "https://focuser.com/media/Downloads/MoonLite_Software/Ascom/MoonLite%20DRO%20Setup.zip"
+
+[checkver.autoupdate]
+url = "https://focuser.com/media/Downloads/MoonLite_Software/Ascom/MoonLite%20DRO%20Setup.zip"
+
+[dependencies]
+requires = ["ascom-platform"]

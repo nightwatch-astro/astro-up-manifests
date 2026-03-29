@@ -1,0 +1,24 @@
+manifest_version = 1
+id = "stellarium-app"
+name = "Stellarium"
+description = "Stellarium — open-source planetarium"
+homepage = "https://stellarium.org"
+category = "planetarium"
+type = "application"
+slug = "stellarium-app"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\Stellarium"
+registry_value = "DisplayVersion"
+
+[install]
+method = "inno_setup"
+
+[install.switches]
+silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
+
+[checkver]
+provider = "github"
+owner = "Stellarium"
+repo = "stellarium"

@@ -1,0 +1,17 @@
+manifest_version = 1
+id = "synscan-wifi-firmware"
+name = "SynScan WiFi Adapter Firmware"
+description = "Firmware for SynScan WiFi adapter"
+homepage = "https://www.skywatcher.com"
+category = "driver"
+type = "resource"
+slug = "synscan-wifi-firmware"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.skywatcher.com/download/software/accessories/"
+regex = 'Version (\d+\.\d+)'

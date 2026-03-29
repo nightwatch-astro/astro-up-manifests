@@ -1,0 +1,27 @@
+manifest_version = 1
+id = "dotnet-desktop-8"
+name = ".NET Desktop Runtime 8"
+description = ".NET 8 Desktop Runtime for Windows applications"
+homepage = "https://dotnet.microsoft.com"
+category = "prerequisites"
+type = "runtime"
+slug = "dotnet-desktop-8"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\dotnet\\Setup\\InstalledVersions\\x64\\sharedfx\\Microsoft.WindowsDesktop.App"
+registry_value = ""
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/install /quiet /norestart"
+
+[checkver]
+provider = "direct_url"
+url = "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe"
+
+[checkver.autoupdate]
+url = "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe"

@@ -1,0 +1,23 @@
+manifest_version = 1
+id = "player-one-camera-ascom"
+name = "Player One Camera ASCOM Driver"
+description = "ASCOM driver for Player One astronomy cameras"
+homepage = "https://player-one-astronomy.com"
+category = "driver"
+type = "driver"
+slug = "player-one-camera-ascom"
+
+[detection]
+method = "file"
+path = "{program_dir}/Common Files/ASCOM/Camera/PlayerOne.Camera.dll"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://player-one-astronomy.com/service/software/"
+regex = '_V(\d+\.\d+\.\d+\.\d+)\.'
+
+[dependencies]
+requires = ["ascom-platform", "player-one-native-driver"]

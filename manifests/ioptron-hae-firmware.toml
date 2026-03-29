@@ -1,0 +1,20 @@
+manifest_version = 1
+id = "ioptron-hae-firmware"
+name = "iOptron HAE Firmware"
+description = "Firmware for iOptron HAE mount"
+homepage = "https://www.ioptron.com"
+category = "driver"
+type = "resource"
+slug = "ioptron-hae-firmware"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "browser_scrape"
+url = "https://www.ioptron.com/Articles.asp?ID=348"
+regex = 'FW(\d{6})'
+
+[checkver.autoupdate]
+url = "https://www.ioptron.com/v/firmware/HAE_FW241201.bin"

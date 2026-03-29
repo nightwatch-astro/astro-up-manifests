@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "astap-d50"
+name = "ASTAP D50 Star Database"
+description = "Large star database for ASTAP plate solver (831 MB)"
+homepage = "https://www.hnsky.org/astap.htm"
+category = "platesolving"
+type = "database"
+slug = "astap-d50"
+
+[detection]
+method = "file"
+path = "{config_dir}/astap/d50"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "http_head"
+url = "https://sourceforge.net/projects/astap-program/files/star_databases/d50_star_database.exe/download"
+
+[checkver.autoupdate]
+url = "https://sourceforge.net/projects/astap-program/files/star_databases/d50_star_database.exe/download"
+
+[dependencies]
+requires = ["astap-app"]

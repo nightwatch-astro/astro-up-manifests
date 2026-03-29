@@ -1,0 +1,25 @@
+manifest_version = 1
+id = "ioptron-ipolar"
+name = "iOptron iPolar"
+description = "iOptron iPolar electronic polar alignment tool"
+homepage = "https://www.ioptron.com"
+category = "driver"
+type = "application"
+slug = "ioptron-ipolar"
+
+[detection]
+method = "file"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "pe_download"
+url = "https://www.ioptron.com/v/firmware/3339_iOptron_iPolar.exe"
+
+[checkver.autoupdate]
+url = "https://www.ioptron.com/v/firmware/3339_iOptron_iPolar.exe"

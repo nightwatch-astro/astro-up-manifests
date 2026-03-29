@@ -1,0 +1,29 @@
+manifest_version = 1
+id = "lunatico-dragonfly"
+name = "Lunatico Dragonfly ASCOM Driver"
+description = "ASCOM driver for Lunatico Dragonfly observatory controller"
+homepage = "https://lunaticoastro.com"
+category = "driver"
+type = "driver"
+slug = "lunatico-dragonfly"
+
+[detection]
+method = "file"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "html_scrape"
+url = "https://lunaticoastro.com/dragonfly-observatory-controller/firmware-and-software/"
+regex = 'Windows:\s*Version\s+(\d+\.\d+\.\d+)'
+
+[checkver.autoupdate]
+url = "https://lunaticoastro.com/dragonfly/current/Dragonfly-Install.exe"
+
+[dependencies]
+requires = ["ascom-platform"]

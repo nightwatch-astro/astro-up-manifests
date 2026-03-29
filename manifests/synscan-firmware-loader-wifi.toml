@@ -1,0 +1,18 @@
+manifest_version = 1
+id = "synscan-firmware-loader-wifi"
+name = "SynScan Motor Controller Firmware Loader (WiFi)"
+description = "Firmware loader for SynScan motor controllers via WiFi"
+homepage = "https://www.skywatcher.com"
+category = "driver"
+type = "application"
+slug = "synscan-firmware-loader-wifi"
+
+[detection]
+method = "file"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.skywatcher.com/download/software/motor-control-firmware/"

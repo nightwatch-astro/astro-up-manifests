@@ -1,0 +1,30 @@
+manifest_version = 1
+id = "eqmod-app"
+name = "EQMOD"
+description = "EQMOD — ASCOM driver for Synta/SkyWatcher EQ mounts"
+homepage = "https://eq-mod.sourceforge.net"
+category = "utilities"
+type = "application"
+slug = "eqmod-app"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\EQMOD"
+registry_value = "DisplayVersion"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "pe_download"
+url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/EQASCOM_V200w_Setup.exe/download"
+
+[checkver.autoupdate]
+url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/EQASCOM_V200w_Setup.exe/download"
+
+[dependencies]
+requires = ["ascom-platform"]

@@ -1,0 +1,28 @@
+manifest_version = 1
+id = "qhy-allinone-beta"
+name = "QHY AllInOne Driver Pack (Beta)"
+description = "Beta release of the QHY AllInOne driver pack"
+homepage = "https://www.qhyccd.com"
+category = "driver"
+type = "driver"
+slug = "qhy-allinone-beta"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\QHYCCD\\AllInOne"
+registry_value = "Version"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "browser_scrape"
+url = "https://www.qhyccd.com/download/"
+regex = 'Ver\. (\d{8})\(Beta\)'
+
+[dependencies]
+requires = ["ascom-platform"]

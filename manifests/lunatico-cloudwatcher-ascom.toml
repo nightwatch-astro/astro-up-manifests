@@ -1,0 +1,28 @@
+manifest_version = 1
+id = "lunatico-cloudwatcher-ascom"
+name = "Lunatico AAG CloudWatcher ASCOM Driver"
+description = "ASCOM driver for Lunatico AAG CloudWatcher weather station"
+homepage = "https://lunaticoastro.com"
+category = "driver"
+type = "driver"
+slug = "lunatico-cloudwatcher-ascom"
+
+[detection]
+method = "file"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "pe_download"
+url = "https://lunaticoastro.com/aagcw/CWAscom-Install.exe"
+
+[checkver.autoupdate]
+url = "https://lunaticoastro.com/aagcw/CWAscom-Install.exe"
+
+[dependencies]
+requires = ["ascom-platform"]

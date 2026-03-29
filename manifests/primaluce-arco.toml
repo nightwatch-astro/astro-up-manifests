@@ -1,0 +1,22 @@
+manifest_version = 1
+id = "primaluce-arco"
+name = "PrimaLuce ARCO Software Package"
+description = "Driver and software package for PrimaLuce ARCO rotator"
+homepage = "https://www.primalucelab.com"
+category = "driver"
+type = "driver"
+slug = "primaluce-arco"
+
+[detection]
+method = "file"
+path = "{program_dir}/PrimaLuceLab/ARCO/ARCO.exe"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.primalucelab.com/info/downloads.html"
+
+[checkver.autoupdate]
+url = "https://www.primalucelab.com/downloads/ARCO-software-package-3-7.zip"

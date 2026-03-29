@@ -1,0 +1,18 @@
+manifest_version = 1
+id = "celestron-cfm"
+name = "Celestron Firmware Manager"
+description = "Celestron Firmware Manager"
+homepage = "https://www.celestron.com"
+category = "driver"
+type = "application"
+slug = "celestron-cfm"
+
+[detection]
+method = "file"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://software.celestron.com/updates/CFM/CFM/release.json"

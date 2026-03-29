@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "sx-fw-ascom"
+name = "Starlight Xpress Filter Wheel ASCOM Driver"
+description = "ASCOM driver for Starlight Xpress filter wheels"
+homepage = "https://www.sxccd.com"
+category = "driver"
+type = "driver"
+slug = "sx-fw-ascom"
+
+[detection]
+method = "file"
+path = "{program_dir}/Common Files/ASCOM/FilterWheel/SX.FilterWheel.dll"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.sxccd.com/support/resources/"
+regex = 'ascom-(\d+)\.'
+
+[checkver.autoupdate]
+url = "https://www.sxccd.com/wp-content/files/ascom-1.zip"
+
+[dependencies]
+requires = ["ascom-platform"]

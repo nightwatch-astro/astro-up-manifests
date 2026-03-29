@@ -1,0 +1,20 @@
+manifest_version = 1
+id = "ioptron-cem26-firmware"
+name = "iOptron CEM26/GEM28 Firmware"
+description = "Firmware for iOptron CEM26 and GEM28 mounts"
+homepage = "https://www.ioptron.com"
+category = "driver"
+type = "resource"
+slug = "ioptron-cem26-firmware"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "browser_scrape"
+url = "https://www.ioptron.com/Articles.asp?ID=333"
+regex = 'FW(\d{6})'
+
+[checkver.autoupdate]
+url = "https://www.ioptron.com/v/firmware/CEM26_GEM28_FW241201.bin"

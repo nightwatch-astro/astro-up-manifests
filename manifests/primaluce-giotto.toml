@@ -1,0 +1,22 @@
+manifest_version = 1
+id = "primaluce-giotto"
+name = "PrimaLuce GIOTTO Software Package"
+description = "Driver and software package for PrimaLuce GIOTTO flat field panel"
+homepage = "https://www.primalucelab.com"
+category = "driver"
+type = "driver"
+slug = "primaluce-giotto"
+
+[detection]
+method = "file"
+path = "{program_dir}/PrimaLuceLab/GIOTTO/GIOTTO.exe"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.primalucelab.com/info/downloads.html"
+
+[checkver.autoupdate]
+url = "https://www.primalucelab.com/downloads/GIOTTO-software-package-1-4.zip"

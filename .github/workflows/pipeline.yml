@@ -1,0 +1,120 @@
+name: Manifest Pipeline
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      filter:
+        description: 'Filter manifests by substring (ID, category, or provider)'
+        required: false
+        type: string
+
+concurrency:
+  group: manifest-pipeline
+  cancel-in-progress: false
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
+
+      - name: Cache Chromium binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/chromiumoxide
+          key: ${{ runner.os }}-chromium-v1
+          restore-keys: ${{ runner.os }}-chromium-
+
+      - name: Build binaries
+        run: cargo build --release --workspace
+
+      - name: Run version checker
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          CHECKER_FILTER: ${{ inputs.filter }}
+        run: |
+          FILTER_ARG=""
+          if [ -n "$CHECKER_FILTER" ]; then
+            FILTER_ARG="--filter $CHECKER_FILTER"
+          fi
+          ./target/release/astro-up-checker \
+            --manifests manifests \
+            --versions versions \
+            --state checker-state.json \
+            $FILTER_ARG \
+            --verbose
+
+      - name: Compile catalog
+        run: |
+          ./target/release/astro-up-compiler \
+            --manifests manifests \
+            --versions versions \
+            --output catalog.db \
+            --verbose
+
+      - name: Install minisign
+        run: |
+          curl -sL https://github.com/jedisct1/minisign/releases/latest/download/minisign-linux-x86_64.tar.gz | tar xz
+          sudo mv minisign /usr/local/bin/
+
+      - name: Sign catalog
+        env:
+          MINISIGN_KEY: ${{ secrets.MINISIGN_KEY }}
+        run: |
+          echo "$MINISIGN_KEY" > /tmp/minisign.key
+          minisign -Sm catalog.db -s /tmp/minisign.key -t "catalog $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          rm /tmp/minisign.key
+
+      - name: Publish to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create release if it doesn't exist
+          gh release view catalog/latest > /dev/null 2>&1 || \
+            gh release create catalog/latest --title "Catalog (latest)" --notes "Rolling release of the compiled catalog database."
+          # Upload artifacts with retry (3 attempts, exponential backoff)
+          for attempt in 1 2 3; do
+            if gh release upload catalog/latest catalog.db catalog.db.minisig --clobber; then
+              echo "Published successfully on attempt $attempt"
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "Failed to publish after 3 attempts"
+              exit 1
+            fi
+            sleep $((attempt * 2))
+          done
+
+      - name: Commit state and version files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add checker-state.json versions/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update checker state and version files"
+            git push
+          fi

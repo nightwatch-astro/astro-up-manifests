@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "astap-g05"
+name = "ASTAP G05 Galaxy Database"
+description = "Large galaxy database for ASTAP plate solver (97 MB)"
+homepage = "https://www.hnsky.org/astap.htm"
+category = "platesolving"
+type = "database"
+slug = "astap-g05"
+
+[detection]
+method = "file"
+path = "{config_dir}/astap/g05"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "http_head"
+url = "https://sourceforge.net/projects/astap-program/files/star_databases/g05_star_database.exe/download"
+
+[checkver.autoupdate]
+url = "https://sourceforge.net/projects/astap-program/files/star_databases/g05_star_database.exe/download"
+
+[dependencies]
+requires = ["astap-app"]

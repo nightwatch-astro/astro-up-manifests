@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "nina-framing-cache-full"
+name = "NINA Framing Assistant Cache (Full Sky)"
+description = "Complete offline sky map cache for NINA Framing Assistant (3.3 GB, DSS/STScI survey)"
+homepage = "https://nighttime-imaging.eu"
+category = "capture"
+type = "database"
+slug = "nina-framing-cache-full"
+
+[detection]
+method = "file"
+path = "{config_dir}/NINA/FramingAssistantCache/Full"
+
+[install]
+method = "exe"
+elevation = true
+
+[checkver]
+provider = "http_head"
+url = "https://nighttime-imaging.eu/downloads/Setup/Releases/FramingAssistantCache_Full.zip"
+
+[checkver.autoupdate]
+url = "https://nighttime-imaging.eu/downloads/Setup/Releases/FramingAssistantCache_Full.zip"
+
+[dependencies]
+requires = ["nina-app"]

@@ -1,0 +1,24 @@
+manifest_version = 1
+id = "apt-app"
+name = "Astro Photography Tool"
+description = "Astro Photography Tool — DSO and planetary capture"
+homepage = "https://astrophotography.app"
+category = "capture"
+type = "application"
+slug = "apt-app"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\APT"
+registry_value = "DisplayVersion"
+
+[install]
+method = "inno_setup"
+
+[install.switches]
+silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
+
+[checkver]
+provider = "html_scrape"
+url = "https://astrophotography.app/downloads.php"
+regex = 'UnReg(\d+_\d+(?:_\d+)?)\.exe'

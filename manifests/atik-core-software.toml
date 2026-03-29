@@ -1,0 +1,28 @@
+manifest_version = 1
+id = "atik-core-software"
+name = "Atik Core Software"
+description = "Core camera and filter wheel drivers with ASCOM for Atik cameras"
+homepage = "https://www.atik-cameras.com"
+category = "driver"
+type = "driver"
+slug = "atik-core-software"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\Atik Cameras\\Core"
+registry_value = "Version"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.atik-cameras.com/software-downloads/"
+regex = 'Universal-(\d{4}\.\d{2}\.\d{2})\.exe'
+
+[dependencies]
+requires = ["ascom-platform"]

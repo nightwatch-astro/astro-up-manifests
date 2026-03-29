@@ -1,0 +1,23 @@
+manifest_version = 1
+id = "green-swamp-server-app"
+name = "Green Swamp Server"
+description = "Green Swamp Server (GSServer) — ASCOM to Alpaca bridge"
+homepage = "https://greenswamp.org"
+category = "utilities"
+type = "application"
+slug = "green-swamp-server-app"
+
+[detection]
+method = "file"
+path = "{program_dir}/GreenSwamp/GSServer.exe"
+
+[install]
+method = "inno_setup"
+
+[install.switches]
+silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
+
+[checkver]
+provider = "github"
+owner = "rmorgan001"
+repo = "GS.Point3d"

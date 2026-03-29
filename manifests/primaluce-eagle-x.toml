@@ -1,0 +1,22 @@
+manifest_version = 1
+id = "primaluce-eagle-x"
+name = "PrimaLuce EAGLE X Software Package"
+description = "Software package for PrimaLuce EAGLE X observatory computer"
+homepage = "https://www.primalucelab.com"
+category = "utilities"
+type = "application"
+slug = "primaluce-eagle-x"
+
+[detection]
+method = "file"
+path = "{program_dir}/PrimaLuceLab/EAGLE-X/EAGLE-X.exe"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.primalucelab.com/info/downloads.html"
+
+[checkver.autoupdate]
+url = "https://www.primalucelab.com/downloads/EAGLE-X-software-package-3-1-0.zip"

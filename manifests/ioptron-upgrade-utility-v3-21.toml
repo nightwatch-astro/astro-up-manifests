@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "ioptron-upgrade-utility-v3-21"
+name = "iOptron Upgrade Utility V3.21"
+description = "Firmware upgrade utility for iOptron mounts (V3.21, legacy models)"
+homepage = "https://www.ioptron.com"
+category = "driver"
+type = "application"
+slug = "ioptron-upgrade-utility-v3-21"
+
+[detection]
+method = "file"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "browser_scrape"
+url = "https://www.ioptron.com/Articles.asp?ID=345"
+regex = 'Utility_V(\d+)\.exe'
+
+[checkver.autoupdate]
+url = "https://www.ioptron.com/v/firmware/iOptronUpgradeUtility_V321.exe"

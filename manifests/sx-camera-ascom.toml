@@ -1,0 +1,26 @@
+manifest_version = 1
+id = "sx-camera-ascom"
+name = "Starlight Xpress Camera ASCOM Driver"
+description = "ASCOM driver for Starlight Xpress CCD cameras"
+homepage = "https://www.sxccd.com"
+category = "driver"
+type = "driver"
+slug = "sx-camera-ascom"
+
+[detection]
+method = "file"
+path = "{program_dir}/Common Files/ASCOM/Camera/SX.Camera.dll"
+
+[install]
+method = "zip_wrap"
+
+[checkver]
+provider = "html_scrape"
+url = "https://www.sxccd.com/support/resources/"
+regex = '-v(\d+\.\d+\.\d+\.\d+)\.'
+
+[checkver.autoupdate]
+url = "https://www.sxccd.com/wp-content/files/sxAscomInstaller-v6.2.1.18182.exe_.zip"
+
+[dependencies]
+requires = ["ascom-platform"]

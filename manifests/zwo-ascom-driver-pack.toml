@@ -1,0 +1,30 @@
+manifest_version = 1
+id = "zwo-ascom-driver-pack"
+name = "ZWO ASCOM Driver Pack"
+description = "Unified ASCOM driver for ZWO cameras, EAF focuser, EFW filter wheel, rotator, and AM mounts"
+homepage = "https://www.zwoastro.com"
+category = "driver"
+type = "driver"
+slug = "zwo-ascom-driver-pack"
+
+[detection]
+method = "registry"
+registry_key = "SOFTWARE\\ZWO\\ASCOMDriver"
+registry_value = "Version"
+
+[install]
+method = "exe"
+elevation = true
+
+[install.switches]
+silent = "/S"
+
+[checkver]
+provider = "direct_url"
+url = "https://dl.zwoastro.com/software?app=ASCOMDrive&platform=windows64&region=Overseas"
+
+[checkver.autoupdate]
+url = "https://dl.zwoastro.com/software?app=ASCOMDrive&platform=windows64&region=Overseas"
+
+[dependencies]
+requires = ["ascom-platform", "zwo-native-driver"]
