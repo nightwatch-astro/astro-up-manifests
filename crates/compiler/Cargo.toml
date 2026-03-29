@@ -8,6 +8,7 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+astro-up-shared = { path = "../shared" }
 serde.workspace = true
 serde_json.workspace = true
 toml.workspace = true

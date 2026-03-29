@@ -1,0 +1,18 @@
+[package]
+name = "astro-up-shared"
+version = "0.1.0"
+description = "Shared types and utilities for astro-up manifest pipeline"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+thiserror.workspace = true
+semver.workspace = true
+chrono.workspace = true
+regex.workspace = true
+tracing.workspace = true
