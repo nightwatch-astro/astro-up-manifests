@@ -1,5 +1,6 @@
 use astro_up_checker::hash;
-use astro_up_checker::providers::{self, CheckOutcome};
+use astro_up_checker::providers::{self, CheckError, CheckOutcome};
+use astro_up_checker::rate_limit::RateLimiter;
 use astro_up_checker::version_writer::DiscoveredVersion;
 use astro_up_shared::manifest::Manifest;
 use astro_up_shared::state::CheckerState;
@@ -96,6 +97,7 @@ async fn main() -> anyhow::Result<()> {
 
     // 5. Run checks with bounded concurrency
     let versions_dir = cli.versions.clone();
+    let rate_limiter = Arc::new(Mutex::new(RateLimiter::default()));
     let summary = Arc::new(Mutex::new(Summary {
         checked: 0,
         new_versions: Vec::new(),
@@ -109,8 +111,9 @@ async fn main() -> anyhow::Result<()> {
             let state = state.clone();
             let summary = summary.clone();
             let versions_dir = versions_dir.clone();
+            let rate_limiter = rate_limiter.clone();
             async move {
-                process_manifest(manifest, &client, &state, &summary, &versions_dir).await;
+                process_manifest(manifest, &client, &state, &summary, &versions_dir, &rate_limiter).await;
             }
         })
         .buffer_unordered(cli.concurrency)
@@ -169,10 +172,29 @@ async fn process_manifest(
     state: &Arc<Mutex<CheckerState>>,
     summary: &Arc<Mutex<Summary>>,
     versions_dir: &PathBuf,
+    rate_limiter: &Arc<Mutex<RateLimiter>>,
 ) {
     let mut sum = summary.lock().await;
     sum.checked += 1;
     drop(sum);
+
+    // Check if provider is rate-limited
+    let provider = manifest
+        .checkver
+        .as_ref()
+        .map(|cv| cv.provider.as_str())
+        .unwrap_or("none");
+    {
+        let rl = rate_limiter.lock().await;
+        if rl.is_paused(provider) {
+            if let Some(remaining) = rl.remaining(provider) {
+                tracing::info!("{}: provider {provider} rate-limited, {}s remaining — skipping", manifest.id, remaining.as_secs());
+                let mut sum = summary.lock().await;
+                sum.skipped.push(manifest.id.clone());
+                return;
+            }
+        }
+    }
 
     match providers::check_manifest(manifest, client).await {
         Ok(CheckOutcome::Found(result)) => {
@@ -225,6 +247,15 @@ async fn process_manifest(
             sum.skipped.push(manifest.id.clone());
         }
         Err(e) => {
+            // Detect rate limiting and pause the provider
+            if let CheckError::Reqwest(ref reqwest_err) = e {
+                if let Some(status) = reqwest_err.status() {
+                    if status == reqwest::StatusCode::TOO_MANY_REQUESTS {
+                        let mut rl = rate_limiter.lock().await;
+                        rl.record_rate_limit(provider, None);
+                    }
+                }
+            }
             tracing::warn!("{}: {e}", manifest.id);
             state.lock().await.record_failure(&manifest.id, &e.to_string());
             let mut sum = summary.lock().await;

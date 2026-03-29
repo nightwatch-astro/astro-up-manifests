@@ -12,6 +12,8 @@ pub enum ValidationError {
     UnknownInstallMethod { file: String, method: String },
     #[error("{file}: unknown checkver provider '{provider}'")]
     UnknownProvider { file: String, provider: String },
+    #[error("{file}: invalid URL in field '{field}': {url}")]
+    InvalidUrl { file: String, field: String, url: String },
 }
 
 const SUPPORTED_MANIFEST_VERSIONS: &[u32] = &[1];
@@ -115,7 +117,30 @@ pub fn validate_manifest(manifest: &Manifest, file: &str) -> Vec<ValidationError
                 provider: checkver.provider.clone(),
             });
         }
+        if let Some(url) = &checkver.url {
+            if !is_valid_url(url) {
+                errors.push(ValidationError::InvalidUrl {
+                    file: file.into(),
+                    field: "checkver.url".into(),
+                    url: url.clone(),
+                });
+            }
+        }
+    }
+
+    if let Some(homepage) = &manifest.homepage {
+        if !is_valid_url(homepage) {
+            errors.push(ValidationError::InvalidUrl {
+                file: file.into(),
+                field: "homepage".into(),
+                url: homepage.clone(),
+            });
+        }
     }
 
     errors
+}
+
+fn is_valid_url(url: &str) -> bool {
+    url.starts_with("http://") || url.starts_with("https://")
 }
