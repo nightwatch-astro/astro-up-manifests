@@ -37,3 +37,10 @@ Consistent snake_case naming: `inno_setup` (not `innosetup`), `zip_wrap`, `downl
 ## Release
 
 release-plz with nightwatch-astro shared workflow. Binaries are not published to crates.io.
+
+## Active Technologies
+- Rust (stable toolchain, 2021 edition) + serde, toml, rusqlite (bundled), reqwest, tokio, chromiumoxide, clap (001-manifest-pipeline)
+- SQLite (catalog.db), JSON files (versions/), JSON state file (checker-state.json) (001-manifest-pipeline)
+
+## Recent Changes
+- 001-manifest-pipeline: Added Rust (stable toolchain, 2021 edition) + serde, toml, rusqlite (bundled), reqwest, tokio, chromiumoxide, clap
