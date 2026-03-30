@@ -89,7 +89,7 @@ pub fn create_schema(conn: &Connection) -> anyhow::Result<()> {
         );
 
         CREATE VIRTUAL TABLE IF NOT EXISTS packages_fts USING fts5(
-            name, description, tags, publisher,
+            name, description, tags, aliases, publisher,
             content='packages', content_rowid='rowid'
         );
         ",

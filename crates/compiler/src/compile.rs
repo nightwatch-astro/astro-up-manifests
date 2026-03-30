@@ -33,8 +33,8 @@ pub fn compile_manifests(conn: &Connection, manifests: &[Manifest]) -> anyhow::R
 
     // Populate FTS5 index
     tx.execute_batch(
-        "INSERT INTO packages_fts(rowid, name, description, tags, publisher)
-         SELECT rowid, name, description, tags, publisher FROM packages;",
+        "INSERT INTO packages_fts(rowid, name, description, tags, aliases, publisher)
+         SELECT rowid, name, description, tags, aliases, publisher FROM packages;",
     )?;
 
     // Write meta
