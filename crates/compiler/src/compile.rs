@@ -57,11 +57,12 @@ fn insert_package(conn: &Connection, manifest: &Manifest) -> rusqlite::Result<us
         None
     } else {
         Some(
-            manifest.aliases
+            manifest
+                .aliases
                 .iter()
                 .map(|alias| alias.replace(['.', '-'], ""))
                 .collect::<Vec<_>>()
-                .join(" ")
+                .join(" "),
         )
     };
 
