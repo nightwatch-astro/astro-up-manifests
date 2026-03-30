@@ -33,8 +33,8 @@ pub fn compile_manifests(conn: &Connection, manifests: &[Manifest]) -> anyhow::R
 
     // Populate FTS5 index
     tx.execute_batch(
-        "INSERT INTO packages_fts(rowid, name, description, tags, publisher)
-         SELECT rowid, name, description, tags, publisher FROM packages;",
+        "INSERT INTO packages_fts(rowid, name, description, tags, aliases, publisher)
+         SELECT rowid, name, description, tags, aliases_normalized, publisher FROM packages;",
     )?;
 
     // Write meta
@@ -52,9 +52,22 @@ pub fn compile_manifests(conn: &Connection, manifests: &[Manifest]) -> anyhow::R
 }
 
 fn insert_package(conn: &Connection, manifest: &Manifest) -> rusqlite::Result<usize> {
+    // Normalize aliases for FTS5 indexing: strip dots and hyphens, join with spaces
+    let aliases_normalized = if manifest.aliases.is_empty() {
+        None
+    } else {
+        Some(
+            manifest.aliases
+                .iter()
+                .map(|alias| alias.replace(['.', '-'], ""))
+                .collect::<Vec<_>>()
+                .join(" ")
+        )
+    };
+
     conn.execute(
-        "INSERT INTO packages (id, manifest_version, name, description, publisher, homepage, category, type, slug, license, tags, aliases, dependencies)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)",
+        "INSERT INTO packages (id, manifest_version, name, description, publisher, homepage, category, type, slug, license, tags, aliases, aliases_normalized, dependencies)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)",
         params![
             manifest.id,
             manifest.manifest_version,
@@ -68,6 +81,7 @@ fn insert_package(conn: &Connection, manifest: &Manifest) -> rusqlite::Result<us
             manifest.license,
             serde_json::to_string(&manifest.tags).ok(),
             serde_json::to_string(&manifest.aliases).ok(),
+            aliases_normalized,
             manifest.dependencies.as_ref().and_then(|d| serde_json::to_string(&d.requires).ok()),
         ],
     )
