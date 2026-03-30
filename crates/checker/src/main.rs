@@ -259,7 +259,10 @@ async fn process_manifest(
                         if let Ok(bytes) = client.get(download_url).send().await {
                             if let Ok(body) = bytes.bytes().await {
                                 use sha2::{Digest, Sha256};
-                                let computed = format!("{:x}", Sha256::digest(&body));
+                                let computed: String = Sha256::digest(&body)
+                                    .iter()
+                                    .map(|b| format!("{b:02x}"))
+                                    .collect();
                                 if computed != *hash {
                                     tracing::error!(
                                         "{}: hash mismatch — expected {hash}, got {computed}. Version file NOT written.",
