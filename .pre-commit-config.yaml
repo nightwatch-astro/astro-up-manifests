@@ -1,0 +1,51 @@
+default_install_hook_types: [commit-msg, pre-commit, pre-push]
+fail_fast: true
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+        args: [--maxkb=2000]
+      - id: check-json
+      - id: check-yaml
+      - id: check-toml
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.28.0
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.34.0
+    hooks:
+      - id: typos
+        args: [--force-exclude]
+
+  # Rust formatting & linting
+  - repo: local
+    hooks:
+      - id: cargo-fmt
+        name: cargo fmt
+        entry: cargo fmt --all --
+        language: system
+        types: [rust]
+        pass_filenames: false
+      - id: cargo-clippy
+        name: cargo clippy
+        entry: cargo clippy --all-targets -- -D warnings
+        language: system
+        stages: [pre-push]
+        types: [rust]
+        pass_filenames: false
+      - id: cargo-test
+        name: cargo test
+        entry: cargo test
+        language: system
+        stages: [pre-push]
+        types: [rust]
+        pass_filenames: false
