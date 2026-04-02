@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "cp210x-drivers"
 name = "Silicon Labs CP210x Drivers"
-description = "Silicon Labs CP210x USB-serial bridge drivers"
+description = "Silicon Labs CP210x USB to UART bridge VCP drivers"
 homepage = "https://www.silabs.com"
 category = "usb"
 type = "usb_driver"

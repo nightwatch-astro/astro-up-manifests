@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "primaluce-esatto"
 name = "PrimaLuce ESATTO Software Package"
-description = "Driver and software package for PrimaLuce ESATTO focuser"
+description = "Driver and software package for PrimaLuce ESATTO robotic focuser"
 homepage = "https://www.primalucelab.com"
 category = "driver"
 type = "driver"

@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "moonlite-dro-ascom"
 name = "MoonLite DRO Focuser ASCOM Driver"
-description = "ASCOM driver for MoonLite DRO focuser controllers"
+description = "Universal ASCOM driver for all MoonLite focuser controllers"
 homepage = "https://focuser.com"
 category = "driver"
 type = "driver"

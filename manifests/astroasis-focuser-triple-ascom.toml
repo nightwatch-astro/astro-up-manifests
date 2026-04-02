@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "astroasis-focuser-triple-ascom"
 name = "Astroasis Triple Focuser ASCOM Driver"
-description = "ASCOM driver for Astroasis triple-port focuser controller"
+description = "ASCOM driver variant that registers three Oasis Focuser devices for multi-focuser setups"
 homepage = "https://www.astroasis.com"
 category = "driver"
 type = "driver"

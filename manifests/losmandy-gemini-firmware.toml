@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "losmandy-gemini-firmware"
 name = "Losmandy Gemini 2 Firmware"
-description = "Combined firmware for Losmandy Gemini 2 controller"
+description = "Firmware for Losmandy Gemini 2 telescope mount controller"
 homepage = "https://gemini-2.com"
 category = "driver"
 type = "resource"

@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "ioptron-hem-firmware"
 name = "iOptron HEM Firmware"
-description = "Firmware for iOptron HEM mount"
+description = "Firmware for iOptron HEM series harmonic equatorial mounts"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "resource"
