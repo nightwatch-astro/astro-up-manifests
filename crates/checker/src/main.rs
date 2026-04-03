@@ -92,7 +92,7 @@ async fn main() -> anyhow::Result<()> {
     // 4. Build HTTP client with retry middleware
     let retry_policy = ExponentialBackoff::builder().build_with_max_retries(2);
     let raw_client = reqwest::Client::builder()
-        .user_agent("astro-up-checker/0.1")
+        .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
         .timeout(std::time::Duration::from_secs(30))
         .build()?;
     let client = ClientBuilder::new(raw_client)
