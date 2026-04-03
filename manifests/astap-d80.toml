@@ -17,7 +17,7 @@ method = "exe"
 elevation = true
 
 [checkver]
-provider = "http_head"
+provider = "manual"
 url = "https://sourceforge.net/projects/astap-program/files/star_databases/d80_star_database.exe/download"
 
 [checkver.autoupdate]

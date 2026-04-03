@@ -23,6 +23,7 @@ silent = "/install /quiet /norestart"
 [checkver]
 provider = "direct_url"
 url = "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe"
+regex = 'windowsdesktop-runtime-(\d+\.\d+\.\d+)-win'
 
 [checkver.autoupdate]
 url = "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe"

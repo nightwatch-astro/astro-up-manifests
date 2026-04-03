@@ -21,7 +21,7 @@ elevation = true
 silent = "/install /quiet /norestart"
 
 [checkver]
-provider = "direct_url"
+provider = "pe_download"
 url = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
 
 [checkver.autoupdate]

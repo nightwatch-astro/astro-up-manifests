@@ -17,3 +17,4 @@ method = "zip_wrap"
 [checkver]
 provider = "html_scrape"
 url = "https://software.celestron.com/updates/CFM/CFM/release.json"
+regex = '"version"\s*:\s*"([\d.]+)"'

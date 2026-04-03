@@ -23,6 +23,7 @@ silent = "/S"
 [checkver]
 provider = "direct_url"
 url = "https://dl.zwoastro.com/software?app=AsiCameraDriver&platform=windows64&region=Overseas"
+regex = 'filename=ZWO_ASI_Cameras_driver_Setup_V(\d+\.\d+\.\d+\.\d+)\.exe'
 
 [checkver.autoupdate]
 url = "https://dl.zwoastro.com/software?app=AsiCameraDriver&platform=windows64&region=Overseas"

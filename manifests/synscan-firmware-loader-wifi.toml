@@ -17,3 +17,5 @@ method = "zip_wrap"
 [checkver]
 provider = "html_scrape"
 url = "https://www.skywatcher.com/download/software/motor-control-firmware/"
+regex = 'Motor Controller Firmware Loader - WiFi, Version (\d+\.\d+)'
+css_selector = ".list-page-object-name"
