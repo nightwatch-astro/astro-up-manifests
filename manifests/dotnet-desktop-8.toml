@@ -21,9 +21,9 @@ elevation = true
 silent = "/install /quiet /norestart"
 
 [checkver]
-provider = "direct_url"
-url = "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe"
-regex = 'windowsdesktop-runtime-(\d+\.\d+\.\d+)-win'
+provider = "browser_scrape"
+url = "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+regex = '\.NET 8.*?(\d+\.\d+\.\d+)'
 
 [checkver.autoupdate]
 url = "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe"
