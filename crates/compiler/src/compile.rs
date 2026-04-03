@@ -1,16 +1,24 @@
 use astro_up_shared::manifest::Manifest;
+use base64::Engine;
+use base64::engine::general_purpose::STANDARD;
 use chrono::Utc;
 use rusqlite::{Connection, params};
+use std::path::Path;
 
 const SCHEMA_VERSION: &str = "1";
 
 /// Compile a list of manifests into the SQLite database.
 /// Assumes schema is already created. Runs within a transaction.
-pub fn compile_manifests(conn: &Connection, manifests: &[Manifest]) -> anyhow::Result<()> {
+pub fn compile_manifests(
+    conn: &Connection,
+    manifests: &[Manifest],
+    icons_dir: &Path,
+) -> anyhow::Result<()> {
     let tx = conn.unchecked_transaction()?;
 
     for manifest in manifests {
-        insert_package(&tx, manifest)?;
+        let icon_base64 = resolve_icon(manifest, icons_dir);
+        insert_package(&tx, manifest, icon_base64.as_deref())?;
 
         if let Some(detection) = &manifest.detection {
             insert_detection(&tx, &manifest.id, detection)?;
@@ -51,7 +59,54 @@ pub fn compile_manifests(conn: &Connection, manifests: &[Manifest]) -> anyhow::R
     Ok(())
 }
 
-fn insert_package(conn: &Connection, manifest: &Manifest) -> rusqlite::Result<usize> {
+/// Resolve icon for a manifest. Lookup order:
+/// 1. Explicit `icon` field in manifest → `{icons_dir}/{icon}.png`
+/// 2. App-specific icon by ID → `{icons_dir}/{id}.png`
+/// 3. Publisher fallback → `{icons_dir}/{publisher_slug}.png`
+///
+/// Returns raw base64 string (no data URI prefix) or None.
+fn resolve_icon(manifest: &Manifest, icons_dir: &Path) -> Option<String> {
+    let candidates: Vec<std::path::PathBuf> = [
+        // 1. Explicit icon field
+        manifest
+            .icon
+            .as_deref()
+            .map(|i| icons_dir.join(format!("{i}.png"))),
+        // 2. App-specific by ID
+        Some(icons_dir.join(format!("{}.png", manifest.id))),
+        // 3. Publisher slug (lowercase, spaces → hyphens)
+        manifest.publisher.as_deref().map(|p| {
+            let slug = p.to_lowercase().replace(' ', "-");
+            icons_dir.join(format!("{slug}.png"))
+        }),
+    ]
+    .into_iter()
+    .flatten()
+    .collect();
+
+    for path in &candidates {
+        if path.is_file() {
+            match std::fs::read(path) {
+                Ok(bytes) => {
+                    tracing::debug!("icon for {}: {}", manifest.id, path.display());
+                    return Some(STANDARD.encode(bytes));
+                }
+                Err(e) => {
+                    tracing::warn!("failed to read icon {}: {e}", path.display());
+                }
+            }
+        }
+    }
+
+    tracing::debug!("no icon found for {}", manifest.id);
+    None
+}
+
+fn insert_package(
+    conn: &Connection,
+    manifest: &Manifest,
+    icon_base64: Option<&str>,
+) -> rusqlite::Result<usize> {
     // Normalize aliases for FTS5 indexing: strip dots and hyphens, join with spaces
     let aliases_normalized = if manifest.aliases.is_empty() {
         None
@@ -67,8 +122,8 @@ fn insert_package(conn: &Connection, manifest: &Manifest) -> rusqlite::Result<us
     };
 
     conn.execute(
-        "INSERT INTO packages (id, manifest_version, name, description, publisher, homepage, category, type, slug, license, tags, aliases, aliases_normalized, dependencies)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)",
+        "INSERT INTO packages (id, manifest_version, name, description, publisher, homepage, category, type, slug, license, tags, aliases, aliases_normalized, dependencies, icon_base64)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15)",
         params![
             manifest.id,
             manifest.manifest_version,
@@ -84,6 +139,7 @@ fn insert_package(conn: &Connection, manifest: &Manifest) -> rusqlite::Result<us
             serde_json::to_string(&manifest.aliases).ok(),
             aliases_normalized,
             manifest.dependencies.as_ref().and_then(|d| serde_json::to_string(&d.requires).ok()),
+            icon_base64,
         ],
     )
 }

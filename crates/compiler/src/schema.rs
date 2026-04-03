@@ -18,7 +18,8 @@ pub fn create_schema(conn: &Connection) -> anyhow::Result<()> {
             tags TEXT,
             aliases TEXT,
             aliases_normalized TEXT,
-            dependencies TEXT
+            dependencies TEXT,
+            icon_base64 TEXT
         );
 
         CREATE INDEX IF NOT EXISTS idx_packages_category ON packages(category);

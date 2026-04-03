@@ -23,6 +23,10 @@ pub struct Manifest {
     pub aliases: Vec<String>,
     #[serde(default)]
     pub license: Option<String>,
+    /// Icon reference: resolves to `assets/icons/{value}.png`.
+    /// Falls back to publisher-derived slug if not set.
+    #[serde(default)]
+    pub icon: Option<String>,
 
     #[serde(default)]
     pub detection: Option<Detection>,
