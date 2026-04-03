@@ -25,7 +25,7 @@ silent = "/S"
 [checkver]
 provider = "browser_scrape"
 url = "https://www.zwoastro.com/software/"
-css_selector = ".e-n-tab-title:nth-child(2)"
+css_selector = "js:document.querySelectorAll('.elementor-tab-title').forEach(t => { if (t.textContent.trim() === 'Desktop App') t.click() })"
 regex = 'ASIStudio.*?[Vv](\d+\.\d+(?:\.\d+)?)'
 
 [checkver.autoupdate]
