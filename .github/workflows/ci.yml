@@ -24,8 +24,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  check:
-    name: Rust Checks
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      rust: ${{ steps.filter.outputs.rust }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            rust:
+              - 'crates/**'
+              - 'Cargo.toml'
+              - 'Cargo.lock'
+              - 'manifests/**'
+
+  rust:
+    name: Rust CI
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -38,3 +57,19 @@ jobs:
       - run: cargo test --workspace
       - name: Validate manifests
         run: cargo run -p astro-up-compiler -- --manifests manifests --validate
+
+  # Gate job: always runs, reports the required "Rust Checks" status.
+  # Passes when rust CI succeeds or was skipped (no Rust changes).
+  check:
+    name: Rust Checks
+    needs: [changes, rust]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gate
+        env:
+          RUST_RESULT: ${{ needs.rust.result }}
+        run: |
+          if [ "$RUST_RESULT" = "failure" ] || [ "$RUST_RESULT" = "cancelled" ]; then
+            exit 1
+          fi
