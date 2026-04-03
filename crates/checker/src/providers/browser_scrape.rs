@@ -4,6 +4,14 @@ use std::time::Duration;
 
 use super::{CheckError, CheckOutcome, CheckResult};
 
+/// Stealth JS to inject before page load — hides automation signals.
+const STEALTH_JS: &str = r#"
+Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
+Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
+window.chrome = { runtime: {} };
+"#;
+
 pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOutcome, CheckError> {
     let url = checkver
         .url
@@ -21,11 +29,12 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
     let user_data_dir = tempfile::tempdir()
         .map_err(|e| CheckError::Browser(format!("failed to create temp dir: {e}")))?;
 
-    // Launch browser
+    // Launch browser with anti-detection flags
     let (mut browser, mut handler) = chromiumoxide::Browser::launch(
         chromiumoxide::BrowserConfig::builder()
             .request_timeout(page_timeout)
             .user_data_dir(user_data_dir.path())
+            .arg("--disable-blink-features=AutomationControlled")
             .build()
             .map_err(|e| CheckError::Browser(format!("config error: {e}")))?,
     )
@@ -37,7 +46,16 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
 
     let result = async {
         let page = browser
-            .new_page(url)
+            .new_page("about:blank")
+            .await
+            .map_err(|e| CheckError::Browser(format!("navigation error: {e}")))?;
+
+        // Inject stealth scripts before navigating to target
+        page.evaluate(STEALTH_JS)
+            .await
+            .map_err(|e| CheckError::Browser(format!("stealth inject error: {e}")))?;
+
+        page.goto(url)
             .await
             .map_err(|e| CheckError::Browser(format!("navigation error: {e}")))?;
 

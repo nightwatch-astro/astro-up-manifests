@@ -23,7 +23,7 @@ elevation = true
 silent = "/S"
 
 [checkver]
-provider = "direct_url"
+provider = "http_head"
 url = "https://dl.zwoastro.com/software?app=ASIStudio&platform=windows64&region=Overseas"
 regex = 'filename=ASIStudio_V(\d+\.\d+(?:\.\d+)*)_'
 
