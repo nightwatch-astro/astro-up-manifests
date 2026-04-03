@@ -14,9 +14,6 @@ concurrency:
   group: manifest-pipeline
   cancel-in-progress: false
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
   pipeline:
     runs-on: ubuntu-latest
@@ -26,18 +23,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Cache Rust build
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-cargo-
+      - name: Download tool binaries
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download tools/latest --pattern 'astro-up-*' --dir bin
+          chmod +x bin/astro-up-*
 
       - name: Cache Chromium binary
         uses: actions/cache@v5
@@ -45,9 +36,6 @@ jobs:
           path: ~/.cache/chromiumoxide
           key: ${{ runner.os }}-chromium-v1
           restore-keys: ${{ runner.os }}-chromium-
-
-      - name: Build binaries
-        run: cargo build --release --workspace
 
       - name: Run version checker
         env:
@@ -59,7 +47,7 @@ jobs:
           if [ -n "$CHECKER_FILTER" ]; then
             FILTER_ARG="--filter $CHECKER_FILTER"
           fi
-          ./target/release/astro-up-checker \
+          ./bin/astro-up-checker \
             --manifests manifests \
             --versions versions \
             --state checker-state.json \
@@ -68,16 +56,20 @@ jobs:
 
       - name: Compile catalog
         run: |
-          ./target/release/astro-up-compiler \
+          ./bin/astro-up-compiler \
             --manifests manifests \
             --versions versions \
             --output catalog.db \
             --verbose
 
       - name: Install minisign
+        env:
+          MINISIGN_VERSION: '0.11'
         run: |
-          curl -sL https://github.com/jedisct1/minisign/releases/latest/download/minisign-linux-x86_64.tar.gz | tar xz
-          sudo mv minisign /usr/local/bin/
+          curl -sL "https://github.com/jedisct1/minisign/releases/download/${MINISIGN_VERSION}/minisign-${MINISIGN_VERSION}-linux.tar.gz" -o minisign.tar.gz
+          tar xzf minisign.tar.gz
+          sudo install -m 755 minisign-linux/x86_64/minisign /usr/local/bin/minisign
+          rm -rf minisign.tar.gz minisign-linux
 
       - name: Sign catalog
         env:

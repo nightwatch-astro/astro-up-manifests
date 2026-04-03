@@ -1,0 +1,38 @@
+name: Build Tools
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'crates/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build and publish binaries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build release binaries
+        run: cargo build --release --workspace
+
+      - name: Upload binaries to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view tools/latest > /dev/null 2>&1 || \
+            gh release create tools/latest --title "Tools (latest)" --notes "Rolling release of compiler and checker binaries."
+          gh release upload tools/latest \
+            target/release/astro-up-compiler \
+            target/release/astro-up-checker \
+            --clobber
