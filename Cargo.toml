@@ -36,3 +36,4 @@ chromiumoxide = { version = "0.8", features = ["tokio"] }
 lenient_semver = "0.4"
 base64 = "0.22"
 tempfile = "3"
+url = "2"

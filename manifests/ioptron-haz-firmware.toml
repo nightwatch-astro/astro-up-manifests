@@ -13,7 +13,7 @@ method = "exe"
 elevation = true
 
 [checkver]
-provider = "browser_scrape"
+provider = "html_scrape"
 url = "https://www.ioptron.com/Articles.asp?ID=349"
 regex = 'FW(\d{6})'
 

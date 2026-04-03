@@ -23,3 +23,6 @@ silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
 provider = "github"
 owner = "Stellarium"
 repo = "stellarium"
+
+[checkver.autoupdate]
+url = "https://github.com/Stellarium/stellarium/releases/download/v$version/stellarium-$version-win64.exe"

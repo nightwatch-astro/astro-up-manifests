@@ -19,3 +19,6 @@ elevation = true
 provider = "browser_scrape"
 url = "https://www.wandererastro.com/en/h-col-106.html"
 regex = 'WandererEmpire-V(\d+\.\d+\.\d+)-Setup'
+
+[checkver.autoupdate]
+url = "https://www.wandererastro.com/download/WandererEmpire-V$version-Setup.exe"
