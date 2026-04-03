@@ -1,4 +1,5 @@
 use astro_up_shared::manifest::{Checkver, Manifest};
+use chromiumoxide::cdp::browser_protocol::page::AddScriptToEvaluateOnNewDocumentParams;
 use futures::StreamExt;
 use std::time::Duration;
 
@@ -50,8 +51,8 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
             .await
             .map_err(|e| CheckError::Browser(format!("navigation error: {e}")))?;
 
-        // Inject stealth scripts before navigating to target
-        page.evaluate(STEALTH_JS)
+        // Inject stealth scripts on every new document (including navigations)
+        page.execute(AddScriptToEvaluateOnNewDocumentParams::new(STEALTH_JS))
             .await
             .map_err(|e| CheckError::Browser(format!("stealth inject error: {e}")))?;
 
@@ -62,6 +63,20 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
         page.wait_for_navigation()
             .await
             .map_err(|e| CheckError::Browser(format!("wait error: {e}")))?;
+
+        // If a css_selector is provided, click it and wait for content to update (SPA tab switch)
+        if let Some(selector) = &checkver.css_selector {
+            // Wait for the element to appear
+            let element = page.find_element(selector).await.map_err(|e| {
+                CheckError::Browser(format!("selector '{selector}' not found: {e}"))
+            })?;
+            element
+                .click()
+                .await
+                .map_err(|e| CheckError::Browser(format!("click error: {e}")))?;
+            // Wait for SPA content to render
+            tokio::time::sleep(Duration::from_secs(3)).await;
+        }
 
         // Extract page content with extraction timeout
         let content = tokio::time::timeout(extraction_timeout, page.content())

@@ -20,9 +20,10 @@ elevation = true
 silent = "/S"
 
 [checkver]
-provider = "http_head"
-url = "https://dl.zwoastro.com/software?app=FirmwareUpgradeTool&platform=windows86&region=Overseas"
-regex = 'filename=FWUpdate_Windows_v(\d+\.\d+\.\d+)\.'
+provider = "browser_scrape"
+url = "https://www.zwoastro.com/software/"
+css_selector = ".e-n-tab-title:nth-child(2)"
+regex = 'Firmware.*?Tool.*?[Vv](\d+\.\d+\.\d+)'
 
 [checkver.autoupdate]
 url = "https://dl.zwoastro.com/software?app=FirmwareUpgradeTool&platform=windows86&region=Overseas"

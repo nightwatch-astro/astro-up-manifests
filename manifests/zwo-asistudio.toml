@@ -23,9 +23,10 @@ elevation = true
 silent = "/S"
 
 [checkver]
-provider = "http_head"
-url = "https://dl.zwoastro.com/software?app=ASIStudio&platform=windows64&region=Overseas"
-regex = 'filename=ASIStudio_V(\d+\.\d+(?:\.\d+)*)_'
+provider = "browser_scrape"
+url = "https://www.zwoastro.com/software/"
+css_selector = ".e-n-tab-title:nth-child(2)"
+regex = 'ASIStudio.*?[Vv](\d+\.\d+(?:\.\d+)?)'
 
 [checkver.autoupdate]
 url = "https://dl.zwoastro.com/software?app=ASIStudio&platform=windows64&region=Overseas"
