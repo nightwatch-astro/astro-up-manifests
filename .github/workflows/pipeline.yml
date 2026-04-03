@@ -75,9 +75,7 @@ jobs:
             --verbose
 
       - name: Install minisign
-        run: |
-          curl -sL https://github.com/jedisct1/minisign/releases/latest/download/minisign-linux-x86_64.tar.gz | tar xz
-          sudo mv minisign /usr/local/bin/
+        run: cargo install minisign --locked
 
       - name: Sign catalog
         env:

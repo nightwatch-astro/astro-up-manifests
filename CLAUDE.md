@@ -36,7 +36,7 @@ Consistent snake_case naming: `inno_setup` (not `innosetup`), `zip_wrap`, `downl
 
 ## Release
 
-release-plz with nightwatch-astro shared workflow. Binaries are not published to crates.io.
+The catalog (`catalog.db`) is compiled and published to the `catalog/latest` GitHub release by the Manifest Pipeline workflow (every 6 hours). Crates are internal tools, not published to crates.io.
 
 ## Active Technologies
 - Rust (stable toolchain, 2021 edition) + serde, toml, rusqlite (bundled), reqwest, tokio, chromiumoxide, clap (001-manifest-pipeline)
