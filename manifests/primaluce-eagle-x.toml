@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "primaluce-eagle-x"
 name = "PrimaLuce EAGLE X Software Package"
-description = "Software package for PrimaLuce EAGLE X observatory computer"
+description = "Software package for PrimaLuce EAGLE X telescope computer"
 homepage = "https://www.primalucelab.com"
 category = "utilities"
 type = "application"

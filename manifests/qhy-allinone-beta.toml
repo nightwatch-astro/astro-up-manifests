@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "qhy-allinone-beta"
 name = "QHY AllInOne Driver Pack (Beta)"
-description = "Beta release of the QHY AllInOne driver pack"
+description = "Beta AllInOne pack with priority support for recently released QHY camera models"
 homepage = "https://www.qhyccd.com"
 category = "driver"
 type = "driver"

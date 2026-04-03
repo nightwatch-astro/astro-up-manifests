@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "pegasus-unity-platform"
 name = "Pegasus Unity Platform"
-description = "Unity Platform 3 — all Pegasus devices with ASCOM support"
+description = "Pegasus Unity Platform — unified control software for Pegasus Astro devices with ASCOM support"
 homepage = "https://pegasusastro.com"
 category = "driver"
 type = "application"

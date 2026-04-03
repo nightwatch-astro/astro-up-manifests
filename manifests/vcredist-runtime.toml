@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "vcredist-runtime"
 name = "Visual C++ Redistributable"
-description = "Microsoft Visual C++ 2015-2022 Redistributable (x64)"
+description = "Microsoft Visual C++ 2015-2022+ Redistributable (x64)"
 homepage = "https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist"
 category = "prerequisites"
 type = "runtime"

@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "qhy-polemaster"
 name = "QHY PoleMaster"
-description = "Polar alignment tool for QHY PoleMaster camera"
+description = "QHY PoleMaster electronic polar alignment software"
 homepage = "https://www.qhyccd.com"
 category = "utilities"
 type = "application"

@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "astroasis-focuser-ascom"
 name = "Astroasis Focuser ASCOM Driver"
-description = "ASCOM driver for Astroasis motorized focusers"
+description = "ASCOM driver for Astroasis Oasis Focuser"
 homepage = "https://www.astroasis.com"
 category = "driver"
 type = "driver"

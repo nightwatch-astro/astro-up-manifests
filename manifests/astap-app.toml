@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "astap-app"
 name = "ASTAP"
-description = "ASTAP — astrometric plate solver and FITS viewer"
+description = "ASTAP — astrometric stacking program, plate solver, and FITS viewer"
 homepage = "https://www.hnsky.org/astap.htm"
 category = "platesolving"
 type = "application"

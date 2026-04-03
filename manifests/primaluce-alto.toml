@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "primaluce-alto"
 name = "PrimaLuce ALTO Software Package"
-description = "Driver and software package for PrimaLuce ALTO telescope cover"
+description = "Driver and software package for PrimaLuce ALTO telescope cover motor"
 homepage = "https://www.primalucelab.com"
 category = "driver"
 type = "driver"

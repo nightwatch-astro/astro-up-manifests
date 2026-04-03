@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "synscan-mc015-firmware"
 name = "SynScan MC015 Firmware"
-description = "EQ6-R/AZ-EQ6/EQ8-R/CQ350 firmware"
+description = "Stepper motor firmware for EQ6/EQ6-R/AZ-EQ6/EQ8/EQ8-R/EQ8-RH/CQ350/Star Gate Dobsonian GOTO mounts"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "resource"

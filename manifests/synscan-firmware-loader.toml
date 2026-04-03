@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "synscan-firmware-loader"
 name = "SynScan Motor Controller Firmware Loader"
-description = "Firmware loader for SynScan motor controllers via serial"
+description = "Firmware loader for SynScan motor controllers via USB/hand controller"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "application"

@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "astroasis-focuser-firmware"
 name = "Astroasis Focuser Firmware"
-description = "Firmware update for Astroasis motorized focusers"
+description = "Firmware update for Astroasis Oasis Focuser Rose"
 homepage = "https://www.astroasis.com"
 category = "driver"
 type = "resource"

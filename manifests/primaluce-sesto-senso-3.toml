@@ -1,7 +1,7 @@
 manifest_version = 1
 id = "primaluce-sesto-senso-3"
 name = "PrimaLuce SESTO SENSO 3 Software Package"
-description = "Driver and software package for PrimaLuce SESTO SENSO 3 focuser"
+description = "Driver and software package for PrimaLuce SESTO SENSO 3 robotic focusing motor"
 homepage = "https://www.primalucelab.com"
 category = "driver"
 type = "driver"
