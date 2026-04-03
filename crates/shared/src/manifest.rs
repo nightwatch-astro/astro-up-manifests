@@ -110,6 +110,14 @@ pub struct HashConfig {
 pub struct Autoupdate {
     #[serde(default)]
     pub url: Option<String>,
+    /// Named download URL resolver for vendors with non-standard URL generation.
+    /// The checker looks up a function by this name to generate the download URL
+    /// from the discovered version string.
+    #[serde(default)]
+    pub resolver: Option<String>,
+    /// Extra parameters passed to the resolver (e.g., architecture).
+    #[serde(default)]
+    pub resolver_args: std::collections::HashMap<String, String>,
     #[serde(default)]
     pub hash: Option<HashConfig>,
 }

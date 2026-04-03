@@ -226,13 +226,25 @@ async fn process_manifest(
 
     match providers::check_manifest(manifest, client).await {
         Ok(CheckOutcome::Found(result)) => {
-            // Resolve autoupdate URL template if available
+            // Resolve download URL: named resolver > autoupdate template > scraped URL
             let url = manifest
                 .checkver
                 .as_ref()
                 .and_then(|cv| cv.autoupdate.as_ref())
-                .and_then(|au| au.url.as_ref())
-                .map(|tmpl| template::substitute(tmpl, &result.version))
+                .and_then(|au| {
+                    // Try named resolver first
+                    if let Some(resolver_name) = &au.resolver {
+                        return providers::download_resolver::resolve(
+                            resolver_name,
+                            &result.version,
+                            &au.resolver_args,
+                        );
+                    }
+                    // Then try URL template
+                    au.url
+                        .as_ref()
+                        .map(|tmpl| template::substitute(tmpl, &result.version))
+                })
                 .or(result.url.clone());
 
             // Discover hash
