@@ -24,7 +24,7 @@ elevation = false
 [checkver]
 provider = "html_scrape"
 url = "https://nighttime-imaging.eu/download/"
-regex = "NINA[\\s-]+v?(\\d+\\.\\d+\\.\\d+)"
+regex = "Version (\\d+\\.\\d+(?:\\.\\d+)?)"
 version_format = "semver"
 include_pre_release = true
 
