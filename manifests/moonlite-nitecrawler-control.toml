@@ -2,6 +2,7 @@ manifest_version = 1
 id = "moonlite-nitecrawler-control"
 name = "MoonLite NiteCrawler Remote Control"
 description = "Standalone control application for MoonLite NiteCrawler"
+publisher = "MoonLite"
 homepage = "https://focuser.com"
 category = "driver"
 type = "application"

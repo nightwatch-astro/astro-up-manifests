@@ -2,6 +2,7 @@ manifest_version = 1
 id = "zwo-ascom-driver-pack"
 name = "ZWO ASCOM Driver Pack"
 description = "Unified ASCOM driver for ZWO cameras, EAF focuser, EFW filter wheel, rotator, and AM mounts"
+publisher = "ZWO"
 homepage = "https://www.zwoastro.com"
 category = "driver"
 type = "driver"

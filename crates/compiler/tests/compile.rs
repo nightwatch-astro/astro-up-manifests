@@ -14,7 +14,8 @@ fn compile_sample_db() -> (tempfile::TempDir, Connection) {
 
     let conn = Connection::open(&db_path).unwrap();
     schema::create_schema(&conn).unwrap();
-    compile::compile_manifests(&conn, &result.manifests).unwrap();
+    let icons_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../assets/icons");
+    compile::compile_manifests(&conn, &result.manifests, &icons_dir).unwrap();
 
     (dir, conn)
 }
@@ -160,7 +161,8 @@ fn version_aggregation() {
 
     let conn = Connection::open(&db_path).unwrap();
     schema::create_schema(&conn).unwrap();
-    compile::compile_manifests(&conn, &result.manifests).unwrap();
+    let icons_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../assets/icons");
+    compile::compile_manifests(&conn, &result.manifests, &icons_dir).unwrap();
     let count = version_file::aggregate_versions(&conn, &versions_dir).unwrap();
 
     assert_eq!(count, 1);
@@ -198,7 +200,8 @@ fn orphaned_versions_skipped() {
 
     let conn = Connection::open(&db_path).unwrap();
     schema::create_schema(&conn).unwrap();
-    compile::compile_manifests(&conn, &result.manifests).unwrap();
+    let icons_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../assets/icons");
+    compile::compile_manifests(&conn, &result.manifests, &icons_dir).unwrap();
     let count = version_file::aggregate_versions(&conn, &versions_dir).unwrap();
 
     assert_eq!(count, 0, "orphaned version files should be skipped");

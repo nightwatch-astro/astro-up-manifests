@@ -2,6 +2,7 @@ manifest_version = 1
 id = "synscan-mc014-firmware"
 name = "SynScan MC014 Firmware"
 description = "DC motor firmware for AZ-GTi/AZ-GTe/AZ-GTiX/Virtuoso GTi/Skyliner Dobsonian GOTO/Star Discovery mounts"
+publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "resource"

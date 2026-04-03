@@ -2,6 +2,7 @@ manifest_version = 1
 id = "nexdome-ascom"
 name = "NexDome ASCOM Driver"
 description = "ASCOM driver for NexDome observatory dome"
+publisher = "NexDome"
 homepage = "https://nexdome.com"
 category = "driver"
 type = "driver"

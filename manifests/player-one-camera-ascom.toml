@@ -2,6 +2,7 @@ manifest_version = 1
 id = "player-one-camera-ascom"
 name = "Player One Camera ASCOM Driver"
 description = "ASCOM driver for Player One astronomy cameras"
+publisher = "Player One Astronomy"
 homepage = "https://player-one-astronomy.com"
 category = "driver"
 type = "driver"

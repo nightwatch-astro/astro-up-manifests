@@ -29,6 +29,7 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
         tags: vec![],
         aliases: vec![],
         license: None,
+        icon: None,
         detection: None,
         install: Install {
             method: "zip_wrap".into(),

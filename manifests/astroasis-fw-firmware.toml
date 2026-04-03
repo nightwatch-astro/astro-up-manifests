@@ -2,6 +2,7 @@ manifest_version = 1
 id = "astroasis-fw-firmware"
 name = "Astroasis Filter Wheel Firmware"
 description = "Firmware update for Astroasis Oasis Filter Wheel"
+publisher = "Astroasis"
 homepage = "https://www.astroasis.com"
 category = "driver"
 type = "resource"

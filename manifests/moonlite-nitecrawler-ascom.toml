@@ -2,6 +2,7 @@ manifest_version = 1
 id = "moonlite-nitecrawler-ascom"
 name = "MoonLite NiteCrawler ASCOM Driver"
 description = "ASCOM driver for MoonLite NiteCrawler focuser/rotator"
+publisher = "MoonLite"
 homepage = "https://focuser.com"
 category = "driver"
 type = "driver"

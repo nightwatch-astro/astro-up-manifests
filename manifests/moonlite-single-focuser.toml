@@ -2,6 +2,7 @@ manifest_version = 1
 id = "moonlite-single-focuser"
 name = "MoonLite Single Focuser Control"
 description = "Standalone control application for MoonLite single-port focuser controllers"
+publisher = "MoonLite"
 homepage = "https://focuser.com"
 category = "driver"
 type = "application"

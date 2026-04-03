@@ -2,6 +2,7 @@ manifest_version = 1
 id = "ascom-remote-app"
 name = "ASCOM Remote Server"
 description = "ASCOM Remote Server — network access to ASCOM devices"
+publisher = "ASCOM Initiative"
 homepage = "https://ascom-standards.org"
 category = "utilities"
 type = "application"

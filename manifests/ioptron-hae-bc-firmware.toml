@@ -2,6 +2,7 @@ manifest_version = 1
 id = "ioptron-hae-bc-firmware"
 name = "iOptron HAE-BC Firmware"
 description = "Firmware for iOptron HAE-BC mount"
+publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "resource"

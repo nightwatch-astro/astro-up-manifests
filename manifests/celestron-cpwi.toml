@@ -2,6 +2,7 @@ manifest_version = 1
 id = "celestron-cpwi"
 name = "Celestron CPWI"
 description = "CPWI mount control with ASCOM telescope/focuser"
+publisher = "Celestron"
 homepage = "https://www.celestron.com"
 category = "driver"
 type = "application"

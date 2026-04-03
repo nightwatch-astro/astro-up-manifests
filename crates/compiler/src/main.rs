@@ -19,6 +19,10 @@ struct Cli {
     #[arg(long, default_value = "versions")]
     versions: PathBuf,
 
+    /// Path to icons directory
+    #[arg(long, default_value = "assets/icons")]
+    icons: PathBuf,
+
     /// Output SQLite database path
     #[arg(short, long, default_value = "catalog.db")]
     output: PathBuf,
@@ -84,7 +88,7 @@ fn run(cli: Cli) -> anyhow::Result<ExitCode> {
     schema::create_schema(&conn)?;
 
     // 5. Compile manifests into tables
-    compile::compile_manifests(&conn, &result.manifests)?;
+    compile::compile_manifests(&conn, &result.manifests, &cli.icons)?;
 
     // 6. Aggregate version files
     let version_count = version_file::aggregate_versions(&conn, &cli.versions)?;

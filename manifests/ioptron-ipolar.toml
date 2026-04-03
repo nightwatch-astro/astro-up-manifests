@@ -2,6 +2,7 @@ manifest_version = 1
 id = "ioptron-ipolar"
 name = "iOptron iPolar"
 description = "iOptron iPolar electronic polar alignment tool"
+publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "application"

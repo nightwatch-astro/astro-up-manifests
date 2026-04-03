@@ -2,6 +2,7 @@ manifest_version = 1
 id = "zwo-firmware-tool"
 name = "ZWO Firmware Upgrade Tool"
 description = "Firmware update utility for ZWO devices"
+publisher = "ZWO"
 homepage = "https://www.zwoastro.com"
 category = "utilities"
 type = "application"

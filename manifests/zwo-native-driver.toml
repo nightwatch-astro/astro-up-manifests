@@ -2,6 +2,7 @@ manifest_version = 1
 id = "zwo-native-driver"
 name = "ZWO ASI Native Camera Driver"
 description = "Native USB camera driver for all ZWO ASI cameras"
+publisher = "ZWO"
 homepage = "https://www.zwoastro.com"
 category = "driver"
 type = "usb_driver"

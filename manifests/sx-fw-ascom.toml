@@ -2,6 +2,7 @@ manifest_version = 1
 id = "sx-fw-ascom"
 name = "Starlight Xpress Filter Wheel ASCOM Driver"
 description = "ASCOM driver for Starlight Xpress filter wheels"
+publisher = "Starlight Xpress"
 homepage = "https://www.sxccd.com"
 category = "driver"
 type = "driver"

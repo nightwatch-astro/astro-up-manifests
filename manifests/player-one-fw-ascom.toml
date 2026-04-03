@@ -2,6 +2,7 @@ manifest_version = 1
 id = "player-one-fw-ascom"
 name = "Player One Filter Wheel ASCOM Driver"
 description = "ASCOM driver for Player One filter wheels"
+publisher = "Player One Astronomy"
 homepage = "https://player-one-astronomy.com"
 category = "driver"
 type = "driver"

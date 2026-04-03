@@ -2,6 +2,7 @@ manifest_version = 1
 id = "ioptron-cem120-firmware"
 name = "iOptron CEM120 Firmware"
 description = "Firmware for iOptron CEM120 mount"
+publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "resource"

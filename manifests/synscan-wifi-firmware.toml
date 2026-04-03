@@ -2,6 +2,7 @@ manifest_version = 1
 id = "synscan-wifi-firmware"
 name = "SynScan WiFi Adapter Firmware"
 description = "Firmware for SynScan WiFi adapter"
+publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "resource"

@@ -2,6 +2,7 @@ manifest_version = 1
 id = "zwo-asistudio"
 name = "ZWO ASIStudio"
 description = "ZWO all-in-one imaging suite for ASI cameras"
+publisher = "ZWO"
 homepage = "https://www.zwoastro.com"
 category = "capture"
 type = "application"

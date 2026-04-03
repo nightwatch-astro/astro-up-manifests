@@ -2,6 +2,7 @@ manifest_version = 1
 id = "qhy-allinone"
 name = "QHY AllInOne Driver Pack"
 description = "AllInOne pack: system drivers, ASCOM camera and filter wheel drivers, WDM broadcast driver, EZCAP_QT, SDKs, and SharpCap"
+publisher = "QHY"
 homepage = "https://www.qhyccd.com"
 category = "driver"
 type = "driver"

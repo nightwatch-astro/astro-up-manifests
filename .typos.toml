@@ -1,0 +1,5 @@
+[default.extend-words]
+# iOptron HAE series mount name
+hae = "hae"
+# Lunatico Astronomia is the company's actual name
+astronomia = "astronomia"

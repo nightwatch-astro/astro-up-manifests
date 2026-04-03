@@ -2,6 +2,7 @@ manifest_version = 1
 id = "primaluce-ecco2"
 name = "PrimaLuce ECCO2 Software Package"
 description = "Driver and software package for PrimaLuce ECCO2 environmental controller"
+publisher = "PrimaLuce Lab"
 homepage = "https://www.primalucelab.com"
 category = "driver"
 type = "driver"

@@ -2,6 +2,7 @@ manifest_version = 1
 id = "lunatico-cloudwatcher-software"
 name = "Lunatico AAG CloudWatcher Data Display"
 description = "Data display software for Lunatico AAG CloudWatcher"
+publisher = "Lunatico Astronomia"
 homepage = "https://lunaticoastro.com"
 category = "driver"
 type = "application"

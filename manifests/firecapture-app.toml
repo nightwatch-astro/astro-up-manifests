@@ -2,6 +2,7 @@ manifest_version = 1
 id = "firecapture-app"
 name = "FireCapture"
 description = "FireCapture — planetary imaging capture"
+publisher = "FireCapture"
 homepage = "https://www.firecapture.de"
 category = "capture"
 type = "application"

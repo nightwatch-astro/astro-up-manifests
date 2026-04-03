@@ -2,6 +2,7 @@ manifest_version = 1
 id = "nina-framing-cache-full"
 name = "NINA Framing Assistant Cache (Full Sky)"
 description = "Complete offline sky map cache for NINA Framing Assistant (3.3 GB, DSS/STScI survey)"
+publisher = "NINA Contributors"
 homepage = "https://nighttime-imaging.eu"
 category = "capture"
 type = "database"

@@ -2,6 +2,7 @@ manifest_version = 1
 id = "prolific-drivers"
 name = "Prolific PL2303 Drivers"
 description = "Prolific PL2303 USB-serial drivers"
+publisher = "Prolific"
 homepage = "https://www.prolific.com.tw"
 category = "usb"
 type = "usb_driver"

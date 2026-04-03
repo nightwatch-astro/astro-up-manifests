@@ -2,6 +2,7 @@ manifest_version = 1
 id = "wanderer-empire"
 name = "WandererEmpire"
 description = "WandererEmpire — unified control and ASCOM drivers for Wanderer rotators, covers, power boxes, focusers, and filter wheels"
+publisher = "Wanderer Astro"
 homepage = "https://www.wandererastro.com"
 category = "driver"
 type = "application"

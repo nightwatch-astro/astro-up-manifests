@@ -2,6 +2,7 @@ manifest_version = 1
 id = "dotnet-desktop-8"
 name = ".NET Desktop Runtime 8"
 description = ".NET 8 Desktop Runtime for Windows applications"
+publisher = "Microsoft"
 homepage = "https://dotnet.microsoft.com"
 category = "prerequisites"
 type = "runtime"
