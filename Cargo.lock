@@ -87,6 +87,7 @@ dependencies = [
  "clap",
  "futures",
  "pelite",
+ "rand",
  "regex",
  "reqwest 0.13.2",
  "reqwest-middleware",

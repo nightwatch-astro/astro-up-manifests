@@ -1,11 +1,13 @@
 pub mod browser_scrape;
 pub mod direct_url;
+pub mod download_resolver;
 pub mod github;
 pub mod gitlab;
 pub mod html_scrape;
 pub mod http_head;
 pub mod manual;
 pub mod pe_download;
+pub mod sharpcap_url;
 
 use astro_up_shared::manifest::Manifest;
 use reqwest_middleware::ClientWithMiddleware;
