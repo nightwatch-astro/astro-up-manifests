@@ -16,8 +16,9 @@ path = "{program_dir}/PrimaLuceLab/SESTO-SENSO-3/SESTO-SENSO-3.exe"
 method = "zip_wrap"
 
 [checkver]
-provider = "html_scrape"
+provider = "browser_scrape"
 url = "https://www.primalucelab.com/info/downloads.html"
+regex = 'SESTO-SENSO-3-software-package-(\d+-\d+(?:-\d+)*)\.zip'
 
 [checkver.autoupdate]
 url = "https://www.primalucelab.com/downloads/SESTO-SENSO-3-software-package-1-0.zip"

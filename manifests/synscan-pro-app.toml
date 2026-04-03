@@ -17,3 +17,5 @@ method = "zip_wrap"
 [checkver]
 provider = "html_scrape"
 url = "https://www.skywatcher.com/download/software/synscan-app/"
+regex = 'SynScan Pro App, Version (\d+\.\d+\.\d+)'
+css_selector = ".list-page-object-name"

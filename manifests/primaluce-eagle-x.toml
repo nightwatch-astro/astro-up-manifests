@@ -16,8 +16,9 @@ path = "{program_dir}/PrimaLuceLab/EAGLE-X/EAGLE-X.exe"
 method = "zip_wrap"
 
 [checkver]
-provider = "html_scrape"
+provider = "browser_scrape"
 url = "https://www.primalucelab.com/info/downloads.html"
+regex = 'EAGLE-X-software-package-(\d+-\d+-\d+(?:-\d+)*)\.zip'
 
 [checkver.autoupdate]
 url = "https://www.primalucelab.com/downloads/EAGLE-X-software-package-3-1-0.zip"

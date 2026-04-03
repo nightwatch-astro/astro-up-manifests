@@ -17,10 +17,15 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
     let page_timeout = Duration::from_secs(60);
     let extraction_timeout = Duration::from_secs(30);
 
+    // Use a unique temp dir per instance to avoid Chromium SingletonLock conflicts
+    let user_data_dir = tempfile::tempdir()
+        .map_err(|e| CheckError::Browser(format!("failed to create temp dir: {e}")))?;
+
     // Launch browser
     let (mut browser, mut handler) = chromiumoxide::Browser::launch(
         chromiumoxide::BrowserConfig::builder()
             .request_timeout(page_timeout)
+            .user_data_dir(user_data_dir.path())
             .build()
             .map_err(|e| CheckError::Browser(format!("config error: {e}")))?,
     )

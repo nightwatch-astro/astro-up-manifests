@@ -16,8 +16,9 @@ path = "{program_dir}/PrimaLuceLab/ARCO/ARCO.exe"
 method = "zip_wrap"
 
 [checkver]
-provider = "html_scrape"
+provider = "browser_scrape"
 url = "https://www.primalucelab.com/info/downloads.html"
+regex = 'ARCO-software-package-(\d+-\d+(?:-\d+)*)\.zip'
 
 [checkver.autoupdate]
 url = "https://www.primalucelab.com/downloads/ARCO-software-package-3-7.zip"

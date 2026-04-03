@@ -16,8 +16,9 @@ path = "{program_dir}/PrimaLuceLab/ESATTO/ESATTO.exe"
 method = "zip_wrap"
 
 [checkver]
-provider = "html_scrape"
+provider = "browser_scrape"
 url = "https://www.primalucelab.com/info/downloads.html"
+regex = 'ESATTO-software-package-(\d+-\d+(?:-\d+)*)\.zip'
 
 [checkver.autoupdate]
 url = "https://www.primalucelab.com/downloads/ESATTO-software-package-3-7.zip"

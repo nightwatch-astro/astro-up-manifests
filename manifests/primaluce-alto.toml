@@ -16,8 +16,9 @@ path = "{program_dir}/PrimaLuceLab/ALTO/ALTO.exe"
 method = "zip_wrap"
 
 [checkver]
-provider = "html_scrape"
+provider = "browser_scrape"
 url = "https://www.primalucelab.com/info/downloads.html"
+regex = 'ALTO-software-package-(\d+-\d+(?:-\d+)*)\.zip'
 
 [checkver.autoupdate]
 url = "https://www.primalucelab.com/downloads/ALTO-software-package-1-4.zip"
