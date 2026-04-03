@@ -75,7 +75,7 @@ jobs:
         env:
           MINISIGN_KEY: ${{ secrets.MINISIGN_KEY }}
         run: |
-          echo "$MINISIGN_KEY" > /tmp/minisign.key
+          printf '%s\n' "$MINISIGN_KEY" > /tmp/minisign.key
           minisign -Sm catalog.db -s /tmp/minisign.key -t "catalog $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           rm /tmp/minisign.key
 
