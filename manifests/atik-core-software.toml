@@ -2,6 +2,7 @@ manifest_version = 1
 id = "atik-core-software"
 name = "Atik Core Software"
 description = "Core camera and filter wheel drivers with ASCOM for Atik cameras"
+publisher = "Atik Cameras"
 homepage = "https://www.atik-cameras.com"
 category = "driver"
 type = "driver"

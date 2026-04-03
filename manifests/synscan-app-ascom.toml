@@ -2,6 +2,7 @@ manifest_version = 1
 id = "synscan-app-ascom"
 name = "SynScan App ASCOM Driver"
 description = "ASCOM driver for SynScan App mount control"
+publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "driver"

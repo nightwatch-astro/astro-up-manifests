@@ -2,6 +2,7 @@ manifest_version = 1
 id = "synscan-mc020-firmware"
 name = "SynScan MC020 Firmware"
 description = "HEQ5 firmware"
+publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "resource"

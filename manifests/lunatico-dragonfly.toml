@@ -2,6 +2,7 @@ manifest_version = 1
 id = "lunatico-dragonfly"
 name = "Lunatico Dragonfly ASCOM Driver"
 description = "ASCOM driver for Lunatico Dragonfly observatory controller"
+publisher = "Lunatico Astronomia"
 homepage = "https://lunaticoastro.com"
 category = "driver"
 type = "driver"

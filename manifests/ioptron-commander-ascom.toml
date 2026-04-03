@@ -2,6 +2,7 @@ manifest_version = 1
 id = "ioptron-commander-ascom"
 name = "iOptron Commander with ASCOM Driver"
 description = "iOptron Commander mount control with ASCOM driver"
+publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "application"

@@ -2,6 +2,7 @@ manifest_version = 1
 id = "ascom-platform"
 name = "ASCOM Platform"
 description = "ASCOM Standards for Astronomy — driver interface platform"
+publisher = "ASCOM Initiative"
 homepage = "https://ascom-standards.org"
 category = "prerequisites"
 type = "runtime"

@@ -2,6 +2,7 @@ manifest_version = 1
 id = "ioptron-cem40-firmware"
 name = "iOptron CEM40/GEM45 Firmware"
 description = "Firmware for iOptron CEM40 and GEM45 mounts"
+publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "resource"

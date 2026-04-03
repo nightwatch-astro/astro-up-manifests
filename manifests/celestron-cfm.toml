@@ -2,6 +2,7 @@ manifest_version = 1
 id = "celestron-cfm"
 name = "Celestron Firmware Manager"
 description = "Firmware update utility for Celestron telescopes and accessories"
+publisher = "Celestron"
 homepage = "https://www.celestron.com"
 category = "driver"
 type = "application"

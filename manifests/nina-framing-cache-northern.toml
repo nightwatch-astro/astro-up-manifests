@@ -2,6 +2,7 @@ manifest_version = 1
 id = "nina-framing-cache-northern"
 name = "NINA Framing Assistant Cache (Northern Sky)"
 description = "Northern sky narrowband offline cache for NINA Framing Assistant (1.4 GB, down to -17 Dec)"
+publisher = "NINA Contributors"
 homepage = "https://nighttime-imaging.eu"
 category = "capture"
 type = "database"

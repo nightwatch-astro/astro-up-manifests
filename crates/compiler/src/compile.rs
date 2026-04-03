@@ -61,8 +61,7 @@ pub fn compile_manifests(
 
 /// Resolve icon for a manifest. Lookup order:
 /// 1. Explicit `icon` field in manifest → `{icons_dir}/{icon}.png`
-/// 2. App-specific icon by ID → `{icons_dir}/{id}.png`
-/// 3. Publisher fallback → `{icons_dir}/{publisher_slug}.png`
+/// 2. Publisher slug fallback → `{icons_dir}/{publisher_slug}.png`
 ///
 /// Returns raw base64 string (no data URI prefix) or None.
 fn resolve_icon(manifest: &Manifest, icons_dir: &Path) -> Option<String> {
@@ -72,9 +71,7 @@ fn resolve_icon(manifest: &Manifest, icons_dir: &Path) -> Option<String> {
             .icon
             .as_deref()
             .map(|i| icons_dir.join(format!("{i}.png"))),
-        // 2. App-specific by ID
-        Some(icons_dir.join(format!("{}.png", manifest.id))),
-        // 3. Publisher slug (lowercase, spaces → hyphens)
+        // 2. Publisher slug (lowercase, spaces → hyphens)
         manifest.publisher.as_deref().map(|p| {
             let slug = p.to_lowercase().replace(' ', "-");
             icons_dir.join(format!("{slug}.png"))

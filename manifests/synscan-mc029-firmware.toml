@@ -2,6 +2,7 @@ manifest_version = 1
 id = "synscan-mc029-firmware"
 name = "SynScan MC029 Firmware"
 description = "Firmware for AZ-GTi/AZ-GTe/AZ-GTiX/Virtuoso GTi/Star Discovery/Starliner Dobsonian GOTO/AZ-GO2/Fusion-120i mounts"
+publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "resource"

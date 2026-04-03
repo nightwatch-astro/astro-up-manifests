@@ -2,6 +2,7 @@ manifest_version = 1
 id = "synscan-mc016-firmware"
 name = "SynScan MC016 Firmware"
 description = "EQ-AL55i Pro firmware"
+publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "resource"

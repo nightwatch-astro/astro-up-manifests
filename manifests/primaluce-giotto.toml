@@ -2,6 +2,7 @@ manifest_version = 1
 id = "primaluce-giotto"
 name = "PrimaLuce GIOTTO Software Package"
 description = "Driver and software package for PrimaLuce GIOTTO flat field generator"
+publisher = "PrimaLuce Lab"
 homepage = "https://www.primalucelab.com"
 category = "driver"
 type = "driver"

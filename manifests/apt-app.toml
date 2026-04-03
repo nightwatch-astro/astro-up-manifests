@@ -2,6 +2,7 @@ manifest_version = 1
 id = "apt-app"
 name = "Astro Photography Tool"
 description = "Astro Photography Tool — DSO imaging and session automation"
+publisher = "APT"
 homepage = "https://astrophotography.app"
 category = "capture"
 type = "application"

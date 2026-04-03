@@ -2,6 +2,7 @@ manifest_version = 1
 id = "synscan-pro-app"
 name = "SynScan Pro App"
 description = "SynScan Pro application for mount control via Wi-Fi or USB"
+publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "application"

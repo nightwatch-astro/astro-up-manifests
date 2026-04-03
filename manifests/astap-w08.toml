@@ -2,6 +2,7 @@ manifest_version = 1
 id = "astap-w08"
 name = "ASTAP W08 Wide Field Database"
 description = "Wide field star database for ASTAP plate solver"
+publisher = "ASTAP"
 homepage = "https://www.hnsky.org/astap.htm"
 category = "platesolving"
 type = "database"

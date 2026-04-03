@@ -2,6 +2,7 @@ manifest_version = 1
 id = "phd2-app"
 name = "PHD2"
 description = "PHD2 — push here dummy autoguiding"
+publisher = "OpenPHD"
 homepage = "https://openphdguiding.org"
 category = "guiding"
 type = "application"

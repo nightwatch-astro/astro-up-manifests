@@ -2,6 +2,7 @@ manifest_version = 1
 id = "primaluce-arco"
 name = "PrimaLuce ARCO Software Package"
 description = "Driver and software package for PrimaLuce ARCO rotator"
+publisher = "PrimaLuce Lab"
 homepage = "https://www.primalucelab.com"
 category = "driver"
 type = "driver"

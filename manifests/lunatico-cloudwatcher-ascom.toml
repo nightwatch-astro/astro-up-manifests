@@ -2,6 +2,7 @@ manifest_version = 1
 id = "lunatico-cloudwatcher-ascom"
 name = "Lunatico AAG CloudWatcher ASCOM Driver"
 description = "ASCOM driver for Lunatico AAG CloudWatcher weather station"
+publisher = "Lunatico Astronomia"
 homepage = "https://lunaticoastro.com"
 category = "driver"
 type = "driver"

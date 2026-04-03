@@ -2,6 +2,7 @@ manifest_version = 1
 id = "sharpcap-app"
 name = "SharpCap"
 description = "SharpCap — live stacking and planetary/DSO capture"
+publisher = "SharpCap"
 homepage = "https://www.sharpcap.co.uk"
 category = "capture"
 type = "application"

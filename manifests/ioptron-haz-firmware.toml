@@ -2,6 +2,7 @@ manifest_version = 1
 id = "ioptron-haz-firmware"
 name = "iOptron HAZ Firmware"
 description = "Firmware for iOptron HAZ series altazimuth strain wave gear mounts"
+publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "resource"

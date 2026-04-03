@@ -2,6 +2,7 @@ manifest_version = 1
 id = "sx-native-driver"
 name = "Starlight Xpress Native Driver"
 description = "Native USB driver for Starlight Xpress CCD cameras"
+publisher = "Starlight Xpress"
 homepage = "https://www.sxccd.com"
 category = "driver"
 type = "usb_driver"

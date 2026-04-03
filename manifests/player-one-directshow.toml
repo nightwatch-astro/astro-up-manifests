@@ -2,6 +2,7 @@ manifest_version = 1
 id = "player-one-directshow"
 name = "Player One Camera DirectShow Driver"
 description = "DirectShow video driver for Player One cameras"
+publisher = "Player One Astronomy"
 homepage = "https://player-one-astronomy.com"
 category = "driver"
 type = "driver"

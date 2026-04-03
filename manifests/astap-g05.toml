@@ -2,6 +2,7 @@ manifest_version = 1
 id = "astap-g05"
 name = "ASTAP G05 Galaxy Database"
 description = "Large galaxy database for ASTAP plate solver (97 MB)"
+publisher = "ASTAP"
 homepage = "https://www.hnsky.org/astap.htm"
 category = "platesolving"
 type = "database"

@@ -2,6 +2,7 @@ manifest_version = 1
 id = "ioptron-cem26-firmware"
 name = "iOptron CEM26/GEM28 Firmware"
 description = "Firmware for iOptron CEM26 and GEM28 mounts"
+publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "resource"

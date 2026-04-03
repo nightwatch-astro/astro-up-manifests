@@ -2,6 +2,7 @@ manifest_version = 1
 id = "qhy-qfocuser"
 name = "QHY QFocuser ASCOM Driver"
 description = "ASCOM driver for QHY QFocuser motorized focusers"
+publisher = "QHY"
 homepage = "https://www.qhyccd.com"
 category = "driver"
 type = "driver"

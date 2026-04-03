@@ -2,6 +2,7 @@ manifest_version = 1
 id = "primaluce-play"
 name = "PrimaLuce PLAY"
 description = "PrimaLuce Lab all-in-one control software for imaging and device management"
+publisher = "PrimaLuce Lab"
 homepage = "https://www.primalucelab.com"
 category = "capture"
 type = "application"

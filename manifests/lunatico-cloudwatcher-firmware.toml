@@ -2,6 +2,7 @@ manifest_version = 1
 id = "lunatico-cloudwatcher-firmware"
 name = "Lunatico AAG CloudWatcher Firmware"
 description = "Firmware for Lunatico AAG CloudWatcher"
+publisher = "Lunatico Astronomia"
 homepage = "https://lunaticoastro.com"
 category = "driver"
 type = "resource"

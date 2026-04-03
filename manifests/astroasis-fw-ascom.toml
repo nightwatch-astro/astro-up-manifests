@@ -2,6 +2,7 @@ manifest_version = 1
 id = "astroasis-fw-ascom"
 name = "Astroasis Filter Wheel ASCOM Driver"
 description = "ASCOM driver for Astroasis Oasis Filter Wheel"
+publisher = "Astroasis"
 homepage = "https://www.astroasis.com"
 category = "driver"
 type = "driver"

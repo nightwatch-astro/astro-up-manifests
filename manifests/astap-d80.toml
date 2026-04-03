@@ -2,6 +2,7 @@ manifest_version = 1
 id = "astap-d80"
 name = "ASTAP D80 Star Database"
 description = "Very large star database for ASTAP plate solver (1.2 GB)"
+publisher = "ASTAP"
 homepage = "https://www.hnsky.org/astap.htm"
 category = "platesolving"
 type = "database"

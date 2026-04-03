@@ -2,6 +2,7 @@ manifest_version = 1
 id = "synscan-mc030-firmware"
 name = "SynScan MC030 Firmware"
 description = "Wave 150i/100i firmware"
+publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "resource"

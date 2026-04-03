@@ -2,6 +2,7 @@ manifest_version = 1
 id = "ioptron-upgrade-utility-v2"
 name = "iOptron Upgrade Utility V2"
 description = "Firmware upgrade utility for iOptron mounts (V2, older models)"
+publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "application"

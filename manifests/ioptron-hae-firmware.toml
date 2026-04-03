@@ -2,6 +2,7 @@ manifest_version = 1
 id = "ioptron-hae-firmware"
 name = "iOptron HAE Firmware"
 description = "Firmware for iOptron HAE series AZ/EQ hybrid strain wave gear mounts"
+publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "resource"

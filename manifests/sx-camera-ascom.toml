@@ -2,6 +2,7 @@ manifest_version = 1
 id = "sx-camera-ascom"
 name = "Starlight Xpress Camera ASCOM Driver"
 description = "ASCOM driver for Starlight Xpress CCD cameras"
+publisher = "Starlight Xpress"
 homepage = "https://www.sxccd.com"
 category = "driver"
 type = "driver"

@@ -2,6 +2,7 @@ manifest_version = 1
 id = "stellarium-app"
 name = "Stellarium"
 description = "Stellarium — open-source planetarium"
+publisher = "Stellarium"
 homepage = "https://stellarium.org"
 category = "planetarium"
 type = "application"
