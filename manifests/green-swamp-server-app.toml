@@ -22,3 +22,6 @@ silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
 provider = "github"
 owner = "rmorgan001"
 repo = "GS.Point3d"
+
+[checkver.autoupdate]
+url = "https://github.com/rmorgan001/GS.Point3d/releases/download/v$version/GreenSwampServer-$version-Setup.exe"

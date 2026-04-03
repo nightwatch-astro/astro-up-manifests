@@ -20,5 +20,8 @@ provider = "github"
 owner = "nexdome"
 repo = "ASCOM"
 
+[checkver.autoupdate]
+url = "https://github.com/nexdome/ASCOM/releases/download/v$version/NexDome-Setup.exe"
+
 [dependencies]
 requires = ["ascom-platform"]

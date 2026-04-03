@@ -19,7 +19,7 @@ elevation = true
 silent = "/S"
 
 [checkver]
-provider = "browser_scrape"
+provider = "html_scrape"
 url = "https://www.ioptron.com/Articles.asp?ID=337"
 regex = 'Installer(\d+)\.exe'
 

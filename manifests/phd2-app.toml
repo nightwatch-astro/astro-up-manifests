@@ -23,3 +23,6 @@ silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
 provider = "github"
 owner = "OpenPHDGuiding"
 repo = "phd2"
+
+[checkver.autoupdate]
+url = "https://openphdguiding.org/phd2-$version-installer.exe"

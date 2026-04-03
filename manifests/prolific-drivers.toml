@@ -22,3 +22,6 @@ silent = "/S"
 
 [checkver]
 provider = "manual"
+
+[checkver.autoupdate]
+url = "https://www.prolific.com.tw/UserFiles/files/PL23XX-M_LogoDriver_Setup_v208_20221028.exe"

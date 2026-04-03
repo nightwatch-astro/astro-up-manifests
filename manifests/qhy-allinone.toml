@@ -25,5 +25,8 @@ provider = "browser_scrape"
 url = "https://www.qhyccd.com/download/"
 regex = 'Ver\. (\d{8}) \(Recommended\)'
 
+[checkver.autoupdate]
+url = "https://www.qhyccd.com/file/repository/AllInOne/V$version/QHY_AllInOne_V$version.exe"
+
 [dependencies]
 requires = ["ascom-platform"]

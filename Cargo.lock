@@ -102,6 +102,7 @@ dependencies = [
  "toml",
  "tracing",
  "tracing-subscriber",
+ "url",
  "walkdir",
 ]
 
