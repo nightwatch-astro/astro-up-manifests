@@ -64,16 +64,22 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
             .await
             .map_err(|e| CheckError::Browser(format!("wait error: {e}")))?;
 
-        // If a css_selector is provided, click it and wait for content to update (SPA tab switch)
+        // If a css_selector is provided, use it to interact with the page before scraping.
+        // Supports: "js:..." for JavaScript evaluation, or a CSS selector to click.
         if let Some(selector) = &checkver.css_selector {
-            // Wait for the element to appear
-            let element = page.find_element(selector).await.map_err(|e| {
-                CheckError::Browser(format!("selector '{selector}' not found: {e}"))
-            })?;
-            element
-                .click()
-                .await
-                .map_err(|e| CheckError::Browser(format!("click error: {e}")))?;
+            if let Some(js) = selector.strip_prefix("js:") {
+                page.evaluate(js)
+                    .await
+                    .map_err(|e| CheckError::Browser(format!("js eval error: {e}")))?;
+            } else {
+                let element = page.find_element(selector).await.map_err(|e| {
+                    CheckError::Browser(format!("selector '{selector}' not found: {e}"))
+                })?;
+                element
+                    .click()
+                    .await
+                    .map_err(|e| CheckError::Browser(format!("click error: {e}")))?;
+            }
             // Wait for SPA content to render
             tokio::time::sleep(Duration::from_secs(3)).await;
         }
