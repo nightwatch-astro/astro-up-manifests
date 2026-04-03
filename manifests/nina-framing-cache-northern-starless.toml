@@ -17,7 +17,7 @@ method = "exe"
 elevation = true
 
 [checkver]
-provider = "http_head"
+provider = "manual"
 url = "https://nighttime-imaging.eu/downloads/Setup/Releases/FramingAssistantCache_NorthernSkyNarrowbandSurvey_OHS_starless.zip"
 
 [checkver.autoupdate]

@@ -13,8 +13,7 @@ method = "exe"
 elevation = true
 
 [checkver]
-provider = "pe_download"
-url = "https://gemini-2.com/firmware1/combined.zip"
+provider = "manual"
 
 [checkver.autoupdate]
 url = "https://gemini-2.com/firmware1/combined.zip"

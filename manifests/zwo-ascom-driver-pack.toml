@@ -23,6 +23,7 @@ silent = "/S"
 [checkver]
 provider = "direct_url"
 url = "https://dl.zwoastro.com/software?app=ASCOMDrive&platform=windows64&region=Overseas"
+regex = 'filename=ZWO_ASCOM_Setup_V(\d+\.\d+\.\d+)\.exe'
 
 [checkver.autoupdate]
 url = "https://dl.zwoastro.com/software?app=ASCOMDrive&platform=windows64&region=Overseas"

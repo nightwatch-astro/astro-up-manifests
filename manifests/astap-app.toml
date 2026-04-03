@@ -20,7 +20,7 @@ silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
 
 [checkver]
 provider = "html_scrape"
-url = "https://sourceforge.net/projects/astap-program/files/windows_installer/astap_setup.exe/download"
+url = "https://www.hnsky.org/astap.htm"
 regex = '\(v(\d{4}\.\d{2}\.\d{2})\)'
 
 [checkver.autoupdate]

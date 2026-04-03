@@ -15,8 +15,7 @@ method = "file"
 method = "zip_wrap"
 
 [checkver]
-provider = "pe_download"
-url = "https://focuser.com/media/Downloads/MoonLite_Software/Ascom/MoonLite%20DRO%20Setup.zip"
+provider = "manual"
 
 [checkver.autoupdate]
 url = "https://focuser.com/media/Downloads/MoonLite_Software/Ascom/MoonLite%20DRO%20Setup.zip"

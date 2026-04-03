@@ -25,6 +25,7 @@ silent = "/S"
 [checkver]
 provider = "direct_url"
 url = "https://dl.zwoastro.com/software?app=ASIStudio&platform=windows64&region=Overseas"
+regex = 'filename=ASIStudio_V(\d+\.\d+(?:\.\d+)*)_'
 
 [checkver.autoupdate]
 url = "https://dl.zwoastro.com/software?app=ASIStudio&platform=windows64&region=Overseas"
