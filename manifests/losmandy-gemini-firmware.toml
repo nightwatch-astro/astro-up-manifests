@@ -17,3 +17,6 @@ provider = "manual"
 
 [checkver.autoupdate]
 url = "https://gemini-2.com/firmware1/combined.zip"
+
+[detection]
+method = "ledger"
