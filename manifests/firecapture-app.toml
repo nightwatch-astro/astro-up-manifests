@@ -23,3 +23,6 @@ silent = "/S"
 provider = "html_scrape"
 url = "https://www.firecapture.de"
 regex = 'FireCapture_v(\d+\.\d+\.\d+)\.zip'
+
+[checkver.autoupdate]
+url = "http://www.firecapture.de/download.php?file=FireCapture_v$version.zip"

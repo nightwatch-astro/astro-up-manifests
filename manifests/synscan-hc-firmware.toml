@@ -16,3 +16,6 @@ elevation = true
 provider = "html_scrape"
 url = "https://www.skywatcher.com/download/software/synscan-v4-hand-controller-firmware/"
 regex = 'Version (\d+\.\d+\.\d+)'
+
+[checkver.autoupdate]
+url = "https://inter-static.skywatcher.com/downloads/synscan_hand_controller_firmware_v$underscoreVersion_release.zip"
