@@ -18,3 +18,6 @@ method = "zip_wrap"
 provider = "html_scrape"
 url = "https://focuser.com/downloads.php"
 regex = '_v(\d+\.\d+)\.zip'
+
+[checkver.autoupdate]
+url = "https://focuser.com/media/Downloads/MoonLite_Software/NonAscom/MoonliteSingleFocuser_v$version.zip"

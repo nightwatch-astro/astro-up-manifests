@@ -19,3 +19,6 @@ method = "zip_wrap"
 provider = "html_scrape"
 url = "https://www.qhyccd.com/download/"
 regex = '_V(\d+\.\d+\.\d+\.\d+)\.'
+
+[checkver.autoupdate]
+url = "https://www.qhyccd.com/file/repository/PoleMaster/PoleMaster_V$version.zip"

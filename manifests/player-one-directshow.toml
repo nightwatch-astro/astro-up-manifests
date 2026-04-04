@@ -19,3 +19,6 @@ method = "zip_wrap"
 provider = "html_scrape"
 url = "https://player-one-astronomy.com/service/software/"
 regex = '_V(\d+\.\d+\.\d+\.\d+)\.'
+
+[checkver.autoupdate]
+url = "https://player-one-astronomy.com/service/download/PlayerOne_DirectShow_V$version.zip"

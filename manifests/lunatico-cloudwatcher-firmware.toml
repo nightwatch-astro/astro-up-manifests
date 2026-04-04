@@ -16,3 +16,6 @@ elevation = true
 provider = "html_scrape"
 url = "https://lunaticoastro.com/aag-cloud-watcher/software-other-downloads/"
 regex = 'CloudWatcher(\d+)\.has'
+
+[checkver.autoupdate]
+url = "https://lunaticoastro.com/aagcw/AAG_CloudWatcher$version.has"

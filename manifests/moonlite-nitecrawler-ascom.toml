@@ -19,5 +19,8 @@ provider = "html_scrape"
 url = "https://focuser.com/downloads.php"
 regex = 'NiteCrawler\s+Setup\s+(\d+\.\d+\.\d+)'
 
+[checkver.autoupdate]
+url = "https://focuser.com/media/Downloads/NiteCrawler/Ascom/NiteCrawler%20Setup%20$version.zip"
+
 [dependencies]
 requires = ["ascom-platform"]

@@ -23,3 +23,6 @@ silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
 provider = "html_scrape"
 url = "https://astrophotography.app/downloads.php"
 regex = 'UnReg(\d+_\d+(?:_\d+)?)\.exe'
+
+[checkver.autoupdate]
+url = "https://astrophotography.app/UnReg$version.exe"

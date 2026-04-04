@@ -24,5 +24,8 @@ provider = "html_scrape"
 url = "https://www.astroasis.com/download/"
 regex = '_(\d+\.\d+\.\d+\.\d+)_'
 
+[checkver.autoupdate]
+url = "https://www.astroasis.com/download/files/focuser/Astroasis_Oasis_Focuser_Triplet_ASCOM_$version_Setup.zip"
+
 [dependencies]
 requires = ["ascom-platform"]

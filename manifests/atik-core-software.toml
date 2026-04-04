@@ -25,5 +25,8 @@ provider = "html_scrape"
 url = "https://www.atik-cameras.com/software-downloads/"
 regex = 'Universal-(\d{4}\.\d{2}\.\d{2})\.exe'
 
+[checkver.autoupdate]
+url = "https://downloads.atik-cameras.com/Universal-$version.exe"
+
 [dependencies]
 requires = ["ascom-platform"]

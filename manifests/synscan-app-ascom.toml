@@ -23,5 +23,8 @@ provider = "html_scrape"
 url = "https://www.skywatcher.com/download/software/ascom-driver/"
 regex = 'Version (\d+\.\d+\.\d+)'
 
+[checkver.autoupdate]
+url = "https://inter-static.skywatcher.com/downloads/setup_synscan_app_ascom_driver_$cleanVersion.exe"
+
 [dependencies]
 requires = ["ascom-platform"]

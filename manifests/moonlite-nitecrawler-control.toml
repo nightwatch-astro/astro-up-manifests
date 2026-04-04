@@ -18,3 +18,6 @@ method = "zip_wrap"
 provider = "html_scrape"
 url = "https://focuser.com/downloads.php"
 regex = 'NC_Remote_(\d+_\d+_\d+)\.zip'
+
+[checkver.autoupdate]
+url = "https://focuser.com/media/Downloads/NiteCrawler/NonAscom/NC_Remote_$version.zip"

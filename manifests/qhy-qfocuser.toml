@@ -24,5 +24,8 @@ provider = "html_scrape"
 url = "https://www.qhyccd.com/download/"
 regex = '-V(\d+\.\d+\.\d+\.\d+)\.'
 
+[checkver.autoupdate]
+url = "https://www.qhyccd.com/file/repository/QFocuser/QFocuser-V$version.exe"
+
 [dependencies]
 requires = ["ascom-platform"]
