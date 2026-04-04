@@ -30,7 +30,7 @@ fn write_new_version() {
 }
 
 #[test]
-fn skip_existing_version() {
+fn overwrite_existing_version() {
     let dir = tempfile::tempdir().unwrap();
 
     let discovered = DiscoveredVersion {
@@ -46,9 +46,9 @@ fn skip_existing_version() {
     let result = discovered.write(dir.path()).unwrap();
     assert!(result.is_some());
 
-    // Write again — should skip
+    // Write again — should overwrite
     let result = discovered.write(dir.path()).unwrap();
-    assert!(result.is_none());
+    assert!(result.is_some());
 }
 
 #[test]

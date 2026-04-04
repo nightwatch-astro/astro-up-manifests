@@ -15,21 +15,22 @@ pub struct DiscoveredVersion {
 
 impl DiscoveredVersion {
     /// Write this discovered version as a JSON file.
-    /// Returns the path written, or None if the version already exists.
+    /// Returns the path written, or None if skipped due to empty URL.
     pub fn write(&self, versions_dir: &Path) -> Result<Option<std::path::PathBuf>, std::io::Error> {
+        // Validate that URL is non-empty
+        if self.url.is_empty() {
+            tracing::warn!(
+                "{}/{} has empty URL, skipping write",
+                self.package_id,
+                self.version
+            );
+            return Ok(None);
+        }
+
         let safe_version = sanitize_for_filename(&self.version);
         let path = versions_dir
             .join(&self.package_id)
             .join(format!("{safe_version}.json"));
-
-        if path.exists() {
-            tracing::debug!(
-                "{}/{} already exists, skipping",
-                self.package_id,
-                safe_version
-            );
-            return Ok(None);
-        }
 
         let entry = VersionEntry {
             url: self.url.clone(),
