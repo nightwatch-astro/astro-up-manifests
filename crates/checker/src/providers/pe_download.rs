@@ -1,12 +1,12 @@
+use crate::retry_client::RetryClient;
 use astro_up_shared::manifest::{Checkver, Manifest};
-use reqwest_middleware::ClientWithMiddleware;
 
 use super::{CheckError, CheckOutcome, CheckResult};
 
 pub async fn check(
     _manifest: &Manifest,
     checkver: &Checkver,
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> Result<CheckOutcome, CheckError> {
     let url = checkver
         .url

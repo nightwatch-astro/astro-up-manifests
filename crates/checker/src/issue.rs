@@ -1,6 +1,6 @@
+use crate::retry_client::RetryClient;
 use astro_up_shared::manifest::Manifest;
 use astro_up_shared::state::CheckerState;
-use reqwest_middleware::ClientWithMiddleware;
 
 const FAILURE_THRESHOLD: u32 = 8;
 
@@ -8,7 +8,7 @@ const FAILURE_THRESHOLD: u32 = 8;
 /// Requires GITHUB_TOKEN env var and GITHUB_REPOSITORY (owner/repo) for authentication.
 pub async fn process_issues(
     state: &mut CheckerState,
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> anyhow::Result<IssueReport> {
     let token = match std::env::var("GITHUB_TOKEN") {
         Ok(t) => t,
@@ -98,7 +98,7 @@ async fn create_issue(
     repo: &str,
     title: &str,
     body: &str,
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> anyhow::Result<u64> {
     let url = format!("https://api.github.com/repos/{repo}/issues");
     let payload = serde_json::to_vec(&serde_json::json!({
@@ -134,7 +134,7 @@ async fn close_issue(
     token: &str,
     repo: &str,
     number: u64,
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> anyhow::Result<()> {
     let url = format!("https://api.github.com/repos/{repo}/issues/{number}");
     let payload = serde_json::to_vec(&serde_json::json!({
@@ -165,7 +165,7 @@ async fn close_issue(
 pub async fn process_manual_reminders(
     state: &mut CheckerState,
     manifests: &[Manifest],
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> anyhow::Result<()> {
     let token = match std::env::var("GITHUB_TOKEN") {
         Ok(t) => t,
@@ -179,7 +179,11 @@ pub async fn process_manual_reminders(
     // Find all manual-check packages
     let manual_packages: Vec<&Manifest> = manifests
         .iter()
-        .filter(|m| m.checkver.as_ref().is_some_and(|cv| cv.provider == "manual"))
+        .filter(|m| {
+            m.checkver
+                .as_ref()
+                .is_some_and(|cv| cv.provider == "manual")
+        })
         .collect();
 
     if manual_packages.is_empty() {
@@ -234,7 +238,7 @@ async fn create_reminder_issue(
     repo: &str,
     title: &str,
     body: &str,
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> anyhow::Result<u64> {
     let url = format!("https://api.github.com/repos/{repo}/issues");
     let payload = serde_json::to_vec(&serde_json::json!({
@@ -271,7 +275,7 @@ async fn update_issue(
     repo: &str,
     number: u64,
     body: &str,
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> anyhow::Result<()> {
     let url = format!("https://api.github.com/repos/{repo}/issues/{number}");
     let payload = serde_json::to_vec(&serde_json::json!({

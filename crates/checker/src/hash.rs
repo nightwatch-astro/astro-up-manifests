@@ -1,6 +1,6 @@
+use crate::retry_client::RetryClient;
 use astro_up_shared::manifest::HashConfig;
 use astro_up_shared::template;
-use reqwest_middleware::ClientWithMiddleware;
 use sha2::{Digest, Sha256};
 
 /// Discover the SHA256 hash for a download URL using the manifest's hash config.
@@ -9,7 +9,7 @@ pub async fn discover_hash(
     config: Option<&HashConfig>,
     download_url: &str,
     version: &str,
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> Option<String> {
     let config = config?;
 
@@ -33,7 +33,7 @@ async fn hash_from_url_regex(
     url_template: &str,
     regex_pat: &str,
     version: &str,
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> Option<String> {
     let url = template::substitute(url_template, version);
     let body = client.get(&url).send().await.ok()?.text().await.ok()?;
@@ -47,7 +47,7 @@ async fn hash_from_jsonpath(
     url_template: &str,
     jsonpath: &str,
     version: &str,
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> Option<String> {
     let url = template::substitute(url_template, version);
     let body = client.get(&url).send().await.ok()?.text().await.ok()?;
@@ -61,7 +61,7 @@ async fn hash_from_jsonpath(
     current.as_str().map(|s| s.to_string())
 }
 
-async fn hash_from_download(url: &str, client: &ClientWithMiddleware) -> Option<String> {
+async fn hash_from_download(url: &str, client: &RetryClient) -> Option<String> {
     let bytes = client.get(url).send().await.ok()?.bytes().await.ok()?;
     let hash = Sha256::digest(&bytes);
     Some(hash.iter().map(|b| format!("{b:02x}")).collect())
