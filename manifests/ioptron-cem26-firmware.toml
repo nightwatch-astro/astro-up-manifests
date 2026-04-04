@@ -19,3 +19,6 @@ regex = 'FW(\d{6})'
 
 [checkver.autoupdate]
 url = "https://www.ioptron.com/v/firmware/CEM26_GEM28_FW241201.bin"
+
+[detection]
+method = "ledger"
