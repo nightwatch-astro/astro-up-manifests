@@ -1,14 +1,13 @@
 use astro_up_checker::hash;
 use astro_up_checker::providers::{self, CheckError, CheckOutcome};
 use astro_up_checker::rate_limit::RateLimiter;
+use astro_up_checker::retry_client::RetryClient;
 use astro_up_checker::version_writer::DiscoveredVersion;
 use astro_up_shared::manifest::Manifest;
 use astro_up_shared::state::CheckerState;
 use astro_up_shared::template;
 use clap::Parser;
 use futures::stream::{self, StreamExt};
-use reqwest_middleware::ClientBuilder;
-use reqwest_retry::{RetryTransientMiddleware, policies::ExponentialBackoff};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -89,15 +88,14 @@ async fn main() -> anyhow::Result<()> {
     // 3. Load state
     let state = Arc::new(Mutex::new(CheckerState::read(&cli.state)?));
 
-    // 4. Build HTTP client with retry middleware
-    let retry_policy = ExponentialBackoff::builder().build_with_max_retries(2);
-    let raw_client = reqwest::Client::builder()
-        .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
-        .timeout(std::time::Duration::from_secs(30))
-        .build()?;
-    let client = ClientBuilder::new(raw_client)
-        .with(RetryTransientMiddleware::new_with_policy(retry_policy))
-        .build();
+    // 4. Build HTTP client with retry
+    let client = RetryClient::new(
+        reqwest::Client::builder()
+            .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+            .timeout(std::time::Duration::from_secs(30))
+            .build()?,
+        2,
+    );
 
     // 5. Run checks with bounded concurrency
     let versions_dir = cli.versions.clone();
@@ -199,7 +197,7 @@ async fn main() -> anyhow::Result<()> {
 
 async fn process_manifest(
     manifest: &Manifest,
-    client: &reqwest_middleware::ClientWithMiddleware,
+    client: &RetryClient,
     state: &Arc<Mutex<CheckerState>>,
     summary: &Arc<Mutex<Summary>>,
     versions_dir: &Path,

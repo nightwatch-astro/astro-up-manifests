@@ -1,5 +1,5 @@
+use crate::retry_client::RetryClient;
 use astro_up_shared::manifest::{Checkver, Manifest};
-use reqwest_middleware::ClientWithMiddleware;
 use scraper::{Html, Selector};
 
 use super::{CheckError, CheckOutcome, CheckResult};
@@ -59,7 +59,7 @@ fn find_version_in_links(
 pub async fn check(
     _manifest: &Manifest,
     checkver: &Checkver,
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> Result<CheckOutcome, CheckError> {
     let url = checkver
         .url

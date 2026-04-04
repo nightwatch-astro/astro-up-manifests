@@ -1,18 +1,16 @@
 use astro_up_checker::providers::{self, CheckOutcome};
+use astro_up_checker::retry_client::RetryClient;
 use astro_up_shared::manifest::{Checkver, Install, Manifest};
-use reqwest_middleware::ClientBuilder;
-use reqwest_retry::{RetryTransientMiddleware, policies::ExponentialBackoff};
 
-fn test_client() -> reqwest_middleware::ClientWithMiddleware {
-    let retry_policy = ExponentialBackoff::builder().build_with_max_retries(2);
-    let raw = reqwest::Client::builder()
-        .user_agent("astro-up-checker-test")
-        .timeout(std::time::Duration::from_secs(15))
-        .build()
-        .unwrap();
-    ClientBuilder::new(raw)
-        .with(RetryTransientMiddleware::new_with_policy(retry_policy))
-        .build()
+fn test_client() -> RetryClient {
+    RetryClient::new(
+        reqwest::Client::builder()
+            .user_agent("astro-up-checker-test")
+            .timeout(std::time::Duration::from_secs(15))
+            .build()
+            .unwrap(),
+        2,
+    )
 }
 
 fn github_manifest(owner: &str, repo: &str) -> Manifest {

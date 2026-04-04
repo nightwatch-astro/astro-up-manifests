@@ -10,8 +10,8 @@ pub mod pe_download;
 pub mod redirect;
 pub mod sharpcap_url;
 
+use crate::retry_client::RetryClient;
 use astro_up_shared::manifest::Manifest;
-use reqwest_middleware::ClientWithMiddleware;
 use thiserror::Error;
 
 #[derive(Debug)]
@@ -31,8 +31,6 @@ pub enum CheckOutcome {
 
 #[derive(Debug, Error)]
 pub enum CheckError {
-    #[error("http error: {0}")]
-    Http(#[from] reqwest_middleware::Error),
     #[error("reqwest error: {0}")]
     Reqwest(#[from] reqwest::Error),
     #[error("rate limited (retry-after: {retry_after:?})")]
@@ -65,7 +63,7 @@ pub fn check_rate_limit(resp: &reqwest::Response) -> Result<(), CheckError> {
 /// Run the appropriate check for a manifest based on its checkver.provider field.
 pub async fn check_manifest(
     manifest: &Manifest,
-    client: &ClientWithMiddleware,
+    client: &RetryClient,
 ) -> Result<CheckOutcome, CheckError> {
     let checkver = match &manifest.checkver {
         Some(cv) => cv,
