@@ -12,11 +12,15 @@ pub struct ManifestState {
     pub last_error: Option<String>,
     #[serde(default)]
     pub issue_number: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_manual_update: Option<DateTime<Utc>>,
 }
 
 /// The full checker state file (`checker-state.json`).
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CheckerState {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub manual_reminder_issue: Option<u64>,
     #[serde(flatten)]
     pub manifests: HashMap<String, ManifestState>,
 }
@@ -48,6 +52,7 @@ impl CheckerState {
                 last_checked: Utc::now(),
                 last_error: None,
                 issue_number: None,
+                last_manual_update: None,
             });
         entry.consecutive_failures = 0;
         entry.last_checked = Utc::now();
@@ -64,6 +69,7 @@ impl CheckerState {
                 last_checked: Utc::now(),
                 last_error: None,
                 issue_number: None,
+                last_manual_update: None,
             });
         entry.consecutive_failures += 1;
         entry.last_checked = Utc::now();
