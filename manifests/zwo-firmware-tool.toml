@@ -20,7 +20,6 @@ elevation = true
 silent = "/S"
 
 [checkver]
-provider = "manual"
-
-[checkver.autoupdate]
+provider = "redirect"
 url = "https://dl.zwoastro.com/software?app=FirmwareUpgradeTool&platform=windows86&region=Overseas"
+regex = 'FWUpdate_Windows_v(\d+\.\d+\.\d+)\.'

@@ -20,10 +20,9 @@ scope = "machine"
 elevation = true
 
 [checkver]
-provider = "manual"
-
-[checkver.autoupdate]
+provider = "redirect"
 url = "https://dl.zwoastro.com/software?app=AsiCameraDriver&platform=windows64&region=Overseas"
+regex = 'ASI_Cameras_driver_Setup_V(\d+\.\d+\.\d+(?:\.\d+)?)\.exe'
 
 [hardware]
 device_class = "Camera"
