@@ -299,28 +299,37 @@ async fn process_manifest(
                 }
             }
 
-            let discovered = DiscoveredVersion {
-                package_id: manifest.id.clone(),
-                version: result.version.clone(),
-                url: url.unwrap_or_default(),
-                sha256,
-                release_notes_url: result.release_notes_url,
-                pre_release: result.pre_release,
-            };
+            // Only write version if we have a valid download URL
+            if let Some(download_url) = url {
+                let discovered = DiscoveredVersion {
+                    package_id: manifest.id.clone(),
+                    version: result.version.clone(),
+                    url: download_url,
+                    sha256,
+                    release_notes_url: result.release_notes_url,
+                    pre_release: result.pre_release,
+                };
 
-            match discovered.write(versions_dir) {
-                Ok(Some(_path)) => {
-                    let mut sum = summary.lock().await;
-                    sum.new_versions
-                        .push(format!("{} {}", manifest.id, result.version));
+                match discovered.write(versions_dir) {
+                    Ok(Some(_path)) => {
+                        let mut sum = summary.lock().await;
+                        sum.new_versions
+                            .push(format!("{} {}", manifest.id, result.version));
+                    }
+                    Ok(None) => {
+                        // Version already exists
+                        tracing::debug!("{}: {} already exists", manifest.id, result.version);
+                    }
+                    Err(e) => {
+                        tracing::error!("{}: failed to write version file: {e}", manifest.id);
+                    }
                 }
-                Ok(None) => {
-                    // Version already exists
-                    tracing::debug!("{}: {} already exists", manifest.id, result.version);
-                }
-                Err(e) => {
-                    tracing::error!("{}: failed to write version file: {e}", manifest.id);
-                }
+            } else {
+                tracing::warn!(
+                    "{}: version {} found but no download URL available, skipping write",
+                    manifest.id,
+                    result.version
+                );
             }
 
             state.lock().await.record_success(&manifest.id);
