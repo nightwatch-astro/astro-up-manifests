@@ -20,10 +20,7 @@ elevation = true
 silent = "/S"
 
 [checkver]
-provider = "browser_scrape"
-url = "https://www.zwoastro.com/software/"
-css_selector = "js:document.querySelectorAll('.elementor-tab-title').forEach(t => { if (t.textContent.trim() === 'Desktop App') t.click() })"
-regex = 'Firmware.*?Tool.*?[Vv](\d+\.\d+\.\d+)'
+provider = "manual"
 
 [checkver.autoupdate]
 url = "https://dl.zwoastro.com/software?app=FirmwareUpgradeTool&platform=windows86&region=Overseas"
