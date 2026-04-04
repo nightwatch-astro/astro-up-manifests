@@ -145,6 +145,13 @@ async fn main() -> anyhow::Result<()> {
         for (id, num) in &issue_report.closed {
             println!("  Issue closed: #{num} for {id}");
         }
+
+        astro_up_checker::issue::process_manual_reminders(
+            &mut state_guard,
+            &all_manifests,
+            &client,
+        )
+        .await?;
     }
 
     // 7. Write updated state
@@ -319,6 +326,13 @@ async fn process_manifest(
             }
 
             state.lock().await.record_success(&manifest.id);
+
+            if provider == "manual" {
+                let mut st = state.lock().await;
+                if let Some(ms) = st.manifests.get_mut(&manifest.id) {
+                    ms.last_manual_update = Some(chrono::Utc::now());
+                }
+            }
         }
         Ok(CheckOutcome::Skipped { reason }) => {
             tracing::debug!("{}: skipped — {reason}", manifest.id);
