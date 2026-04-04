@@ -54,10 +54,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
+      - uses: taiki-e/install-action@nextest
       - uses: mozilla-actions/sccache-action@v0.0.9
       - run: cargo fmt --all -- --check
-      - run: cargo clippy --workspace -- -D warnings
-      - run: cargo test --workspace
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo nextest run --workspace
       - name: Validate manifests
         run: cargo run -p astro-up-compiler -- --manifests manifests --validate
 
