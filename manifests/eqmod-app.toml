@@ -21,11 +21,12 @@ elevation = true
 silent = "/S"
 
 [checkver]
-provider = "pe_download"
-url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/EQASCOM_V200w_Setup.exe/download"
+provider = "html_scrape"
+url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/"
+regex = 'EQASCOM_V(\d+\w+)_Setup\.exe'
 
 [checkver.autoupdate]
-url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/EQASCOM_V200w_Setup.exe/download"
+url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/EQASCOM_V$version_Setup.exe/download"
 
 [dependencies]
 requires = ["ascom-platform"]
