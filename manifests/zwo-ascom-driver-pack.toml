@@ -21,13 +21,9 @@ elevation = true
 silent = "/S"
 
 [checkver]
-provider = "browser_scrape"
-url = "https://www.zwoastro.com/software/"
-css_selector = "js:document.querySelectorAll('.elementor-tab-title').forEach(t => { if (t.textContent.trim() === 'Desktop App') t.click() })"
-regex = 'ASCOM.*?[Vv](\d+\.\d+\.\d+)'
-
-[checkver.autoupdate]
+provider = "redirect"
 url = "https://dl.zwoastro.com/software?app=ASCOMDrive&platform=windows64&region=Overseas"
+regex = 'ASCOM_Setup_V(\d+\.\d+\.\d+)\.exe'
 
 [dependencies]
 requires = ["ascom-platform", "zwo-native-driver"]

@@ -7,6 +7,7 @@ pub mod html_scrape;
 pub mod http_head;
 pub mod manual;
 pub mod pe_download;
+pub mod redirect;
 pub mod sharpcap_url;
 
 use astro_up_shared::manifest::Manifest;
@@ -83,6 +84,7 @@ pub async fn check_manifest(
         "html_scrape" => html_scrape::check(manifest, checkver, client).await,
         "browser_scrape" => browser_scrape::check(manifest, checkver).await,
         "pe_download" => pe_download::check(manifest, checkver, client).await,
+        "redirect" => redirect::check(manifest, checkver, client).await,
         "manual" => Ok(manual::check(manifest)),
         other => Err(CheckError::Other(format!("unknown provider: {other}"))),
     }

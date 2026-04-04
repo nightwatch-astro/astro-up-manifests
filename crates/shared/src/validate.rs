@@ -39,6 +39,7 @@ const KNOWN_PROVIDERS: &[&str] = &[
     "html_scrape",
     "browser_scrape",
     "pe_download",
+    "redirect",
     "manual",
 ];
 
