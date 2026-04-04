@@ -19,3 +19,6 @@ regex = 'CloudWatcher(\d+)\.has'
 
 [checkver.autoupdate]
 url = "https://lunaticoastro.com/aagcw/AAG_CloudWatcher$version.has"
+
+[detection]
+method = "ledger"

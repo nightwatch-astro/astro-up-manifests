@@ -19,3 +19,6 @@ regex = 'Version (\d+\.\d+)'
 
 [checkver.autoupdate]
 url = "https://inter-static.skywatcher.com/downloads/mc015_firmware_v0$cleanVersion.zip"
+
+[detection]
+method = "ledger"
