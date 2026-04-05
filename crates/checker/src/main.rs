@@ -272,7 +272,11 @@ async fn handle_found(
     manifest: &Manifest,
     result: &providers::CheckResult,
     provider: &str,
+<<<<<<< HEAD
     client: &RetryClient,
+=======
+    client: &reqwest_middleware::ClientWithMiddleware,
+>>>>>>> 37f3a43 (chore: enable clippy pedantic+nursery+cargo and fix all warnings)
     state: &Arc<Mutex<CheckerState>>,
     summary: &Arc<Mutex<Summary>>,
     versions_dir: &Path,
@@ -354,7 +358,11 @@ async fn verify_hash_mismatch(
     manifest: &Manifest,
     sha256: Option<&String>,
     url: Option<&String>,
+<<<<<<< HEAD
     client: &RetryClient,
+=======
+    client: &reqwest_middleware::ClientWithMiddleware,
+>>>>>>> 37f3a43 (chore: enable clippy pedantic+nursery+cargo and fix all warnings)
 ) -> bool {
     let has_external_hash_source = manifest
         .checkver
