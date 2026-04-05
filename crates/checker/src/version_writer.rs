@@ -16,6 +16,10 @@ pub struct DiscoveredVersion {
 impl DiscoveredVersion {
     /// Write this discovered version as a JSON file.
     /// Returns the path written, or None if the version already exists.
+    ///
+    /// # Errors
+    ///
+    /// Returns `io::Error` if the file cannot be written.
     pub fn write(&self, versions_dir: &Path) -> Result<Option<std::path::PathBuf>, std::io::Error> {
         let safe_version = sanitize_for_filename(&self.version);
         let path = versions_dir

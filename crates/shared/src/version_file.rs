@@ -19,6 +19,7 @@ pub struct VersionEntry {
 
 impl VersionEntry {
     /// Build the file path for this version entry.
+    #[must_use]
     pub fn file_path(versions_dir: &Path, package_id: &str, version: &str) -> PathBuf {
         versions_dir
             .join(package_id)
@@ -26,6 +27,10 @@ impl VersionEntry {
     }
 
     /// Read a version entry from a JSON file.
+    ///
+    /// # Errors
+    ///
+    /// Returns `io::Error` if the file cannot be read or contains invalid JSON.
     pub fn read(path: &Path) -> Result<Self, std::io::Error> {
         let data = std::fs::read_to_string(path)?;
         serde_json::from_str(&data)
@@ -33,6 +38,10 @@ impl VersionEntry {
     }
 
     /// Write this version entry to a JSON file, creating parent directories.
+    ///
+    /// # Errors
+    ///
+    /// Returns `io::Error` if directories cannot be created or the file cannot be written.
     pub fn write(&self, path: &Path) -> Result<(), std::io::Error> {
         if let Some(parent) = path.parent() {
             std::fs::create_dir_all(parent)?;

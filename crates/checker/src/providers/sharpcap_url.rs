@@ -1,11 +1,12 @@
 use rand::Rng;
 use std::fmt::Write;
 
-/// Generate a SharpCap obfuscated download URL.
+/// Generate a `SharpCap` obfuscated download URL.
 ///
 /// Port of the Go implementation from astro-up/astro-up's
 /// `internal/scrape/sharpcap.go`. The algorithm interleaves version
 /// digits into a random UUID to construct a download path.
+#[must_use]
 pub fn sharpcap_download_url(version: &str, arch: &str) -> Option<String> {
     if version.len() < 10 {
         return None;

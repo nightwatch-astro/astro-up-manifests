@@ -1,3 +1,5 @@
+use std::fmt::Write as _;
+
 use astro_up_checker::hash;
 use astro_up_checker::providers::{self, CheckError, CheckOutcome};
 use astro_up_checker::rate_limit::RateLimiter;
@@ -9,6 +11,7 @@ use clap::Parser;
 use futures::stream::{self, StreamExt};
 use reqwest_middleware::ClientBuilder;
 use reqwest_retry::{RetryTransientMiddleware, policies::ExponentialBackoff};
+use sha2::{Digest, Sha256};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -158,11 +161,17 @@ async fn main() -> anyhow::Result<()> {
     let state = state.lock().await;
     state.write(&cli.state)?;
 
-    // 7. Print summary
+    // 8. Print summary
     let summary = summary.lock().await;
+    print_summary(&summary, cli.concurrency, &state);
+
+    Ok(())
+}
+
+fn print_summary(summary: &Summary, concurrency: usize, state: &CheckerState) {
     println!(
-        "Checked {} manifests ({} concurrent)",
-        summary.checked, cli.concurrency
+        "Checked {} manifests ({concurrency} concurrent)",
+        summary.checked
     );
     if !summary.new_versions.is_empty() {
         println!(
@@ -182,8 +191,7 @@ async fn main() -> anyhow::Result<()> {
         println!("  Skipped: {} (manual)", summary.skipped.len());
     }
 
-    // Report persistent failures
-    for (id, ms) in state.manifests.iter() {
+    for (id, ms) in &state.manifests {
         if ms.consecutive_failures >= 8 {
             if let Some(issue) = ms.issue_number {
                 println!(
@@ -193,8 +201,6 @@ async fn main() -> anyhow::Result<()> {
             }
         }
     }
-
-    Ok(())
 }
 
 async fn process_manifest(
@@ -213,8 +219,7 @@ async fn process_manifest(
     let provider = manifest
         .checkver
         .as_ref()
-        .map(|cv| cv.provider.as_str())
-        .unwrap_or("none");
+        .map_or("none", |cv| cv.provider.as_str());
     {
         let rl = rate_limiter.lock().await;
         if rl.is_paused(provider) {
@@ -233,106 +238,16 @@ async fn process_manifest(
 
     match providers::check_manifest(manifest, client).await {
         Ok(CheckOutcome::Found(result)) => {
-            // Resolve download URL: named resolver > autoupdate template > scraped URL
-            let url = manifest
-                .checkver
-                .as_ref()
-                .and_then(|cv| cv.autoupdate.as_ref())
-                .and_then(|au| {
-                    // Try named resolver first
-                    if let Some(resolver_name) = &au.resolver {
-                        return providers::download_resolver::resolve(
-                            resolver_name,
-                            &result.version,
-                            &au.resolver_args,
-                        );
-                    }
-                    // Then try URL template
-                    au.url
-                        .as_ref()
-                        .map(|tmpl| template::substitute(tmpl, &result.version))
-                })
-                .or(result.url.clone());
-
-            // Discover hash
-            let sha256 = hash::discover_hash(
-                manifest.checkver.as_ref().and_then(|cv| cv.hash.as_ref()),
-                url.as_deref().unwrap_or(""),
-                &result.version,
+            handle_found(
+                manifest,
+                &result,
+                provider,
                 client,
+                state,
+                summary,
+                versions_dir,
             )
             .await;
-
-            // Hash mismatch check: if we got a hash from an external source AND
-            // the result includes a download URL, verify by downloading and comparing.
-            // Skip if hash was computed by downloading (no external source to mismatch).
-            let has_external_hash_source = manifest
-                .checkver
-                .as_ref()
-                .and_then(|cv| cv.hash.as_ref())
-                .is_some_and(|h| h.url.is_some() || h.jsonpath.is_some());
-
-            if has_external_hash_source {
-                if let Some(ref hash) = sha256 {
-                    if let Some(ref download_url) = url {
-                        if let Ok(bytes) = client.get(download_url).send().await {
-                            if let Ok(body) = bytes.bytes().await {
-                                use sha2::{Digest, Sha256};
-                                let computed: String = Sha256::digest(&body)
-                                    .iter()
-                                    .map(|b| format!("{b:02x}"))
-                                    .collect();
-                                if computed != *hash {
-                                    tracing::error!(
-                                        "{}: hash mismatch — expected {hash}, got {computed}. Version file NOT written.",
-                                        manifest.id
-                                    );
-                                    state
-                                        .lock()
-                                        .await
-                                        .record_failure(&manifest.id, "hash mismatch");
-                                    let mut sum = summary.lock().await;
-                                    sum.failed.push(manifest.id.clone());
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            let discovered = DiscoveredVersion {
-                package_id: manifest.id.clone(),
-                version: result.version.clone(),
-                url: url.unwrap_or_default(),
-                sha256,
-                release_notes_url: result.release_notes_url,
-                pre_release: result.pre_release,
-            };
-
-            match discovered.write(versions_dir) {
-                Ok(Some(_path)) => {
-                    let mut sum = summary.lock().await;
-                    sum.new_versions
-                        .push(format!("{} {}", manifest.id, result.version));
-                }
-                Ok(None) => {
-                    // Version already exists
-                    tracing::debug!("{}: {} already exists", manifest.id, result.version);
-                }
-                Err(e) => {
-                    tracing::error!("{}: failed to write version file: {e}", manifest.id);
-                }
-            }
-
-            state.lock().await.record_success(&manifest.id);
-
-            if provider == "manual" {
-                let mut st = state.lock().await;
-                if let Some(ms) = st.manifests.get_mut(&manifest.id) {
-                    ms.last_manual_update = Some(chrono::Utc::now());
-                }
-            }
         }
         Ok(CheckOutcome::Skipped { reason }) => {
             tracing::debug!("{}: skipped — {reason}", manifest.id);
@@ -340,7 +255,6 @@ async fn process_manifest(
             sum.skipped.push(manifest.id.clone());
         }
         Err(e) => {
-            // Detect rate limiting and pause the provider
             if let CheckError::RateLimited { ref retry_after } = e {
                 let mut rl = rate_limiter.lock().await;
                 rl.record_rate_limit(provider, retry_after.as_deref());
@@ -354,6 +268,133 @@ async fn process_manifest(
             sum.failed.push(manifest.id.clone());
         }
     }
+}
+
+async fn handle_found(
+    manifest: &Manifest,
+    result: &providers::CheckResult,
+    provider: &str,
+    client: &reqwest_middleware::ClientWithMiddleware,
+    state: &Arc<Mutex<CheckerState>>,
+    summary: &Arc<Mutex<Summary>>,
+    versions_dir: &Path,
+) {
+    let url = resolve_download_url(manifest, &result.version).or_else(|| result.url.clone());
+
+    let sha256 = hash::discover_hash(
+        manifest.checkver.as_ref().and_then(|cv| cv.hash.as_ref()),
+        url.as_deref().unwrap_or(""),
+        &result.version,
+        client,
+    )
+    .await;
+
+    if verify_hash_mismatch(manifest, sha256.as_ref(), url.as_ref(), client).await {
+        state
+            .lock()
+            .await
+            .record_failure(&manifest.id, "hash mismatch");
+        let mut sum = summary.lock().await;
+        sum.failed.push(manifest.id.clone());
+        return;
+    }
+
+    let discovered = DiscoveredVersion {
+        package_id: manifest.id.clone(),
+        version: result.version.clone(),
+        url: url.unwrap_or_default(),
+        sha256,
+        release_notes_url: result.release_notes_url.clone(),
+        pre_release: result.pre_release,
+    };
+
+    match discovered.write(versions_dir) {
+        Ok(Some(_path)) => {
+            let mut sum = summary.lock().await;
+            sum.new_versions
+                .push(format!("{} {}", manifest.id, result.version));
+        }
+        Ok(None) => {
+            tracing::debug!("{}: {} already exists", manifest.id, result.version);
+        }
+        Err(e) => {
+            tracing::error!("{}: failed to write version file: {e}", manifest.id);
+        }
+    }
+
+    state.lock().await.record_success(&manifest.id);
+
+    if provider == "manual" {
+        let mut st = state.lock().await;
+        if let Some(ms) = st.manifests.get_mut(&manifest.id) {
+            ms.last_manual_update = Some(chrono::Utc::now());
+        }
+    }
+}
+
+fn resolve_download_url(manifest: &Manifest, version: &str) -> Option<String> {
+    manifest
+        .checkver
+        .as_ref()
+        .and_then(|cv| cv.autoupdate.as_ref())
+        .and_then(|au| {
+            if let Some(resolver_name) = &au.resolver {
+                return providers::download_resolver::resolve(
+                    resolver_name,
+                    version,
+                    &au.resolver_args,
+                );
+            }
+            au.url
+                .as_ref()
+                .map(|tmpl| template::substitute(tmpl, version))
+        })
+}
+
+/// Returns `true` if a hash mismatch was detected (caller should abort).
+async fn verify_hash_mismatch(
+    manifest: &Manifest,
+    sha256: Option<&String>,
+    url: Option<&String>,
+    client: &reqwest_middleware::ClientWithMiddleware,
+) -> bool {
+    let has_external_hash_source = manifest
+        .checkver
+        .as_ref()
+        .and_then(|cv| cv.hash.as_ref())
+        .is_some_and(|h| h.url.is_some() || h.jsonpath.is_some());
+
+    if !has_external_hash_source {
+        return false;
+    }
+
+    let (Some(hash), Some(download_url)) = (sha256, url) else {
+        return false;
+    };
+
+    let Ok(bytes) = client.get(download_url).send().await else {
+        return false;
+    };
+    let Ok(body) = bytes.bytes().await else {
+        return false;
+    };
+
+    let computed: String = Sha256::digest(&body)
+        .iter()
+        .fold(String::new(), |mut s, b| {
+            let _ = write!(s, "{b:02x}");
+            s
+        });
+
+    if computed != *hash {
+        tracing::error!(
+            "{}: hash mismatch — expected {hash}, got {computed}. Version file NOT written.",
+            manifest.id
+        );
+        return true;
+    }
+
+    false
 }
 
 fn load_manifests(dir: &Path) -> anyhow::Result<Vec<Manifest>> {

@@ -1,3 +1,5 @@
+use std::fmt::Write;
+
 use astro_up_shared::manifest::Manifest;
 use astro_up_shared::state::CheckerState;
 use reqwest_middleware::ClientWithMiddleware;
@@ -5,25 +7,23 @@ use reqwest_middleware::ClientWithMiddleware;
 const FAILURE_THRESHOLD: u32 = 8;
 
 /// Process the checker state and auto-create/close GitHub issues for persistent failures.
-/// Requires GITHUB_TOKEN env var and GITHUB_REPOSITORY (owner/repo) for authentication.
+/// Requires `GITHUB_TOKEN` env var and `GITHUB_REPOSITORY` (owner/repo) for authentication.
+///
+/// # Errors
+///
+/// Returns an error if GitHub API calls fail.
 pub async fn process_issues(
     state: &mut CheckerState,
     client: &ClientWithMiddleware,
 ) -> anyhow::Result<IssueReport> {
-    let token = match std::env::var("GITHUB_TOKEN") {
-        Ok(t) => t,
-        Err(_) => {
-            tracing::debug!("GITHUB_TOKEN not set, skipping issue management");
-            return Ok(IssueReport::default());
-        }
+    let Ok(token) = std::env::var("GITHUB_TOKEN") else {
+        tracing::debug!("GITHUB_TOKEN not set, skipping issue management");
+        return Ok(IssueReport::default());
     };
 
-    let repo = match std::env::var("GITHUB_REPOSITORY") {
-        Ok(r) => r,
-        Err(_) => {
-            tracing::debug!("GITHUB_REPOSITORY not set, skipping issue management");
-            return Ok(IssueReport::default());
-        }
+    let Ok(repo) = std::env::var("GITHUB_REPOSITORY") else {
+        tracing::debug!("GITHUB_REPOSITORY not set, skipping issue management");
+        return Ok(IssueReport::default());
     };
 
     let mut report = IssueReport::default();
@@ -61,7 +61,9 @@ pub async fn process_issues(
         match create_issue(&token, &repo, &title, &body, client).await {
             Ok(number) => {
                 tracing::info!("created issue #{number} for {id}");
-                state.manifests.get_mut(&id).unwrap().issue_number = Some(number);
+                if let Some(ms) = state.manifests.get_mut(&id) {
+                    ms.issue_number = Some(number);
+                }
                 report.created.push((id, number));
             }
             Err(e) => {
@@ -75,7 +77,9 @@ pub async fn process_issues(
         match close_issue(&token, &repo, number, client).await {
             Ok(()) => {
                 tracing::info!("closed issue #{number} for {id}");
-                state.manifests.get_mut(&id).unwrap().issue_number = None;
+                if let Some(ms) = state.manifests.get_mut(&id) {
+                    ms.issue_number = None;
+                }
                 report.closed.push((id, number));
             }
             Err(e) => {
@@ -162,24 +166,30 @@ async fn close_issue(
 
 /// Create or update a GitHub issue that reminds maintainers to review manual-check packages.
 /// Requires `GITHUB_TOKEN` and `GITHUB_REPOSITORY` env vars. Silently skips if either is unset.
+///
+/// # Errors
+///
+/// Returns an error if GitHub API calls fail.
 pub async fn process_manual_reminders(
     state: &mut CheckerState,
     manifests: &[Manifest],
     client: &ClientWithMiddleware,
 ) -> anyhow::Result<()> {
-    let token = match std::env::var("GITHUB_TOKEN") {
-        Ok(t) => t,
-        Err(_) => return Ok(()),
+    let Ok(token) = std::env::var("GITHUB_TOKEN") else {
+        return Ok(());
     };
-    let repo = match std::env::var("GITHUB_REPOSITORY") {
-        Ok(r) => r,
-        Err(_) => return Ok(()),
+    let Ok(repo) = std::env::var("GITHUB_REPOSITORY") else {
+        return Ok(());
     };
 
     // Find all manual-check packages
     let manual_packages: Vec<&Manifest> = manifests
         .iter()
-        .filter(|m| m.checkver.as_ref().is_some_and(|cv| cv.provider == "manual"))
+        .filter(|m| {
+            m.checkver
+                .as_ref()
+                .is_some_and(|cv| cv.provider == "manual")
+        })
         .collect();
 
     if manual_packages.is_empty() {
@@ -199,16 +209,15 @@ pub async fn process_manual_reminders(
             .manifests
             .get(&m.id)
             .and_then(|ms| ms.last_manual_update);
-        let days = last_update.map(|t| (now - t).num_days()).unwrap_or(-1);
+        let days = last_update.map_or(-1, |t| (now - t).num_days());
         let days_str = if days < 0 {
             "never".to_string()
         } else {
             format!("{days}")
         };
-        let date_str = last_update
-            .map(|t| t.format("%Y-%m-%d").to_string())
-            .unwrap_or_else(|| "never".to_string());
-        body.push_str(&format!("| {} | {} | {} |\n", m.id, date_str, days_str));
+        let date_str =
+            last_update.map_or_else(|| "never".to_string(), |t| t.format("%Y-%m-%d").to_string());
+        let _ = writeln!(body, "| {} | {} | {} |", m.id, date_str, days_str);
     }
 
     body.push_str("\n*This issue is auto-updated by the checker pipeline.*");

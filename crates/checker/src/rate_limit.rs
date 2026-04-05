@@ -9,6 +9,7 @@ pub struct RateLimiter {
 
 impl RateLimiter {
     /// Check if a provider is currently paused due to rate limiting.
+    #[must_use]
     pub fn is_paused(&self, provider: &str) -> bool {
         self.paused_until
             .get(provider)
@@ -29,13 +30,13 @@ impl RateLimiter {
     pub fn record_rate_limit(&mut self, provider: &str, retry_after: Option<&str>) {
         let duration = retry_after
             .and_then(|v| v.parse::<u64>().ok())
-            .map(Duration::from_secs)
-            .unwrap_or(Duration::from_secs(60));
+            .map_or(Duration::from_secs(60), Duration::from_secs);
 
         self.pause(provider, duration);
     }
 
     /// Get remaining pause time for a provider, if paused.
+    #[must_use]
     pub fn remaining(&self, provider: &str) -> Option<Duration> {
         self.paused_until.get(provider).and_then(|until| {
             let now = Instant::now();

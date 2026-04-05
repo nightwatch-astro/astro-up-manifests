@@ -6,13 +6,16 @@ use std::time::Duration;
 use super::{CheckError, CheckOutcome, CheckResult};
 
 /// Stealth JS to inject before page load — hides automation signals.
-const STEALTH_JS: &str = r#"
+const STEALTH_JS: &str = r"
 Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
 Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
 Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
 window.chrome = { runtime: {} };
-"#;
+";
 
+/// # Errors
+///
+/// Returns `CheckError` if the browser fails to launch, navigate, or extract a version.
 pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOutcome, CheckError> {
     let url = checkver
         .url

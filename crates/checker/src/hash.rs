@@ -1,3 +1,5 @@
+use std::fmt::Write;
+
 use astro_up_shared::manifest::HashConfig;
 use astro_up_shared::template;
 use reqwest_middleware::ClientWithMiddleware;
@@ -58,11 +60,14 @@ async fn hash_from_jsonpath(
     for key in jsonpath.trim_start_matches("$.").split('.') {
         current = current.get(key)?;
     }
-    current.as_str().map(|s| s.to_string())
+    current.as_str().map(std::string::ToString::to_string)
 }
 
 async fn hash_from_download(url: &str, client: &ClientWithMiddleware) -> Option<String> {
     let bytes = client.get(url).send().await.ok()?.bytes().await.ok()?;
     let hash = Sha256::digest(&bytes);
-    Some(hash.iter().map(|b| format!("{b:02x}")).collect())
+    Some(hash.iter().fold(String::new(), |mut s, b| {
+        let _ = write!(s, "{b:02x}");
+        s
+    }))
 }

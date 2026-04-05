@@ -3,6 +3,9 @@ use reqwest_middleware::ClientWithMiddleware;
 
 use super::{CheckError, CheckOutcome, CheckResult};
 
+/// # Errors
+///
+/// Returns `CheckError` if the download or PE parsing fails.
 pub async fn check(
     _manifest: &Manifest,
     checkver: &Checkver,

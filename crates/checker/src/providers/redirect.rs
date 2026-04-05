@@ -4,9 +4,14 @@ use reqwest_middleware::ClientWithMiddleware;
 use super::{CheckError, CheckOutcome, CheckResult};
 
 /// Follow a URL's redirect chain and extract a version from the final URL.
+///
 /// Uses reqwest's redirect policy to capture the final URL without downloading
 /// the body. Useful for CDNs that embed version info in the redirect target
 /// (e.g., ZWO's dl.zwoastro.com).
+///
+/// # Errors
+///
+/// Returns `CheckError` if the request fails or no version match is found.
 pub async fn check(
     _manifest: &Manifest,
     checkver: &Checkver,

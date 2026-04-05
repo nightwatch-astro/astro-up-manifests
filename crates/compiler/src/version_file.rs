@@ -5,6 +5,10 @@ use std::path::Path;
 
 /// Aggregate all version files from `versions/{id}/{ver}.json` into the versions table.
 /// Only imports versions for packages that exist in the packages table (skips orphans).
+///
+/// # Errors
+///
+/// Returns an error if any database or filesystem operation fails.
 pub fn aggregate_versions(conn: &Connection, versions_dir: &Path) -> anyhow::Result<u64> {
     if !versions_dir.exists() {
         tracing::debug!("versions directory does not exist, skipping aggregation");
@@ -15,7 +19,7 @@ pub fn aggregate_versions(conn: &Connection, versions_dir: &Path) -> anyhow::Res
     let mut stmt = conn.prepare("SELECT id FROM packages")?;
     let known_ids: HashSet<String> = stmt
         .query_map([], |row| row.get(0))?
-        .filter_map(|r| r.ok())
+        .filter_map(std::result::Result::ok)
         .collect();
 
     let tx = conn.unchecked_transaction()?;
@@ -65,7 +69,7 @@ pub fn aggregate_versions(conn: &Connection, versions_dir: &Path) -> anyhow::Res
                             ve.sha256,
                             ve.discovered_at.to_rfc3339(),
                             ve.release_notes_url,
-                            ve.pre_release as i32,
+                            i32::from(ve.pre_release),
                         ],
                     )?;
                     count += 1;

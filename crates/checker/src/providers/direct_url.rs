@@ -3,6 +3,9 @@ use reqwest_middleware::ClientWithMiddleware;
 
 use super::{CheckError, CheckOutcome, CheckResult};
 
+/// # Errors
+///
+/// Returns `CheckError` if the HTTP request fails or no version match is found.
 pub async fn check(
     _manifest: &Manifest,
     checkver: &Checkver,

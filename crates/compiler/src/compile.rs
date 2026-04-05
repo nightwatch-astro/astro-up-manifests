@@ -7,8 +7,12 @@ use std::path::Path;
 
 const SCHEMA_VERSION: &str = "1";
 
-/// Compile a list of manifests into the SQLite database.
+/// Compile a list of manifests into the `SQLite` database.
 /// Assumes schema is already created. Runs within a transaction.
+///
+/// # Errors
+///
+/// Returns an error if any database operation fails.
 pub fn compile_manifests(
     conn: &Connection,
     manifests: &[Manifest],
@@ -155,7 +159,7 @@ fn insert_detection(
             detection.path,
             detection.registry_key,
             detection.registry_value,
-            detection.file_version.map(|b| b as i32),
+            detection.file_version.map(i32::from),
             detection.fallback_path,
             detection.fallback_method,
         ],
@@ -174,7 +178,7 @@ fn insert_install(
             package_id,
             install.method,
             install.scope,
-            install.elevation as i32,
+            i32::from(install.elevation),
             serde_json::to_string(&install.switches).ok(),
             serde_json::to_string(&install.exit_codes).ok(),
             serde_json::to_string(&install.success_codes).ok(),
@@ -198,7 +202,7 @@ fn insert_checkver(
             checkver.url,
             checkver.regex,
             checkver.version_format,
-            checkver.include_pre_release as i32,
+            i32::from(checkver.include_pre_release),
             checkver.autoupdate.as_ref().and_then(|a| serde_json::to_string(a).ok()),
             checkver.hash.as_ref().and_then(|h| serde_json::to_string(h).ok()),
         ],

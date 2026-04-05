@@ -49,31 +49,36 @@ pub enum CheckError {
     Other(String),
 }
 
-/// Check an HTTP response for rate limiting (429) and return a RateLimited error if detected.
+/// Check an HTTP response for rate limiting (429) and return a `RateLimited` error if detected.
+///
+/// # Errors
+///
+/// Returns `CheckError::RateLimited` if the response status is 429.
 pub fn check_rate_limit(resp: &reqwest::Response) -> Result<(), CheckError> {
     if resp.status() == reqwest::StatusCode::TOO_MANY_REQUESTS {
         let retry_after = resp
             .headers()
             .get("retry-after")
             .and_then(|v| v.to_str().ok())
-            .map(|s| s.to_string());
+            .map(std::string::ToString::to_string);
         return Err(CheckError::RateLimited { retry_after });
     }
     Ok(())
 }
 
 /// Run the appropriate check for a manifest based on its checkver.provider field.
+///
+/// # Errors
+///
+/// Returns `CheckError` if the version check fails.
 pub async fn check_manifest(
     manifest: &Manifest,
     client: &ClientWithMiddleware,
 ) -> Result<CheckOutcome, CheckError> {
-    let checkver = match &manifest.checkver {
-        Some(cv) => cv,
-        None => {
-            return Ok(CheckOutcome::Skipped {
-                reason: "no [checkver] section".into(),
-            });
-        }
+    let Some(checkver) = &manifest.checkver else {
+        return Ok(CheckOutcome::Skipped {
+            reason: "no [checkver] section".into(),
+        });
     };
 
     match checkver.provider.as_str() {

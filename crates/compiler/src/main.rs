@@ -23,7 +23,7 @@ struct Cli {
     #[arg(long, default_value = "assets/icons")]
     icons: PathBuf,
 
-    /// Output SQLite database path
+    /// Output `SQLite` database path
     #[arg(short, long, default_value = "catalog.db")]
     output: PathBuf,
 
@@ -50,7 +50,7 @@ fn main() -> ExitCode {
 
     tracing::info!("astro-up-compiler {}", env!("CARGO_PKG_VERSION"));
 
-    match run(cli) {
+    match run(&cli) {
         Ok(code) => code,
         Err(e) => {
             tracing::error!("{e:#}");
@@ -59,7 +59,7 @@ fn main() -> ExitCode {
     }
 }
 
-fn run(cli: Cli) -> anyhow::Result<ExitCode> {
+fn run(cli: &Cli) -> anyhow::Result<ExitCode> {
     // 1. Load and validate manifests
     let result = manifest::load_manifests(&cli.manifests)?;
 
@@ -68,13 +68,12 @@ fn run(cli: Cli) -> anyhow::Result<ExitCode> {
         if result.errors.is_empty() {
             println!("All {} manifests valid.", result.manifests.len());
             return Ok(ExitCode::SUCCESS);
-        } else {
-            println!("{} errors found:", result.errors.len());
-            for err in &result.errors {
-                println!("  {err}");
-            }
-            return Ok(ExitCode::from(2));
         }
+        println!("{} errors found:", result.errors.len());
+        for err in &result.errors {
+            println!("  {err}");
+        }
+        return Ok(ExitCode::from(2));
     }
 
     // 3. Create SQLite database

@@ -28,11 +28,11 @@ pub enum ParsedVersion {
 }
 
 impl ParsedVersion {
+    #[must_use]
     pub fn raw(&self) -> String {
         match self {
             Self::Semver(v) => v.to_string(),
-            Self::Date { raw, .. } => raw.clone(),
-            Self::Custom { raw, .. } => raw.clone(),
+            Self::Date { raw, .. } | Self::Custom { raw, .. } => raw.clone(),
         }
     }
 }
@@ -94,6 +94,10 @@ impl Ord for ParsedVersion {
 /// - `None` or `Some("semver")` → parse as semver (lenient)
 /// - `Some("date")` → parse as date (YYYY.MM.DD or YYYY-MM-DD)
 /// - Other → treat as custom regex pattern with named capture groups
+///
+/// # Errors
+///
+/// Returns `VersionError` if the version string cannot be parsed according to the format.
 pub fn parse(version: &str, format: Option<&str>) -> Result<ParsedVersion, VersionError> {
     match format.unwrap_or("semver") {
         "semver" => parse_semver(version),
@@ -152,6 +156,7 @@ fn parse_custom(version: &str, pattern: &str) -> Result<ParsedVersion, VersionEr
 }
 
 /// Sanitize a version string for use as a filename.
+#[must_use]
 pub fn sanitize_for_filename(version: &str) -> String {
     version
         .chars()

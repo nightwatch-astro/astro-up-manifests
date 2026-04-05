@@ -29,6 +29,9 @@ struct AssetLink {
     url: String,
 }
 
+/// # Errors
+///
+/// Returns `CheckError` if the GitLab API request fails or no tag is found.
 pub async fn check(
     _manifest: &Manifest,
     checkver: &Checkver,
