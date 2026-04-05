@@ -10,6 +10,10 @@ pub struct LoadResult {
 
 /// Load all `.toml` manifest files from a directory.
 /// Invalid manifests are skipped with errors collected (not fatal).
+///
+/// # Errors
+///
+/// Returns an error if the manifests directory does not exist or cannot be read.
 pub fn load_manifests(dir: &Path) -> anyhow::Result<LoadResult> {
     let mut manifests = Vec::new();
     let mut errors = Vec::new();
@@ -21,7 +25,7 @@ pub fn load_manifests(dir: &Path) -> anyhow::Result<LoadResult> {
     for entry in walkdir::WalkDir::new(dir)
         .max_depth(1)
         .into_iter()
-        .filter_map(|e| e.ok())
+        .filter_map(std::result::Result::ok)
     {
         let path = entry.path();
         if path.extension().and_then(|e| e.to_str()) != Some("toml") {

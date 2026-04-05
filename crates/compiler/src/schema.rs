@@ -1,6 +1,10 @@
 use rusqlite::Connection;
 
 /// Create all tables, indexes, and FTS5 virtual table in the catalog database.
+///
+/// # Errors
+///
+/// Returns an error if any SQL statement fails to execute.
 pub fn create_schema(conn: &Connection) -> anyhow::Result<()> {
     conn.execute_batch(
         "

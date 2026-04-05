@@ -19,6 +19,9 @@ struct Asset {
     name: String,
 }
 
+/// # Errors
+///
+/// Returns `CheckError` if the GitHub API request fails or no release is found.
 pub async fn check(
     _manifest: &Manifest,
     checkver: &Checkver,

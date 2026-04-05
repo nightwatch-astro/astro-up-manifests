@@ -6,10 +6,11 @@
 /// - `$minorVersion` → minor component (e.g., "1")
 /// - `$patchVersion` → patch component (e.g., "2")
 /// - `$cleanVersion` → digits only, no separators (e.g., "312")
-/// - `$underscoreVersion` → underscore-separated (e.g., "3_1_2")
+/// - `$underscoreVersion` → underscore-separated (e.g., "`3_1_2`")
 /// - `$dashVersion` → dash-separated (e.g., "3-1-2")
 /// - `$preReleaseVersion` → pre-release suffix (e.g., "rc1")
 /// - `$buildVersion` → build metadata (e.g., "build.456")
+#[must_use]
 pub fn substitute(template: &str, version: &str) -> String {
     let parts = parse_version_parts(version);
 
