@@ -1,5 +1,6 @@
 # astro-up-manifests
 
+<!-- hook test -->
 Astrophotography software manifest repository — TOML definitions, Rust compiler (TOML → SQLite), and version checker.
 
 ## Structure
