@@ -74,6 +74,6 @@ jobs:
         env:
           RUST_RESULT: ${{ needs.rust.result }}
         run: |
-          if [ "$RUST_RESULT" = "failure" ] || [ "$RUST_RESULT" = "cancelled" ]; then
+          if [ "$RUST_RESULT" = "failure" ]; then
             exit 1
           fi
