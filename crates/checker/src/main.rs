@@ -272,11 +272,7 @@ async fn handle_found(
     manifest: &Manifest,
     result: &providers::CheckResult,
     provider: &str,
-<<<<<<< HEAD
     client: &RetryClient,
-=======
-    client: &reqwest_middleware::ClientWithMiddleware,
->>>>>>> 37f3a43 (chore: enable clippy pedantic+nursery+cargo and fix all warnings)
     state: &Arc<Mutex<CheckerState>>,
     summary: &Arc<Mutex<Summary>>,
     versions_dir: &Path,
@@ -308,6 +304,15 @@ async fn handle_found(
         sha256,
         release_notes_url: result.release_notes_url.clone(),
         pre_release: result.pre_release,
+        assets: result
+            .assets
+            .iter()
+            .map(|a| astro_up_shared::version_file::VersionAsset {
+                name: a.name.clone(),
+                url: a.url.clone(),
+                size: a.size,
+            })
+            .collect(),
     };
 
     match discovered.write(versions_dir) {
@@ -358,11 +363,7 @@ async fn verify_hash_mismatch(
     manifest: &Manifest,
     sha256: Option<&String>,
     url: Option<&String>,
-<<<<<<< HEAD
     client: &RetryClient,
-=======
-    client: &reqwest_middleware::ClientWithMiddleware,
->>>>>>> 37f3a43 (chore: enable clippy pedantic+nursery+cargo and fix all warnings)
 ) -> bool {
     let has_external_hash_source = manifest
         .checkver

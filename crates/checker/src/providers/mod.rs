@@ -21,6 +21,29 @@ pub struct CheckResult {
     pub sha256: Option<String>,
     pub release_notes_url: Option<String>,
     pub pre_release: bool,
+    /// All release assets matching the manifest's `asset_filter` (GitHub provider only).
+    pub assets: Vec<ReleaseAsset>,
+}
+
+impl Default for CheckResult {
+    fn default() -> Self {
+        Self {
+            version: String::new(),
+            url: None,
+            sha256: None,
+            release_notes_url: None,
+            pre_release: false,
+            assets: Vec::new(),
+        }
+    }
+}
+
+/// A downloadable asset from a GitHub release.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ReleaseAsset {
+    pub name: String,
+    pub url: String,
+    pub size: u64,
 }
 
 #[derive(Debug)]

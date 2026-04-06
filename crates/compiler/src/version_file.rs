@@ -59,9 +59,14 @@ pub fn aggregate_versions(conn: &Connection, versions_dir: &Path) -> anyhow::Res
 
             match VersionEntry::read(&version_path) {
                 Ok(ve) => {
+                    let assets_json = if ve.assets.is_empty() {
+                        None
+                    } else {
+                        serde_json::to_string(&ve.assets).ok()
+                    };
                     tx.execute(
-                        "INSERT OR REPLACE INTO versions (package_id, version, url, sha256, discovered_at, release_notes_url, pre_release)
-                         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+                        "INSERT OR REPLACE INTO versions (package_id, version, url, sha256, discovered_at, release_notes_url, pre_release, assets)
+                         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
                         params![
                             package_id,
                             version,
@@ -70,6 +75,7 @@ pub fn aggregate_versions(conn: &Connection, versions_dir: &Path) -> anyhow::Res
                             ve.discovered_at.to_rfc3339(),
                             ve.release_notes_url,
                             i32::from(ve.pre_release),
+                            assets_json,
                         ],
                     )?;
                     count += 1;

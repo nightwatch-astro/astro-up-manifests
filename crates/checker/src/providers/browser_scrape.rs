@@ -105,6 +105,7 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
             sha256: None,
             release_notes_url: None,
             pre_release: false,
+            assets: Vec::new(),
         }))
     }
     .await;

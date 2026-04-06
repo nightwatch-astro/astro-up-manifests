@@ -15,6 +15,18 @@ pub struct VersionEntry {
     pub release_notes_url: Option<String>,
     #[serde(default)]
     pub pre_release: bool,
+    /// Filtered release assets (GitHub provider only). When present, the client
+    /// can offer asset selection instead of using the single `url` field.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub assets: Vec<VersionAsset>,
+}
+
+/// A downloadable asset from a release.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VersionAsset {
+    pub name: String,
+    pub url: String,
+    pub size: u64,
 }
 
 impl VersionEntry {

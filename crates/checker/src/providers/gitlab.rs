@@ -93,5 +93,6 @@ pub async fn check(
         sha256: None,
         release_notes_url: Some(release_url),
         pre_release,
+        assets: Vec::new(),
     }))
 }
