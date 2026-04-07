@@ -17,7 +17,7 @@ file_version = true
 [install]
 method = "exe"
 scope = "machine"
-elevation = true
+elevation = "required"
 
 [checkver]
 provider = "redirect"

@@ -10,7 +10,7 @@ slug = "synscan-wifi-firmware"
 
 [install]
 method = "exe"
-elevation = true
+elevation = "required"
 
 [checkver]
 provider = "html_scrape"

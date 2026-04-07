@@ -76,7 +76,7 @@ pub struct Install {
     #[serde(default)]
     pub scope: Option<String>,
     #[serde(default)]
-    pub elevation: bool,
+    pub elevation: Option<String>,
     #[serde(default)]
     pub switches: HashMap<String, String>,
     #[serde(default)]

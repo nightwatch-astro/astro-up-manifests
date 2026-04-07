@@ -15,7 +15,7 @@ registry_value = ""
 
 [install]
 method = "exe"
-elevation = true
+elevation = "required"
 
 [install.switches]
 silent = "/install /quiet /norestart"

@@ -34,7 +34,7 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
         install: Install {
             method: "zip_wrap".into(),
             scope: None,
-            elevation: false,
+            elevation: None,
             switches: HashMap::default(),
             exit_codes: vec![],
             success_codes: vec![],

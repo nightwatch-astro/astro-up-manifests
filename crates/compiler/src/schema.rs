@@ -49,7 +49,7 @@ pub fn create_schema(conn: &Connection) -> anyhow::Result<()> {
             package_id TEXT PRIMARY KEY REFERENCES packages(id),
             method TEXT NOT NULL,
             scope TEXT,
-            elevation INTEGER NOT NULL DEFAULT 0,
+            elevation TEXT,
             switches TEXT,
             exit_codes TEXT,
             success_codes TEXT

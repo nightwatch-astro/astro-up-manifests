@@ -10,7 +10,7 @@ slug = "synscan-mc015-firmware"
 
 [install]
 method = "exe"
-elevation = true
+elevation = "required"
 
 [checkver]
 provider = "html_scrape"

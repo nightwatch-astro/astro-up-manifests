@@ -23,7 +23,7 @@ registry_value = "Version"
 [install]
 method = "inno_setup"
 scope = "user"
-elevation = false
+elevation = "prohibited"
 
 [checkver]
 provider = "html_scrape"
@@ -84,7 +84,7 @@ fn parse_install_section() {
         manifest.install.scope.expect("install should have scope"),
         "user"
     );
-    assert!(!manifest.install.elevation);
+    assert_eq!(manifest.install.elevation, Some("prohibited".to_string()));
     assert!(manifest.install.switches.is_empty());
 }
 
@@ -168,7 +168,7 @@ slug = "zwo-driver"
 
 [install]
 method = "exe"
-elevation = true
+elevation = "required"
 
 [hardware]
 device_class = "Camera"
