@@ -494,14 +494,14 @@ function New-DetectionConfig {
     $lines += "[detection]"
 
     if ($DetectionInfo.Method -eq "registry") {
-        $escapedKey = $DetectionInfo.RegistryKey -replace '\\', '\\\\'
+        $escapedKey = $DetectionInfo.RegistryKey .Replace('\', '\\')
         $lines += "method = `"registry`""
         $lines += "registry_key = `"$escapedKey`""
         if ($DetectionInfo.RegistryValue) {
             $lines += "registry_value = `"$($DetectionInfo.RegistryValue)`""
         }
     } elseif ($DetectionInfo.Method -eq "pe_file") {
-        $escapedPath = $DetectionInfo.Path -replace '\\', '\\\\'
+        $escapedPath = $DetectionInfo.Path .Replace('\', '\\')
         $lines += "method = `"pe_file`""
         $lines += "path = `"$escapedPath`""
     } elseif ($DetectionInfo.Method -eq "wmi") {
@@ -516,7 +516,7 @@ function New-DetectionConfig {
             $lines += "inf_name = `"$($DetectionInfo.InfName)`""
         }
     } elseif ($DetectionInfo.Method -eq "file") {
-        $escapedPath = $DetectionInfo.Path -replace '\\', '\\\\'
+        $escapedPath = $DetectionInfo.Path .Replace('\', '\\')
         $lines += "method = `"file`""
         $lines += "path = `"$escapedPath`""
     }
@@ -528,7 +528,7 @@ function New-DetectionConfig {
         $lines += "[detection.fallback]"
         $lines += "method = `"$($fb.Method)`""
         if ($fb.Path) {
-            $escapedFb = $fb.Path -replace '\\', '\\\\'
+            $escapedFb = $fb.Path .Replace('\', '\\')
             $lines += "path = `"$escapedFb`""
         }
     }
@@ -844,9 +844,23 @@ function Test-PackageLifecycle {
     if ($result.DetectionConfig -and $PSCmdlet.ShouldProcess($ManifestPath, "Add detection config")) {
         $content = Get-Content -Path $ManifestPath -Raw
 
-        # Remove existing [detection] section if present
-        $content = $content -replace '(?s)\r?\n?\[detection\]\r?\n.*?(?=\r?\n\[|\z)', ''
-        $content = $content.TrimEnd()
+        # Remove existing [detection] and [detection.*] sections (line-by-line to handle sub-sections)
+        $lines = $content -split "`n"
+        $filtered = @()
+        $inDetection = $false
+        foreach ($line in $lines) {
+            if ($line -match '^\[detection') {
+                $inDetection = $true
+                continue
+            }
+            if ($inDetection -and $line -match '^\[' -and $line -notmatch '^\[detection') {
+                $inDetection = $false
+            }
+            if (-not $inDetection) {
+                $filtered += $line
+            }
+        }
+        $content = ($filtered -join "`n").TrimEnd()
 
         # Append new detection config
         $content += "`n`n$($result.DetectionConfig)`n"
