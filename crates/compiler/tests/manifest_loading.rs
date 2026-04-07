@@ -36,13 +36,14 @@ fn default_switches_applied() {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../manifests");
     let result = load_manifests(&dir).expect("manifests directory should load");
 
-    let nina = result
+    // Use stellarium-app which still uses inno_setup with switches
+    let stellarium = result
         .manifests
         .iter()
-        .find(|m| m.id == "nina-app")
-        .expect("nina-app manifest should exist");
+        .find(|m| m.id == "stellarium-app")
+        .expect("stellarium-app manifest should exist");
     assert!(
-        !nina.install.switches.is_empty(),
+        !stellarium.install.switches.is_empty(),
         "default inno_setup switches should be applied"
     );
 }

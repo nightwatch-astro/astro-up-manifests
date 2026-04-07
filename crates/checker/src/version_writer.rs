@@ -22,10 +22,10 @@ impl DiscoveredVersion {
     ///
     /// Returns `io::Error` if the file cannot be written.
     pub fn write(&self, versions_dir: &Path) -> Result<Option<std::path::PathBuf>, std::io::Error> {
-        // Validate that URL is non-empty
-        if self.url.is_empty() {
+        // Validate that we have at least a URL or assets to write
+        if self.url.is_empty() && self.assets.is_empty() {
             tracing::warn!(
-                "{}/{} has empty URL, skipping write",
+                "{}/{} has empty URL and no assets, skipping write",
                 self.package_id,
                 self.version
             );
