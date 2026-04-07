@@ -23,3 +23,6 @@ silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
 provider = "github"
 owner = "ASCOMInitiative"
 repo = "ASCOMPlatform"
+
+[checkver.autoupdate]
+asset_filter = "\\.exe$"

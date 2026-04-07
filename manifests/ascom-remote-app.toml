@@ -24,5 +24,8 @@ provider = "github"
 owner = "ASCOMInitiative"
 repo = "ASCOMRemote"
 
+[checkver.autoupdate]
+asset_filter = "\\.exe$"
+
 [dependencies]
 requires = ["ascom-platform"]

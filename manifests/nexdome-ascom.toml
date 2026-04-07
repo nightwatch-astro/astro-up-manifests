@@ -19,9 +19,11 @@ elevation = true
 provider = "github"
 owner = "nexdome"
 repo = "ASCOM"
+tag_prefix = ""
 
 [checkver.autoupdate]
-url = "https://github.com/nexdome/ASCOM/releases/download/v$version/NexDome-Setup.exe"
+url = "https://github.com/nexdome/ASCOM/releases/download/$version/NexDome-Setup.exe"
+asset_filter = "\\.exe$"
 
 [dependencies]
 requires = ["ascom-platform"]
