@@ -63,7 +63,7 @@ if (-not $isAdmin) {
 }
 
 # Resolve script root
-$repoRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+$repoRoot = Split-Path $PSScriptRoot -Parent
 if (-not (Test-Path "$repoRoot/manifests")) {
     throw "Cannot find manifests directory at $repoRoot/manifests"
 }
