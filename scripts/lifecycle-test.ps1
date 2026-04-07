@@ -522,7 +522,7 @@ function New-DetectionConfig {
     }
 
     # Add fallback if available
-    if ($DetectionInfo.Fallback) {
+    if ($DetectionInfo.Contains('Fallback') -and $DetectionInfo.Fallback) {
         $fb = $DetectionInfo.Fallback
         $lines += ""
         $lines += "[detection.fallback]"
