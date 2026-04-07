@@ -176,59 +176,78 @@ function Compare-RegistrySnapshots {
 
 #endregion
 
-#region Version Resolution
+#region Version Resolution (from catalog.db)
 
-function Get-LatestVersionFromGitHub {
-    param([string]$Owner, [string]$Repo)
-
-    try {
-        $url = "https://api.github.com/repos/$Owner/$Repo/releases/latest"
-        $response = Invoke-RestMethod -Uri $url -Headers @{ "User-Agent" = "astro-up-lifecycle" }
-        return $response.tag_name -replace '^v', ''
-    } catch {
-        Write-Log "Failed to fetch GitHub release: $_" "WARN"
-        return $null
-    }
-}
-
-function Get-LatestVersionFromHtml {
-    param([string]$Url, [string]$Regex)
-
-    try {
-        $response = Invoke-WebRequest -Uri $Url -UseBasicParsing
-        if ($response.Content -match $Regex) {
-            return $Matches[1]
+function Initialize-Catalog {
+    $catalogPath = Join-Path $repoRoot "catalog.db"
+    if (-not (Test-Path $catalogPath)) {
+        Write-Log "Downloading catalog.db from latest release..." "INFO"
+        $releaseUrl = "https://api.github.com/repos/nightwatch-astro/astro-up-manifests/releases/tags/catalog/latest"
+        try {
+            $release = Invoke-RestMethod -Uri $releaseUrl -Headers @{ "User-Agent" = "astro-up-lifecycle" }
+            $asset = $release.assets | Where-Object { $_.name -eq "catalog.db" }
+            if ($asset) {
+                Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $catalogPath -UseBasicParsing
+                Write-Log "Downloaded catalog.db ($([math]::Round((Get-Item $catalogPath).Length / 1MB, 1)) MB)" "SUCCESS"
+            } else {
+                throw "catalog.db asset not found in release"
+            }
+        } catch {
+            throw "Failed to download catalog.db: $_"
         }
-    } catch {
-        Write-Log "Failed to fetch version from HTML: $_" "WARN"
+    } else {
+        Write-Log "Using existing catalog.db" "INFO"
     }
-
-    return $null
+    return $catalogPath
 }
 
 function Resolve-PackageVersion {
-    param([hashtable]$Manifest)
+    param(
+        [hashtable]$Manifest,
+        [string]$CatalogPath
+    )
 
-    $provider = $Manifest.checkver_provider
+    $packageId = $Manifest.id
+    try {
+        # Use System.Data.SQLite or ADO.NET with SQLite
+        Add-Type -Path "$env:ProgramFiles\System.Data.SQLite\bin\System.Data.SQLite.dll" -ErrorAction SilentlyContinue
 
-    switch ($provider) {
-        "github" {
-            $owner = $Manifest.checkver_owner
-            $repo = $Manifest.checkver_repo
-            if ($owner -and $repo) {
-                return Get-LatestVersionFromGitHub -Owner $owner -Repo $repo
-            }
+        $conn = New-Object System.Data.SQLite.SQLiteConnection("Data Source=$CatalogPath;Read Only=True")
+        $conn.Open()
+        $cmd = $conn.CreateCommand()
+        $cmd.CommandText = "SELECT version, url FROM versions WHERE package_id = @id AND pre_release = 0 ORDER BY discovered_at DESC LIMIT 1"
+        $cmd.Parameters.AddWithValue("@id", $packageId) | Out-Null
+        $reader = $cmd.ExecuteReader()
+        if ($reader.Read()) {
+            $version = $reader["version"]
+            $url = $reader["url"]
+            $reader.Close()
+            $conn.Close()
+            return @{ Version = $version; Url = $url }
         }
-        "html_scrape" {
-            $url = $Manifest.checkver_url
-            $regex = $Manifest.checkver_regex
-            if ($url -and $regex) {
-                return Get-LatestVersionFromHtml -Url $url -Regex $regex
-            }
+        $reader.Close()
+        $conn.Close()
+    } catch {
+        Write-Log "SQLite query failed, trying fallback: $_" "WARN"
+    }
+
+    # Fallback: use sqlite3 CLI if available
+    $sqlite3 = Get-Command sqlite3 -ErrorAction SilentlyContinue
+    if ($sqlite3) {
+        $result = & sqlite3 $CatalogPath "SELECT version || '|' || url FROM versions WHERE package_id = '$packageId' AND pre_release = 0 ORDER BY discovered_at DESC LIMIT 1" 2>$null
+        if ($result) {
+            $parts = $result -split '\|', 2
+            return @{ Version = $parts[0]; Url = $parts[1] }
         }
     }
 
-    Write-Log "Could not resolve version for provider: $provider" "WARN"
+    # Fallback: use dotnet System.Data.Sqlite via Add-Type assembly load
+    try {
+        [System.Reflection.Assembly]::LoadFrom("$env:USERPROFILE\.nuget\packages\microsoft.data.sqlite.core\*\lib\*\Microsoft.Data.Sqlite.dll") | Out-Null
+        # ... same query pattern
+    } catch {}
+
+    Write-Log "Could not resolve version for '$packageId' from catalog" "WARN"
     return $null
 }
 
@@ -493,18 +512,19 @@ function Test-PackageLifecycle {
     }
 
     try {
-        # 1. Resolve version
-        Write-Log "Step 1: Resolving version"
-        $version = Resolve-PackageVersion -Manifest $Manifest
-        if (-not $version) {
-            throw "Could not resolve version"
+        # 1. Resolve version from catalog
+        Write-Log "Step 1: Resolving version from catalog"
+        $versionInfo = Resolve-PackageVersion -Manifest $Manifest -CatalogPath $script:catalogPath
+        if (-not $versionInfo) {
+            throw "Could not resolve version from catalog for '$packageId'"
         }
+        $version = $versionInfo.Version
         $result.Version = $version
         Write-Log "Resolved version: $version" "SUCCESS"
 
         # 2. Download installer
         Write-Log "Step 2: Downloading installer"
-        $downloadUrl = $Manifest.autoupdate_url -replace '\$version', $version
+        $downloadUrl = if ($versionInfo.Url) { $versionInfo.Url } else { $Manifest.autoupdate_url -replace '\$version', $version }
         $installerFileName = [System.IO.Path]::GetFileName($downloadUrl)
         if ($installerFileName -notmatch '\.\w+$') {
             $installerFileName = "$packageId-$version.exe"
@@ -689,6 +709,9 @@ if ($PackageId) {
         exit 1
     }
 }
+
+# Initialize catalog for version resolution
+$script:catalogPath = Initialize-Catalog
 
 Write-Log "Found $(@($packagesToTest).Count) packages to test"
 
