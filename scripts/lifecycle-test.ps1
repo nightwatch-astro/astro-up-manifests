@@ -299,7 +299,9 @@ function Install-Package {
     Write-Log "  Install method: '$Method', Extension: '$extension'" "INFO"
 
     # Determine silent switches
-    $silentArgs = if ($Switches -and $Switches.Contains('silent')) {
+    # For explicit methods (inno_setup, nullsoft, msi), use manifest switches.
+    # For generic "exe", always auto-detect from binary — manifest switches are often wrong.
+    $silentArgs = if ($Method -ne "exe" -and $Switches -and $Switches.Contains('silent')) {
         $Switches['silent']
     } else {
         # For generic "exe", detect installer type from binary
