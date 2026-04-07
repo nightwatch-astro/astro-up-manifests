@@ -17,18 +17,17 @@ registry_key = "HKCU\\Software\\NINA"
 registry_value = "Version"
 
 [install]
-method = "inno_setup"
+method = "zip_wrap"
 scope = "user"
 
 [checkver]
 provider = "html_scrape"
 url = "https://nighttime-imaging.eu/download/"
-regex = "Version (\\d+\\.\\d+(?:\\.\\d+)?)"
+regex = "Releases/(\\d+\\.\\d+\\.\\d+\\.\\d+)/NINASetupBundle"
 version_format = "semver"
-include_pre_release = true
 
 [checkver.autoupdate]
-url = "https://f000.backblazeb2.com/file/nina-releases/NINA-$version-Setup.exe"
+url = "https://f002.backblazeb2.com/file/ninasetup/Releases/$version/NINASetupBundle_$version.zip"
 
 [backup]
 config_paths = ["$LOCALAPPDATA/NINA"]
