@@ -24,16 +24,3 @@ url = "https://lunaticoastro.com/aagcw/CWAscom-Install.exe"
 
 [dependencies]
 requires = ["ascom-platform"]
-
-[detection.fallback]
-method = "pe_file"
-path = "C:\\\\Program Files (x86)\\\\CWAscom\\\\ASCOM.CloudWatcher.Server.exe"
-
-[detection]
-method = "registry"
-registry_key = "HKEY_LOCAL_MACHINE\\\\SOFTWARE\\\\WOW6432Node\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Uninstall\\\\CloudWatcher ASCOM drivers_is1"
-registry_value = "DisplayVersion"
-
-[detection.fallback]
-method = "pe_file"
-path = "C:\\\\Program Files (x86)\\\\CWAscom\\\\ASCOM.CloudWatcher.Server.exe"
