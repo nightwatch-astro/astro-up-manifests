@@ -92,39 +92,24 @@ function Write-Log {
 
 #endregion
 
-#region TOML Parsing
+#region TOML Parsing (PSToml)
 
-function Get-TomlValue {
-    param(
-        [string]$Content,
-        [string]$Key,
-        [string]$Section = $null
-    )
+# Ensure PSToml is installed
+if (-not (Get-Module -ListAvailable -Name PSToml)) {
+    Write-Log "Installing PSToml module..." "INFO"
+    Install-Module PSToml -Scope CurrentUser -Force -AllowClobber
+}
+Import-Module PSToml -ErrorAction Stop
 
-    if ($Section) {
-        # Extract section
-        if ($Content -match "(?ms)\[$Section\](.*?)(?=\[|$)") {
-            $sectionContent = $Matches[1]
-        } else {
-            return $null
-        }
-    } else {
-        $sectionContent = $Content
-    }
-
-    # Match key = "value" or key = value
-    if ($sectionContent -match "$Key\s*=\s*`"([^`"]+)`"") {
-        return $Matches[1]
-    } elseif ($sectionContent -match "$Key\s*=\s*(\S+)") {
-        return $Matches[1]
-    }
-
-    return $null
+function Read-ManifestToml {
+    param([string]$Path)
+    $content = Get-Content $Path -Raw
+    return $content | ConvertFrom-Toml
 }
 
 function Test-TomlSection {
-    param([string]$Content, [string]$Section)
-    return $Content -match "\[$Section\]"
+    param([object]$Toml, [string]$Section)
+    return $null -ne $Toml.$Section
 }
 
 #endregion
@@ -669,37 +654,31 @@ function Get-PackagesToTest {
     $packages = @()
 
     foreach ($file in $manifestFiles) {
-        $content = Get-Content $file.FullName -Raw
+        $toml = Read-ManifestToml -Path $file.FullName
 
         # Skip if already has detection (unless -Force)
-        if (-not $Force -and (Test-TomlSection -Content $content -Section "detection")) {
+        if (-not $Force -and (Test-TomlSection -Toml $toml -Section "detection")) {
             continue
         }
 
         # Skip resource packages
-        $type = Get-TomlValue -Content $content -Key "type"
-        if ($type -eq "resource") {
+        if ($toml.type -eq "resource") {
             continue
         }
 
-        # Parse manifest
-        $manifest = @{
-            id = Get-TomlValue -Content $content -Key "id"
-            name = Get-TomlValue -Content $content -Key "name"
-            type = $type
-            install_method = Get-TomlValue -Content $content -Key "method" -Section "install"
-            checkver_provider = Get-TomlValue -Content $content -Key "provider" -Section "checkver"
-            checkver_owner = Get-TomlValue -Content $content -Key "owner" -Section "checkver"
-            checkver_repo = Get-TomlValue -Content $content -Key "repo" -Section "checkver"
-            checkver_url = Get-TomlValue -Content $content -Key "url" -Section "checkver"
-            checkver_regex = Get-TomlValue -Content $content -Key "regex" -Section "checkver"
-            autoupdate_url = Get-TomlValue -Content $content -Key "url" -Section "checkver.autoupdate"
-        }
+        # Build manifest hashtable from parsed TOML
+        $install = if ($toml.ContainsKey('install')) { $toml.install } else { @{} }
+        $checkver = if ($toml.ContainsKey('checkver')) { $toml.checkver } else { @{} }
+        $autoupdate = if ($checkver.ContainsKey('autoupdate')) { $checkver.autoupdate } else { @{} }
+        $switches = if ($install.ContainsKey('switches')) { $install.switches } else { @{} }
 
-        # Parse install switches if present
-        $silentSwitch = Get-TomlValue -Content $content -Key "silent" -Section "install.switches"
-        if ($silentSwitch) {
-            $manifest.install_switches = @{ silent = $silentSwitch }
+        $manifest = @{
+            id = $toml.id
+            name = $toml.name
+            type = $toml.type
+            install_method = if ($install.ContainsKey('method')) { $install.method } else { "" }
+            install_switches = $switches
+            autoupdate_url = if ($autoupdate.ContainsKey('url')) { $autoupdate.url } else { $null }
         }
 
         $packages += @{
