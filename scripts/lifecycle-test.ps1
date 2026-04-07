@@ -154,7 +154,7 @@ function Compare-RegistrySnapshots {
     $newKeys = $afterKeys | Where-Object { $_ -notin $beforeKeys }
 
     if ($newKeys) {
-        Write-Log "Found $($newKeys.Count) new registry entries" "SUCCESS"
+        Write-Log "Found $(@($newKeys).Count) new registry entries" "SUCCESS"
 
         foreach ($key in $newKeys) {
             $entry = $After | Where-Object { $_.PSPath -eq $key }
@@ -571,7 +571,7 @@ function Test-PackageLifecycle {
                 Write-Log "Scanning for PE files..."
                 $peInfo = Get-PEVersionInfo -Path $newEntry.InstallLocation
                 if ($peInfo) {
-                    Write-Log "Found $($peInfo.Count) executables with version info" "SUCCESS"
+                    Write-Log "Found $(@($peInfo).Count) executables with version info" "SUCCESS"
                     $detectionInfo.PEFiles = $peInfo
                 }
             }
@@ -686,7 +686,7 @@ if ($PackageId) {
     }
 }
 
-Write-Log "Found $($packagesToTest.Count) packages to test"
+Write-Log "Found $(@($packagesToTest).Count) packages to test"
 
 $allResults = @()
 
@@ -717,7 +717,7 @@ $summaryTable | Format-Table -AutoSize
 $updatedManifests = $allResults | Where-Object { $_.DetectionConfig } | ForEach-Object { $_.PackageId }
 
 if ($updatedManifests -and -not $WhatIfPreference) {
-    Write-Log "`nUpdated $($updatedManifests.Count) manifests with detection config" "SUCCESS"
+    Write-Log "`nUpdated $(@($updatedManifests).Count) manifests with detection config" "SUCCESS"
     Write-Log "Packages: $($updatedManifests -join ', ')"
 
     $commit = Read-Host "`nCommit changes to git? (y/N)"
