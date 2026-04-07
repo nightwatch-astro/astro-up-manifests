@@ -164,14 +164,20 @@ fn insert_detection(
     };
 
     conn.execute(
-        "INSERT INTO detection (package_id, method, file_path, registry_key, registry_value, fallback_config)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+        "INSERT INTO detection (package_id, method, file_path, registry_key, registry_value, version_regex, product_code, upgrade_code, inf_provider, device_class, inf_name, fallback_config)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)",
         params![
             package_id,
             detection.method,
             detection.path, // manifest field is still "path", maps to column "file_path"
             detection.registry_key,
             detection.registry_value,
+            detection.version_regex,
+            detection.product_code,
+            detection.upgrade_code,
+            detection.inf_provider,
+            detection.device_class,
+            detection.inf_name,
             fallback_config,
         ],
     )

@@ -51,6 +51,18 @@ pub struct Detection {
     #[serde(default)]
     pub registry_value: Option<String>,
     #[serde(default)]
+    pub version_regex: Option<String>,
+    #[serde(default)]
+    pub product_code: Option<String>,
+    #[serde(default)]
+    pub upgrade_code: Option<String>,
+    #[serde(default)]
+    pub inf_provider: Option<String>,
+    #[serde(default)]
+    pub device_class: Option<String>,
+    #[serde(default)]
+    pub inf_name: Option<String>,
+    #[serde(default)]
     pub file_version: Option<bool>,
     #[serde(default)]
     pub fallback_path: Option<String>,
