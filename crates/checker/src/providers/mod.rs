@@ -14,7 +14,7 @@ use crate::retry_client::RetryClient;
 use astro_up_shared::manifest::Manifest;
 use thiserror::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct CheckResult {
     pub version: String,
     pub url: Option<String>,
@@ -23,19 +23,6 @@ pub struct CheckResult {
     pub pre_release: bool,
     /// All release assets matching the manifest's `asset_filter` (GitHub provider only).
     pub assets: Vec<ReleaseAsset>,
-}
-
-impl Default for CheckResult {
-    fn default() -> Self {
-        Self {
-            version: String::new(),
-            url: None,
-            sha256: None,
-            release_notes_url: None,
-            pre_release: false,
-            assets: Vec::new(),
-        }
-    }
 }
 
 /// A downloadable asset from a GitHub release.
