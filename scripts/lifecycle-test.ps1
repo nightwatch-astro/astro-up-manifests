@@ -142,8 +142,11 @@ function Get-UninstallRegistryKeys {
 
     $entries = @()
     foreach ($path in $paths) {
-        $entries += Get-ItemProperty $path -ErrorAction SilentlyContinue |
-            Where-Object { $_.DisplayName -like $Filter }
+        Get-ItemProperty $path -ErrorAction SilentlyContinue | ForEach-Object {
+            if ($_.PSObject.Properties['DisplayName'] -and $_.DisplayName -like $Filter) {
+                $entries += $_
+            }
+        }
     }
 
     return $entries
@@ -162,7 +165,7 @@ function Compare-RegistrySnapshots {
 
         foreach ($key in $newKeys) {
             $entry = $After | Where-Object { $_.PSPath -eq $key }
-            if ($entry.DisplayName -like "*$PackageName*") {
+            if ($entry.PSObject.Properties['DisplayName'] -and $entry.DisplayName -like "*$PackageName*") {
                 return $entry
             }
         }
