@@ -296,7 +296,7 @@ function Install-Package {
     Write-Log "  Install method: '$Method', Extension: '$extension'" "INFO"
 
     # Determine silent switches
-    $silentArgs = if ($Switches -and $Switches.ContainsKey('silent')) {
+    $silentArgs = if ($Switches -and $Switches.Contains('silent')) {
         $Switches['silent']
     } else {
         switch ($Method) {
@@ -518,7 +518,7 @@ function Test-PackageLifecycle {
 
         # 2. Download installer
         Write-Log "Step 2: Downloading installer"
-        $autoupdateUrl = if ($Manifest.ContainsKey('autoupdate_url')) { $Manifest.autoupdate_url } else { $null }
+        $autoupdateUrl = if ($Manifest.Contains('autoupdate_url')) { $Manifest.autoupdate_url } else { $null }
         $downloadUrl = if ($versionInfo.Url) { $versionInfo.Url } elseif ($autoupdateUrl) { $autoupdateUrl -replace '\$version', $version } else { throw "No download URL available" }
         $installerFileName = [System.IO.Path]::GetFileName($downloadUrl)
         if ($installerFileName -notmatch '\.\w+$') {
@@ -545,7 +545,7 @@ function Test-PackageLifecycle {
 
         # 4. Install
         Write-Log "Step 4: Installing package"
-        $switches = if ($Manifest.ContainsKey('install_switches')) { $Manifest.install_switches } else { @{} }
+        $switches = if ($Manifest.Contains('install_switches')) { $Manifest.install_switches } else { @{} }
         $installResult = Install-Package -InstallerPath $installerPath -Method $Manifest.install_method -Switches $switches
 
         if (-not $installResult.Success) {
@@ -667,18 +667,18 @@ function Get-PackagesToTest {
         }
 
         # Build manifest hashtable from parsed TOML
-        $install = if ($toml.ContainsKey('install')) { $toml.install } else { @{} }
-        $checkver = if ($toml.ContainsKey('checkver')) { $toml.checkver } else { @{} }
-        $autoupdate = if ($checkver.ContainsKey('autoupdate')) { $checkver.autoupdate } else { @{} }
-        $switches = if ($install.ContainsKey('switches')) { $install.switches } else { @{} }
+        $install = if ($toml.Contains('install')) { $toml.install } else { @{} }
+        $checkver = if ($toml.Contains('checkver')) { $toml.checkver } else { @{} }
+        $autoupdate = if ($checkver.Contains('autoupdate')) { $checkver.autoupdate } else { @{} }
+        $switches = if ($install.Contains('switches')) { $install.switches } else { @{} }
 
         $manifest = @{
             id = $toml.id
             name = $toml.name
             type = $toml.type
-            install_method = if ($install.ContainsKey('method')) { $install.method } else { "" }
+            install_method = if ($install.Contains('method')) { $install.method } else { "" }
             install_switches = $switches
-            autoupdate_url = if ($autoupdate.ContainsKey('url')) { $autoupdate.url } else { $null }
+            autoupdate_url = if ($autoupdate.Contains('url')) { $autoupdate.url } else { $null }
         }
 
         $packages += @{
