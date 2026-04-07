@@ -10,7 +10,7 @@ slug = "losmandy-gemini-firmware"
 
 [install]
 method = "exe"
-elevation = true
+elevation = "required"
 
 [checkver]
 provider = "manual"

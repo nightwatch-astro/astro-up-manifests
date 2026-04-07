@@ -195,7 +195,7 @@ fn insert_install(
             package_id,
             install.method,
             install.scope,
-            i32::from(install.elevation),
+            install.elevation.as_deref(),
             serde_json::to_string(&install.switches).ok(),
             serde_json::to_string(&install.exit_codes).ok(),
             serde_json::to_string(&install.success_codes).ok(),

@@ -14,7 +14,7 @@ path = "{program_dir}/ZWO/FirmwareUpgradeTool/FirmwareUpgradeTool.exe"
 
 [install]
 method = "exe"
-elevation = true
+elevation = "required"
 
 [install.switches]
 silent = "/S"

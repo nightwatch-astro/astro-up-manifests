@@ -19,7 +19,6 @@ registry_value = "Version"
 [install]
 method = "inno_setup"
 scope = "user"
-elevation = false
 
 [checkver]
 provider = "html_scrape"
