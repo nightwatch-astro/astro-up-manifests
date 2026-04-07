@@ -494,14 +494,14 @@ function New-DetectionConfig {
     $lines += "[detection]"
 
     if ($DetectionInfo.Method -eq "registry") {
-        $escapedKey = $DetectionInfo.RegistryKey .Replace('\', '\\')
+        $escapedKey = $DetectionInfo.RegistryKey.Replace('\', '\\')
         $lines += "method = `"registry`""
         $lines += "registry_key = `"$escapedKey`""
         if ($DetectionInfo.RegistryValue) {
             $lines += "registry_value = `"$($DetectionInfo.RegistryValue)`""
         }
     } elseif ($DetectionInfo.Method -eq "pe_file") {
-        $escapedPath = $DetectionInfo.Path .Replace('\', '\\')
+        $escapedPath = $DetectionInfo.Path.Replace('\', '\\')
         $lines += "method = `"pe_file`""
         $lines += "path = `"$escapedPath`""
     } elseif ($DetectionInfo.Method -eq "wmi") {
@@ -516,7 +516,7 @@ function New-DetectionConfig {
             $lines += "inf_name = `"$($DetectionInfo.InfName)`""
         }
     } elseif ($DetectionInfo.Method -eq "file") {
-        $escapedPath = $DetectionInfo.Path .Replace('\', '\\')
+        $escapedPath = $DetectionInfo.Path.Replace('\', '\\')
         $lines += "method = `"file`""
         $lines += "path = `"$escapedPath`""
     }
@@ -528,7 +528,7 @@ function New-DetectionConfig {
         $lines += "[detection.fallback]"
         $lines += "method = `"$($fb.Method)`""
         if ($fb.Path) {
-            $escapedFb = $fb.Path .Replace('\', '\\')
+            $escapedFb = $fb.Path.Replace('\', '\\')
             $lines += "path = `"$escapedFb`""
         }
     }
