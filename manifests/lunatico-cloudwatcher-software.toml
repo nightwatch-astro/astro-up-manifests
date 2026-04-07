@@ -24,3 +24,8 @@ url = "https://lunaticoastro.com/aagcw/current/CWDataDisplay-Install.exe"
 
 [checkver.autoupdate]
 url = "https://lunaticoastro.com/aagcw/current/CWDataDisplay-Install.exe"
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\CloudWatcher Data Display_is1"
+registry_value = "DisplayVersion"
