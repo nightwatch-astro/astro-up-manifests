@@ -820,10 +820,18 @@ function Test-PackageLifecycle {
     $result | ConvertTo-Json -Depth 10 | Set-Content -Path $resultFile
     Write-Log "Results saved to $resultFile"
 
-    # Append detection config to manifest if found
+    # Write detection config to manifest (replace existing or append)
     if ($result.DetectionConfig -and $PSCmdlet.ShouldProcess($ManifestPath, "Add detection config")) {
-        Write-Log "Appending detection config to manifest"
-        Add-Content -Path $ManifestPath -Value "`n$($result.DetectionConfig)"
+        $content = Get-Content -Path $ManifestPath -Raw
+
+        # Remove existing [detection] section if present
+        $content = $content -replace '(?s)\r?\n?\[detection\]\r?\n.*?(?=\r?\n\[|\z)', ''
+        $content = $content.TrimEnd()
+
+        # Append new detection config
+        $content += "`n`n$($result.DetectionConfig)`n"
+        Set-Content -Path $ManifestPath -Value $content -NoNewline
+        Write-Log "Wrote detection config to manifest" "SUCCESS"
     }
 
     return $result
