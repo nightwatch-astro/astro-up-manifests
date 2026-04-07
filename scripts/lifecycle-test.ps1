@@ -308,6 +308,8 @@ function Install-Package {
 
     $extension = [System.IO.Path]::GetExtension($InstallerPath).ToLower()
 
+    Write-Log "  Install method: '$Method', Extension: '$extension'" "INFO"
+
     # Determine silent switches
     $silentArgs = if ($Switches -and $Switches.ContainsKey('silent')) {
         $Switches['silent']
@@ -328,7 +330,11 @@ function Install-Package {
         Write-Log "Extracted ZIP to $extractDir" "SUCCESS"
         return @{ Success = $true; ExitCode = 0; Message = "ZIP extracted" }
     } else {
-        $process = Start-Process -FilePath $InstallerPath -ArgumentList $silentArgs -Wait -PassThru -NoNewWindow
+        if ($silentArgs) {
+            $process = Start-Process -FilePath $InstallerPath -ArgumentList $silentArgs -Wait -PassThru -NoNewWindow
+        } else {
+            $process = Start-Process -FilePath $InstallerPath -Wait -PassThru -NoNewWindow
+        }
     }
 
     $timeout = 300 # 5 minutes
