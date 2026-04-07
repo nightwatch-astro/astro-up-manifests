@@ -963,7 +963,7 @@ if ($updatedManifests -and -not $WhatIfPreference) {
             git commit -m $commitMsg
             Write-Log "Committed changes" "SUCCESS"
 
-            $push = Read-Host "Push to remote? (y/N)"
+            $push = if ($AutoCommit) { 'y' } else { Read-Host "Push to remote? (y/N)" }
             if ($push -eq 'y') {
                 git push
                 Write-Log "Pushed to remote" "SUCCESS"
