@@ -14,6 +14,7 @@ fn write_new_version() {
         sha256: Some("abc123def456".into()),
         release_notes_url: Some("https://example.com/release".into()),
         pre_release: false,
+        assets: vec![],
     };
 
     let result = discovered
@@ -46,6 +47,7 @@ fn overwrite_existing_version() {
         sha256: None,
         release_notes_url: None,
         pre_release: false,
+        assets: vec![],
     };
 
     // Write first time
@@ -72,6 +74,7 @@ fn pre_release_flag() {
         sha256: None,
         release_notes_url: None,
         pre_release: true,
+        assets: vec![],
     };
 
     let result = discovered
@@ -94,6 +97,7 @@ fn sanitize_unsafe_version_chars() {
         sha256: None,
         release_notes_url: None,
         pre_release: false,
+        assets: vec![],
     };
 
     let result = discovered
@@ -122,6 +126,7 @@ fn date_version_format() {
         sha256: None,
         release_notes_url: None,
         pre_release: false,
+        assets: vec![],
     };
 
     let result = discovered

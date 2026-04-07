@@ -49,6 +49,7 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
             include_pre_release: false,
             css_selector: None,
             hash: None,
+            tag_prefix: None,
             autoupdate: None,
         }),
         hardware: None,
