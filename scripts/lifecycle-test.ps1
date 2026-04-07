@@ -47,6 +47,8 @@ param(
     [switch]$AutoCommit
 )
 
+#Requires -Version 7.0
+
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
