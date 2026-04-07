@@ -567,10 +567,12 @@ function Uninstall-Package {
 
     try {
         # Parse command and arguments
-        if ($uninstallCmd -match '^"([^"]+)"(.*)') {
+        $pattern1 = '^"([^"]+)"(.*)'
+        $pattern2 = '^(\S+)(.*)'
+        if ($uninstallCmd -match $pattern1) {
             $exe = $Matches[1]
             $args = $Matches[2].Trim()
-        } elseif ($uninstallCmd -match '^(\S+)(.*)') {
+        } elseif ($uninstallCmd -match $pattern2) {
             $exe = $Matches[1]
             $args = $Matches[2].Trim()
         } else {
