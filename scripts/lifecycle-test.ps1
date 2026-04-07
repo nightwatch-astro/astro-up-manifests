@@ -309,8 +309,8 @@ function Install-Package {
     $extension = [System.IO.Path]::GetExtension($InstallerPath).ToLower()
 
     # Determine silent switches
-    $silentArgs = if ($Switches -and $Switches.silent) {
-        $Switches.silent
+    $silentArgs = if ($Switches -and $Switches.ContainsKey('silent')) {
+        $Switches['silent']
     } else {
         switch ($Method) {
             "inno_setup" { "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES" }
@@ -436,8 +436,8 @@ function Uninstall-Package {
     }
 
     # Try QuietUninstallString first, then UninstallString
-    $uninstallCmd = $RegistryEntry.QuietUninstallString
-    if (-not $uninstallCmd) {
+    $uninstallCmd = if ($RegistryEntry.PSObject.Properties['QuietUninstallString']) { $RegistryEntry.QuietUninstallString } else { $null }
+    if (-not $uninstallCmd -and $RegistryEntry.PSObject.Properties['UninstallString']) {
         $uninstallCmd = $RegistryEntry.UninstallString
     }
 
@@ -603,7 +603,7 @@ function Test-PackageLifecycle {
             # PE scan if we have install location
             if ($installLocation) {
                 Write-Log "Scanning for PE files..."
-                $peInfo = Get-PEVersionInfo -Path $newEntry.InstallLocation
+                $peInfo = Get-PEVersionInfo -Path $installLocation
                 if ($peInfo) {
                     Write-Log "Found $(@($peInfo).Count) executables with version info" "SUCCESS"
                     $detectionInfo.PEFiles = $peInfo
