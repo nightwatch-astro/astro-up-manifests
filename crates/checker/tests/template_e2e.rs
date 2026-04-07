@@ -1,3 +1,4 @@
+#![allow(clippy::expect_used)]
 use astro_up_shared::template;
 use astro_up_shared::version_file::VersionEntry;
 
@@ -5,7 +6,7 @@ use astro_up_shared::version_file::VersionEntry;
 /// checker discovers version, template variables resolve in the written version file URL.
 #[test]
 fn template_resolution_in_version_file() {
-    let dir = tempfile::tempdir().unwrap();
+    let dir = tempfile::tempdir().expect("tempdir should be created");
 
     // Simulate: checkver.autoupdate.url has $version template
     let autoupdate_template =
@@ -21,7 +22,7 @@ fn template_resolution_in_version_file() {
 
     // Write version file with resolved URL
     let entry = VersionEntry {
-        url: resolved_url.clone(),
+        url: resolved_url,
         sha256: Some("abc123".into()),
         discovered_at: chrono::Utc::now(),
         release_notes_url: None,
@@ -29,10 +30,10 @@ fn template_resolution_in_version_file() {
     };
 
     let path = dir.path().join("nina-app").join("3.1.2.json");
-    entry.write(&path).unwrap();
+    entry.write(&path).expect("version entry should be written");
 
     // Read back and verify URL was resolved (not template)
-    let read_back = VersionEntry::read(&path).unwrap();
+    let read_back = VersionEntry::read(&path).expect("version entry should be readable");
     assert_eq!(
         read_back.url,
         "https://f000.backblazeb2.com/file/nina-releases/NINA-3.1.2-Setup.exe"

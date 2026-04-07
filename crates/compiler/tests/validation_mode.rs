@@ -1,3 +1,4 @@
+#![allow(clippy::expect_used)]
 use std::process::Command;
 
 fn compiler_bin() -> Command {
@@ -13,7 +14,7 @@ fn validate_valid_manifests() {
         .arg(&manifests_dir)
         .arg("--validate")
         .output()
-        .unwrap();
+        .expect("compiler command should execute");
 
     assert!(output.status.success(), "exit code should be 0");
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -22,19 +23,19 @@ fn validate_valid_manifests() {
 
 #[test]
 fn validate_invalid_manifest_exits_2() {
-    let dir = tempfile::tempdir().unwrap();
+    let dir = tempfile::tempdir().expect("tempdir should be created");
     std::fs::write(
         dir.path().join("bad.toml"),
         "manifest_version = 1\nid = \"\"\nname = \"\"\ncategory = \"\"\ntype = \"\"\nslug = \"\"\n[install]\nmethod = \"unknown_method\"\n",
     )
-    .unwrap();
+    .expect("bad.toml should be written");
 
     let output = compiler_bin()
         .arg("--manifests")
         .arg(dir.path())
         .arg("--validate")
         .output()
-        .unwrap();
+        .expect("compiler command should execute");
 
     assert_eq!(
         output.status.code(),
@@ -52,7 +53,7 @@ fn validate_nonexistent_dir_exits_1() {
         .arg("/nonexistent/path")
         .arg("--validate")
         .output()
-        .unwrap();
+        .expect("compiler command should execute");
 
     assert!(
         !output.status.success(),

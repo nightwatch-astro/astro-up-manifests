@@ -168,32 +168,33 @@ pub fn sanitize_for_filename(version: &str) -> String {
 }
 
 #[cfg(test)]
+#[allow(clippy::expect_used)]
 mod tests {
     use super::*;
 
     #[test]
     fn semver_strict() {
-        let v = parse("3.1.2", None).unwrap();
+        let v = parse("3.1.2", None).expect("3.1.2 should parse");
         assert!(matches!(v, ParsedVersion::Semver(_)));
     }
 
     #[test]
     fn semver_lenient() {
-        let v = parse("3.1", None).unwrap();
+        let v = parse("3.1", None).expect("3.1 should parse as lenient semver");
         assert!(matches!(v, ParsedVersion::Semver(_)));
     }
 
     #[test]
     fn semver_with_prefix() {
-        let v = parse("v3.1.2", Some("semver")).unwrap();
+        let v = parse("v3.1.2", Some("semver")).expect("v3.1.2 should parse as semver");
         assert!(matches!(v, ParsedVersion::Semver(_)));
     }
 
     #[test]
     fn semver_ordering() {
-        let v1 = parse("1.0.0", None).unwrap();
-        let v2 = parse("2.0.0", None).unwrap();
-        let v3 = parse("1.1.0", None).unwrap();
+        let v1 = parse("1.0.0", None).expect("1.0.0 should parse");
+        let v2 = parse("2.0.0", None).expect("2.0.0 should parse");
+        let v3 = parse("1.1.0", None).expect("1.1.0 should parse");
         assert!(v1 < v2);
         assert!(v1 < v3);
         assert!(v3 < v2);
@@ -201,7 +202,7 @@ mod tests {
 
     #[test]
     fn date_format() {
-        let v = parse("2026.03.29", Some("date")).unwrap();
+        let v = parse("2026.03.29", Some("date")).expect("2026.03.29 should parse as date");
         assert!(matches!(
             v,
             ParsedVersion::Date {
@@ -215,14 +216,14 @@ mod tests {
 
     #[test]
     fn date_ordering() {
-        let v1 = parse("2025.12.01", Some("date")).unwrap();
-        let v2 = parse("2026.01.01", Some("date")).unwrap();
+        let v1 = parse("2025.12.01", Some("date")).expect("2025.12.01 should parse as date");
+        let v2 = parse("2026.01.01", Some("date")).expect("2026.01.01 should parse as date");
         assert!(v1 < v2);
     }
 
     #[test]
     fn custom_regex() {
-        let v = parse("3.1 HF2", Some(r"(\d+)\.(\d+) HF(\d+)")).unwrap();
+        let v = parse("3.1 HF2", Some(r"(\d+)\.(\d+) HF(\d+)")).expect("custom regex should parse");
         assert!(matches!(v, ParsedVersion::Custom { .. }));
     }
 
