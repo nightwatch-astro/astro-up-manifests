@@ -891,7 +891,12 @@ function Get-PackagesToTest {
     $packages = @()
 
     foreach ($file in $manifestFiles) {
-        $toml = Read-ManifestToml -Path $file.FullName
+        try {
+            $toml = Read-ManifestToml -Path $file.FullName
+        } catch {
+            Write-Log "  Skipping $($file.Name): TOML parse error - $($_.Exception.Message)" "WARN"
+            continue
+        }
 
         # Skip if already has detection (unless -Force)
         if (-not $Force -and (Test-TomlSection -Toml $toml -Section "detection")) {
