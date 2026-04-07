@@ -38,7 +38,10 @@ param(
     [switch]$DryRun,
 
     [Parameter()]
-    [switch]$SkipUninstall
+    [switch]$SkipUninstall,
+
+    [Parameter()]
+    [switch]$Force
 )
 
 Set-StrictMode -Version Latest
@@ -56,6 +59,7 @@ if (-not $isAdmin) {
     if ($PackageId) { $arguments += " -PackageId '$PackageId'" }
     if ($DryRun) { $arguments += " -DryRun" }
     if ($SkipUninstall) { $arguments += " -SkipUninstall" }
+    if ($Force) { $arguments += " -Force" }
     if ($WhatIfPreference) { $arguments += " -WhatIf" }
 
     Start-Process powershell.exe -Verb RunAs -ArgumentList $arguments
@@ -631,8 +635,8 @@ function Get-PackagesToTest {
     foreach ($file in $manifestFiles) {
         $content = Get-Content $file.FullName -Raw
 
-        # Skip if already has detection
-        if (Test-TomlSection -Content $content -Section "detection") {
+        # Skip if already has detection (unless -Force)
+        if (-not $Force -and (Test-TomlSection -Content $content -Section "detection")) {
             continue
         }
 
