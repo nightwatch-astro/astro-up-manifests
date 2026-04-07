@@ -150,18 +150,29 @@ fn insert_detection(
     package_id: &str,
     detection: &astro_up_shared::manifest::Detection,
 ) -> rusqlite::Result<usize> {
+    // Build fallback_config JSON blob from legacy fallback_method + fallback_path
+    let fallback_config = match (&detection.fallback_method, &detection.fallback_path) {
+        (Some(method), path) => {
+            let mut map = serde_json::Map::new();
+            map.insert("method".into(), serde_json::Value::String(method.clone()));
+            if let Some(p) = path {
+                map.insert("file_path".into(), serde_json::Value::String(p.clone()));
+            }
+            Some(serde_json::Value::Object(map).to_string())
+        }
+        _ => None,
+    };
+
     conn.execute(
-        "INSERT INTO detection (package_id, method, path, registry_key, registry_value, file_version, fallback_path, fallback_method)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
+        "INSERT INTO detection (package_id, method, file_path, registry_key, registry_value, fallback_config)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
         params![
             package_id,
             detection.method,
-            detection.path,
+            detection.path, // manifest field is still "path", maps to column "file_path"
             detection.registry_key,
             detection.registry_value,
-            detection.file_version.map(i32::from),
-            detection.fallback_path,
-            detection.fallback_method,
+            fallback_config,
         ],
     )
 }

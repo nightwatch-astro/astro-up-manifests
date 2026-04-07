@@ -33,12 +33,16 @@ pub fn create_schema(conn: &Connection) -> anyhow::Result<()> {
         CREATE TABLE IF NOT EXISTS detection (
             package_id TEXT PRIMARY KEY REFERENCES packages(id),
             method TEXT NOT NULL,
-            path TEXT,
+            file_path TEXT,
             registry_key TEXT,
             registry_value TEXT,
-            file_version INTEGER,
-            fallback_path TEXT,
-            fallback_method TEXT
+            version_regex TEXT,
+            product_code TEXT,
+            upgrade_code TEXT,
+            inf_provider TEXT,
+            device_class TEXT,
+            inf_name TEXT,
+            fallback_config TEXT
         );
 
         CREATE TABLE IF NOT EXISTS install (
@@ -84,6 +88,7 @@ pub fn create_schema(conn: &Connection) -> anyhow::Result<()> {
             discovered_at TEXT NOT NULL,
             release_notes_url TEXT,
             pre_release INTEGER NOT NULL DEFAULT 0,
+            assets TEXT,
             PRIMARY KEY (package_id, version)
         );
 

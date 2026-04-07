@@ -304,6 +304,15 @@ async fn handle_found(
         sha256,
         release_notes_url: result.release_notes_url.clone(),
         pre_release: result.pre_release,
+        assets: result
+            .assets
+            .iter()
+            .map(|a| astro_up_shared::version_file::VersionAsset {
+                name: a.name.clone(),
+                url: a.url.clone(),
+                size: a.size,
+            })
+            .collect(),
     };
 
     match discovered.write(versions_dir) {

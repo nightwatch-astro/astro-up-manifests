@@ -37,6 +37,7 @@ pub async fn check(
                         sha256: None,
                         release_notes_url: None,
                         pre_release: false,
+                        assets: Vec::new(),
                     }));
                 }
             }
@@ -54,6 +55,7 @@ pub async fn check(
                         sha256: None,
                         release_notes_url: None,
                         pre_release: false,
+                        assets: Vec::new(),
                     }));
                 }
             }
@@ -70,6 +72,7 @@ pub async fn check(
                 sha256: None,
                 release_notes_url: None,
                 pre_release: false,
+                assets: Vec::new(),
             }));
         }
     }

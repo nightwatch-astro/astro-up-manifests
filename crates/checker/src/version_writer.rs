@@ -1,5 +1,5 @@
 use astro_up_shared::version::sanitize_for_filename;
-use astro_up_shared::version_file::VersionEntry;
+use astro_up_shared::version_file::{VersionAsset, VersionEntry};
 use chrono::Utc;
 use std::path::Path;
 
@@ -11,6 +11,7 @@ pub struct DiscoveredVersion {
     pub sha256: Option<String>,
     pub release_notes_url: Option<String>,
     pub pre_release: bool,
+    pub assets: Vec<VersionAsset>,
 }
 
 impl DiscoveredVersion {
@@ -42,6 +43,7 @@ impl DiscoveredVersion {
             discovered_at: Utc::now(),
             release_notes_url: self.release_notes_url.clone(),
             pre_release: self.pre_release,
+            assets: self.assets.clone(),
         };
 
         entry.write(&path)?;

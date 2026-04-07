@@ -1,8 +1,9 @@
 use crate::retry_client::RetryClient;
 use astro_up_shared::manifest::{Checkver, Manifest};
+use regex::Regex;
 use serde::Deserialize;
 
-use super::{CheckError, CheckOutcome, CheckResult};
+use super::{CheckError, CheckOutcome, CheckResult, ReleaseAsset};
 
 #[derive(Deserialize)]
 struct Release {
@@ -13,10 +14,10 @@ struct Release {
 }
 
 #[derive(Deserialize)]
-#[allow(dead_code)]
 struct Asset {
     browser_download_url: String,
     name: String,
+    size: u64,
 }
 
 /// # Errors
@@ -37,7 +38,6 @@ pub async fn check(
         .ok_or_else(|| CheckError::MissingConfig("repo".into()))?;
 
     let url = if checkver.include_pre_release {
-        // Fetch all releases and pick the first (latest)
         format!("https://api.github.com/repos/{owner}/{repo}/releases?per_page=1")
     } else {
         format!("https://api.github.com/repos/{owner}/{repo}/releases/latest")
@@ -48,7 +48,6 @@ pub async fn check(
         .header("Accept", "application/vnd.github+json")
         .header("X-GitHub-Api-Version", "2022-11-28");
 
-    // Authenticate if GITHUB_TOKEN is available (5000 req/hr vs 60 unauthenticated)
     if let Ok(token) = std::env::var("GITHUB_TOKEN") {
         req = req.header("Authorization", format!("Bearer {token}"));
     }
@@ -70,18 +69,43 @@ pub async fn check(
         resp.json::<Release>().await?
     };
 
-    // Strip leading 'v' from tag
+    // Strip tag prefix (default "v")
+    let tag_prefix = checkver.tag_prefix.as_deref().unwrap_or("v");
     let version = release
         .tag_name
-        .strip_prefix('v')
+        .strip_prefix(tag_prefix)
         .unwrap_or(&release.tag_name)
         .to_string();
 
-    // Find download URL from assets (first .exe, .msi, .zip, or first asset)
-    let download_url = release
+    // Build asset_filter regex from autoupdate config
+    let filter_re = checkver
+        .autoupdate
+        .as_ref()
+        .and_then(|au| au.asset_filter.as_deref())
+        .and_then(|pattern| Regex::new(pattern).ok());
+
+    // Filter and collect assets
+    let filtered_assets: Vec<ReleaseAsset> = release
         .assets
-        .first()
-        .map(|a| a.browser_download_url.clone());
+        .iter()
+        .filter(|a| match &filter_re {
+            Some(re) => re.is_match(&a.name),
+            None => true, // no filter = keep all
+        })
+        .map(|a| ReleaseAsset {
+            name: a.name.clone(),
+            url: a.browser_download_url.clone(),
+            size: a.size,
+        })
+        .collect();
+
+    // Primary download URL: first filtered asset, or first asset, or None
+    let download_url = filtered_assets.first().map(|a| a.url.clone()).or_else(|| {
+        release
+            .assets
+            .first()
+            .map(|a| a.browser_download_url.clone())
+    });
 
     Ok(CheckOutcome::Found(CheckResult {
         version,
@@ -89,5 +113,6 @@ pub async fn check(
         sha256: None,
         release_notes_url: Some(release.html_url),
         pre_release: release.prerelease,
+        assets: filtered_assets,
     }))
 }

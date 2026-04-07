@@ -10,5 +10,6 @@ pub fn check(manifest: &Manifest) -> CheckOutcome {
         sha256: None,
         release_notes_url: None,
         pre_release: false,
+        assets: Vec::new(),
     })
 }

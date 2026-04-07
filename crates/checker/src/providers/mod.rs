@@ -14,13 +14,23 @@ use crate::retry_client::RetryClient;
 use astro_up_shared::manifest::Manifest;
 use thiserror::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct CheckResult {
     pub version: String,
     pub url: Option<String>,
     pub sha256: Option<String>,
     pub release_notes_url: Option<String>,
     pub pre_release: bool,
+    /// All release assets matching the manifest's `asset_filter` (GitHub provider only).
+    pub assets: Vec<ReleaseAsset>,
+}
+
+/// A downloadable asset from a GitHub release.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ReleaseAsset {
+    pub name: String,
+    pub url: String,
+    pub size: u64,
 }
 
 #[derive(Debug)]

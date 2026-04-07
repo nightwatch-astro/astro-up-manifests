@@ -90,6 +90,10 @@ pub struct Checkver {
     pub include_pre_release: bool,
     #[serde(default)]
     pub css_selector: Option<String>,
+    /// Tag prefix for GitHub/GitLab releases. Default: "v".
+    /// Set to "" for repos that tag without prefix (e.g., `NexDome` uses "4.0.0" not "v4.0.0").
+    #[serde(default)]
+    pub tag_prefix: Option<String>,
     #[serde(default)]
     pub hash: Option<HashConfig>,
     #[serde(default)]
@@ -120,6 +124,12 @@ pub struct Autoupdate {
     pub resolver_args: std::collections::HashMap<String, String>,
     #[serde(default)]
     pub hash: Option<HashConfig>,
+    /// Regex filter for GitHub release assets. Only assets whose filename
+    /// matches this pattern are stored in the catalog. Applied by the checker
+    /// when `provider = "github"`. Example: `"win64\\.exe$"` keeps only
+    /// Windows 64-bit EXE installers.
+    #[serde(default)]
+    pub asset_filter: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
