@@ -567,14 +567,19 @@ function Uninstall-Package {
 
     try {
         # Parse command and arguments
-        $pattern1 = '^"([^"]+)"(.*)'
-        $pattern2 = '^(\S+)(.*)'
-        if ($uninstallCmd -match $pattern1) {
-            $exe = $Matches[1]
-            $args = $Matches[2].Trim()
-        } elseif ($uninstallCmd -match $pattern2) {
-            $exe = $Matches[1]
-            $args = $Matches[2].Trim()
+        if ($uninstallCmd.StartsWith('"')) {
+            $closeQuote = $uninstallCmd.IndexOf('"', 1)
+            if ($closeQuote -gt 1) {
+                $exe = $uninstallCmd.Substring(1, $closeQuote - 1)
+                $args = $uninstallCmd.Substring($closeQuote + 1).Trim()
+            } else {
+                $exe = $uninstallCmd
+                $args = ""
+            }
+        } elseif ($uninstallCmd.Contains(' ')) {
+            $spaceIdx = $uninstallCmd.IndexOf(' ')
+            $exe = $uninstallCmd.Substring(0, $spaceIdx)
+            $args = $uninstallCmd.Substring($spaceIdx + 1).Trim()
         } else {
             $exe = $uninstallCmd
             $args = ""
@@ -972,14 +977,15 @@ $updatedManifests = $allResults | Where-Object { $_.DetectionConfig } | ForEach-
 
 if ($updatedManifests -and -not $WhatIfPreference) {
     Write-Log "`nUpdated $(@($updatedManifests).Count) manifests with detection config" "SUCCESS"
-    Write-Log "Packages: $($updatedManifests -join ', ')"
+    $pkgList = $updatedManifests -join ", "
+    Write-Log "Packages: $pkgList"
 
     $commit = if ($AutoCommit) { 'y' } else { Read-Host "`nCommit changes to git? (y/N)" }
     if ($commit -eq 'y') {
         Push-Location $repoRoot
         try {
             git add manifests/
-            $commitMsg = "feat: add detection config for $($updatedManifests -join ', ')"
+            $commitMsg = "feat: add detection config for $pkgList"
             git commit -m $commitMsg
             Write-Log "Committed changes" "SUCCESS"
 
