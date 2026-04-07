@@ -302,13 +302,31 @@ function Install-Package {
     $silentArgs = if ($Switches -and $Switches.Contains('silent')) {
         $Switches['silent']
     } else {
-        switch ($Method) {
+        # For generic "exe", detect installer type from binary
+        $effectiveMethod = $Method
+        if ($Method -eq "exe" -or -not $Method) {
+            $bytes = [System.IO.File]::ReadAllBytes($InstallerPath)
+            $text = [System.Text.Encoding]::ASCII.GetString($bytes, 0, [Math]::Min(65536, $bytes.Length))
+            if ($text -match "Inno Setup") {
+                $effectiveMethod = "inno_setup"
+                Write-Log "  Detected InnoSetup installer" "INFO"
+            } elseif ($text -match "Nullsoft") {
+                $effectiveMethod = "nullsoft"
+                Write-Log "  Detected Nullsoft/NSIS installer" "INFO"
+            } elseif ($text -match "WiX" -or $text -match "Windows Installer XML") {
+                $effectiveMethod = "burn"
+                Write-Log "  Detected WiX/Burn installer" "INFO"
+            }
+        }
+        switch ($effectiveMethod) {
             "inno_setup" { "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES" }
             "nullsoft" { "/S" }
+            "burn" { "/quiet /norestart" }
             "exe" { "/S" }
             default { "" }
         }
     }
+    Write-Log "  Silent args: '$silentArgs'" "INFO"
 
     if ($Method -eq "msi" -or $extension -eq ".msi") {
         $process = Start-Process msiexec.exe -ArgumentList "/i `"$InstallerPath`" /qn /norestart" -Wait -PassThru -NoNewWindow
