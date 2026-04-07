@@ -380,17 +380,87 @@ function Get-PEVersionInfo {
     return $results
 }
 
-function Get-WMIProduct {
-    param([string]$PackageName)
+function Get-WMISnapshot {
+    param([string]$PackageName, [string[]]$Aliases = @())
 
+    $snapshot = @{ Products = @(); Drivers = @() }
+    $searchTerms = @($PackageName) + $Aliases | Where-Object { $_ }
+
+    # Win32_InstalledWin32Program (fast, no MSI enumeration)
     try {
-        Write-Log "Querying WMI (this may take a while)..." "INFO"
-        $products = Get-CimInstance -ClassName Win32_Product -Filter "Name LIKE '%$PackageName%'" -ErrorAction SilentlyContinue
-        return $products | Select-Object Name, Version, IdentifyingNumber
+        Write-Log "  WMI: querying installed programs..." "INFO"
+        foreach ($term in $searchTerms) {
+            $products = Get-CimInstance -ClassName Win32_InstalledWin32Program -ErrorAction SilentlyContinue |
+                Where-Object { $_.Name -like "*$term*" }
+            if ($products) {
+                $snapshot.Products += @($products | Select-Object Name, Version, ProgramId)
+            }
+        }
     } catch {
-        Write-Log "WMI query failed: $_" "WARN"
-        return $null
+        Write-Log "  WMI Win32_InstalledWin32Program failed: $_" "WARN"
     }
+
+    # Win32_PnPSignedDriver (for device drivers)
+    try {
+        Write-Log "  WMI: querying signed drivers..." "INFO"
+        foreach ($term in $searchTerms) {
+            $drivers = Get-CimInstance -ClassName Win32_PnPSignedDriver -ErrorAction SilentlyContinue |
+                Where-Object { $_.DriverProviderName -like "*$term*" -or $_.DeviceName -like "*$term*" } |
+                Select-Object DeviceName, DriverProviderName, DriverVersion, DeviceClass, InfName -First 5
+            if ($drivers) {
+                $snapshot.Drivers += @($drivers)
+            }
+        }
+    } catch {
+        Write-Log "  WMI driver query failed: $_" "WARN"
+    }
+
+    return $snapshot
+}
+
+function Find-InstalledFiles {
+    param([string]$PackageName, [string]$InstallLocation)
+
+    $results = @()
+    $searchDirs = @()
+
+    # Use install location if known
+    if ($InstallLocation -and (Test-Path $InstallLocation)) {
+        $searchDirs += $InstallLocation
+    }
+
+    # Also search common program directories
+    $programDirs = @(
+        "$env:ProgramFiles",
+        "${env:ProgramFiles(x86)}",
+        "$env:LOCALAPPDATA\Programs"
+    )
+    foreach ($dir in $programDirs) {
+        if (Test-Path $dir) {
+            $match = Get-ChildItem -Path $dir -Directory -ErrorAction SilentlyContinue |
+                Where-Object { $_.Name -like "*$PackageName*" } | Select-Object -First 3
+            if ($match) { $searchDirs += @($match.FullName) }
+        }
+    }
+
+    foreach ($dir in ($searchDirs | Select-Object -Unique)) {
+        $exes = Get-ChildItem -Path $dir -Filter "*.exe" -ErrorAction SilentlyContinue |
+            Where-Object { -not $_.PSIsContainer } | Select-Object -First 5
+        foreach ($exe in $exes) {
+            try {
+                $vi = $exe.VersionInfo
+                $results += @{
+                    Path = $exe.FullName
+                    FileVersion = $vi.FileVersion
+                    ProductVersion = $vi.ProductVersion
+                    ProductName = $vi.ProductName
+                    CompanyName = $vi.CompanyName
+                }
+            } catch {}
+        }
+    }
+
+    return $results
 }
 
 function New-DetectionConfig {
@@ -410,6 +480,33 @@ function New-DetectionConfig {
         $escapedPath = $DetectionInfo.Path -replace '\\', '\\\\'
         $lines += "method = `"pe_file`""
         $lines += "path = `"$escapedPath`""
+    } elseif ($DetectionInfo.Method -eq "wmi") {
+        $lines += "method = `"wmi`""
+        if ($DetectionInfo.DriverProvider) {
+            $lines += "inf_provider = `"$($DetectionInfo.DriverProvider)`""
+        }
+        if ($DetectionInfo.DeviceClass) {
+            $lines += "device_class = `"$($DetectionInfo.DeviceClass)`""
+        }
+        if ($DetectionInfo.InfName) {
+            $lines += "inf_name = `"$($DetectionInfo.InfName)`""
+        }
+    } elseif ($DetectionInfo.Method -eq "file") {
+        $escapedPath = $DetectionInfo.Path -replace '\\', '\\\\'
+        $lines += "method = `"file`""
+        $lines += "path = `"$escapedPath`""
+    }
+
+    # Add fallback if available
+    if ($DetectionInfo.Fallback) {
+        $fb = $DetectionInfo.Fallback
+        $lines += ""
+        $lines += "[detection.fallback]"
+        $lines += "method = `"$($fb.Method)`""
+        if ($fb.Path) {
+            $escapedFb = $fb.Path -replace '\\', '\\\\'
+            $lines += "path = `"$escapedFb`""
+        }
     }
 
     return $lines -join "`n"
@@ -558,28 +655,55 @@ function Test-PackageLifecycle {
         # Wait a moment for registry to settle
         Start-Sleep -Seconds 2
 
-        # 5. Post-install snapshot
+        # 5. Post-install registry snapshot
         Write-Log "Step 5: Capturing post-install state"
         $afterRegistry = Get-UninstallRegistryKeys
 
-        # 6. Detection probes
-        Write-Log "Step 6: Running detection probes"
+        # 6. WMI snapshot
+        Write-Log "Step 6: WMI snapshot"
+        $wmiSnapshot = Get-WMISnapshot -PackageName $packageName
+        if ($wmiSnapshot.Products.Count -gt 0) {
+            Write-Log "  WMI found $($wmiSnapshot.Products.Count) matching products" "SUCCESS"
+            foreach ($p in $wmiSnapshot.Products) {
+                Write-Log "    $($p.Name) v$($p.Version)" "INFO"
+            }
+        }
+        if ($wmiSnapshot.Drivers.Count -gt 0) {
+            Write-Log "  WMI found $($wmiSnapshot.Drivers.Count) matching drivers" "SUCCESS"
+            foreach ($d in $wmiSnapshot.Drivers) {
+                Write-Log "    $($d.DeviceName) [$($d.DriverProviderName)] v$($d.DriverVersion) inf=$($d.InfName)" "INFO"
+            }
+        }
+
+        # 7. File search
+        Write-Log "Step 7: File search"
+        $fileResults = Find-InstalledFiles -PackageName $packageName -InstallLocation ""
+        if (@($fileResults).Count -gt 0) {
+            Write-Log "  Found $(@($fileResults).Count) executables" "SUCCESS"
+            foreach ($f in $fileResults) {
+                Write-Log "    $($f.Path) v$($f.ProductVersion) [$($f.ProductName)]" "INFO"
+            }
+        }
+
+        # 8. Registry diff detection
+        Write-Log "Step 8: Registry diff detection"
         $newEntry = Compare-RegistrySnapshots -Before $beforeRegistry -After $afterRegistry -PackageName $packageName
 
+        # Build detection info — try each method, pick best
         $detectionInfo = @{}
+        $detectionMethod = $null
 
+        # Method 1: Registry (highest confidence if found)
         if ($newEntry) {
             $displayName = if ($newEntry.PSObject.Properties['DisplayName']) { $newEntry.DisplayName } else { "unknown" }
             $displayVersion = if ($newEntry.PSObject.Properties['DisplayVersion']) { $newEntry.DisplayVersion } else { "" }
             $publisher = if ($newEntry.PSObject.Properties['Publisher']) { $newEntry.Publisher } else { "" }
             $installLocation = if ($newEntry.PSObject.Properties['InstallLocation']) { $newEntry.InstallLocation } else { "" }
 
-            Write-Log "Found registry entry: $displayName" "SUCCESS"
-            Write-Log "  Version: $displayVersion"
+            Write-Log "Registry: $displayName v$displayVersion" "SUCCESS"
             Write-Log "  Publisher: $publisher"
             Write-Log "  Install Location: $installLocation"
 
-            # Extract registry key
             $regPath = $newEntry.PSPath -replace 'Microsoft\.PowerShell\.Core\\Registry::', ''
             $regKey = $regPath -replace '\\DisplayName$', ''
 
@@ -591,22 +715,77 @@ function Test-PackageLifecycle {
                 Version = $displayVersion
                 InstallLocation = $installLocation
             }
+            $detectionMethod = "registry"
 
-            # PE scan if we have install location
-            if ($installLocation) {
-                Write-Log "Scanning for PE files..."
-                $peInfo = Get-PEVersionInfo -Path $installLocation
+            # Enrich: PE scan for fallback
+            $scanLocation = if ($installLocation) { $installLocation } else { $null }
+            if ($scanLocation) {
+                $peInfo = Get-PEVersionInfo -Path $scanLocation
                 if ($peInfo) {
-                    Write-Log "Found $(@($peInfo).Count) executables with version info" "SUCCESS"
+                    Write-Log "  PE fallback: $(@($peInfo).Count) executables with version info" "SUCCESS"
                     $detectionInfo.PEFiles = $peInfo
+                    # Add PE as fallback detection
+                    $bestPE = @($peInfo) | Where-Object { $_.ProductVersion } | Select-Object -First 1
+                    if ($bestPE) {
+                        $detectionInfo.Fallback = @{
+                            Method = "pe_file"
+                            Path = $bestPE.Path
+                        }
+                    }
                 }
             }
+        }
 
-            $result.Detection = "OK (registry)"
+        # Method 2: WMI driver (if no registry match, check drivers)
+        if (-not $detectionMethod -and $wmiSnapshot.Drivers.Count -gt 0) {
+            $bestDriver = $wmiSnapshot.Drivers | Select-Object -First 1
+            Write-Log "WMI driver: $($bestDriver.DeviceName) v$($bestDriver.DriverVersion)" "SUCCESS"
+            $detectionInfo = @{
+                Method = "wmi"
+                DriverProvider = $bestDriver.DriverProviderName
+                DeviceClass = $bestDriver.DeviceClass
+                InfName = $bestDriver.InfName
+                Version = $bestDriver.DriverVersion
+                Name = $bestDriver.DeviceName
+            }
+            $detectionMethod = "wmi"
+        }
+
+        # Method 3: PE file (if no registry or WMI match)
+        if (-not $detectionMethod -and @($fileResults).Count -gt 0) {
+            $bestPE = @($fileResults) | Where-Object { $_.ProductVersion } | Select-Object -First 1
+            if ($bestPE) {
+                Write-Log "PE file: $($bestPE.Path) v$($bestPE.ProductVersion)" "SUCCESS"
+                $detectionInfo = @{
+                    Method = "pe_file"
+                    Path = $bestPE.Path
+                    Version = $bestPE.ProductVersion
+                    Name = $bestPE.ProductName
+                }
+                $detectionMethod = "pe_file"
+            }
+        }
+
+        # Method 4: File exists (last resort — just check exe exists)
+        if (-not $detectionMethod -and @($fileResults).Count -gt 0) {
+            $bestFile = @($fileResults) | Select-Object -First 1
+            Write-Log "File exists: $($bestFile.Path)" "SUCCESS"
+            $detectionInfo = @{
+                Method = "file"
+                Path = $bestFile.Path
+                Name = $bestFile.ProductName
+            }
+            $detectionMethod = "file"
+        }
+
+        # Generate config
+        if ($detectionMethod) {
+            $result.Detection = "OK ($detectionMethod)"
             $result.DetectionConfig = New-DetectionConfig -DetectionInfo $detectionInfo
+            Write-Log "Best detection method: $detectionMethod" "SUCCESS"
         } else {
-            Write-Log "No registry entry found" "WARN"
-            $result.Detection = "FAILED (no registry entry)"
+            Write-Log "No detection method found" "WARN"
+            $result.Detection = "FAILED (no detection)"
         }
 
         # 7. Uninstall
