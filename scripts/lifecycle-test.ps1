@@ -400,14 +400,16 @@ function New-DetectionConfig {
     $lines += "[detection]"
 
     if ($DetectionInfo.Method -eq "registry") {
+        $escapedKey = $DetectionInfo.RegistryKey -replace '\\', '\\\\'
         $lines += "method = `"registry`""
-        $lines += "registry_key = `"$($DetectionInfo.RegistryKey)`""
+        $lines += "registry_key = `"$escapedKey`""
         if ($DetectionInfo.RegistryValue) {
             $lines += "registry_value = `"$($DetectionInfo.RegistryValue)`""
         }
     } elseif ($DetectionInfo.Method -eq "pe_file") {
+        $escapedPath = $DetectionInfo.Path -replace '\\', '\\\\'
         $lines += "method = `"pe_file`""
-        $lines += "path = `"$($DetectionInfo.Path)`""
+        $lines += "path = `"$escapedPath`""
     }
 
     return $lines -join "`n"
