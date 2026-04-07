@@ -527,7 +527,8 @@ function Test-PackageLifecycle {
 
         # 2. Download installer
         Write-Log "Step 2: Downloading installer"
-        $downloadUrl = if ($versionInfo.Url) { $versionInfo.Url } else { $Manifest.autoupdate_url -replace '\$version', $version }
+        $autoupdateUrl = if ($Manifest.ContainsKey('autoupdate_url')) { $Manifest.autoupdate_url } else { $null }
+        $downloadUrl = if ($versionInfo.Url) { $versionInfo.Url } elseif ($autoupdateUrl) { $autoupdateUrl -replace '\$version', $version } else { throw "No download URL available" }
         $installerFileName = [System.IO.Path]::GetFileName($downloadUrl)
         if ($installerFileName -notmatch '\.\w+$') {
             $installerFileName = "$packageId-$version.exe"
@@ -553,7 +554,8 @@ function Test-PackageLifecycle {
 
         # 4. Install
         Write-Log "Step 4: Installing package"
-        $installResult = Install-Package -InstallerPath $installerPath -Method $Manifest.install_method -Switches $Manifest.install_switches
+        $switches = if ($Manifest.ContainsKey('install_switches')) { $Manifest.install_switches } else { @{} }
+        $installResult = Install-Package -InstallerPath $installerPath -Method $Manifest.install_method -Switches $switches
 
         if (-not $installResult.Success) {
             throw "Installation failed: $($installResult.Message)"
@@ -575,10 +577,15 @@ function Test-PackageLifecycle {
         $detectionInfo = @{}
 
         if ($newEntry) {
-            Write-Log "Found registry entry: $($newEntry.DisplayName)" "SUCCESS"
-            Write-Log "  Version: $($newEntry.DisplayVersion)"
-            Write-Log "  Publisher: $($newEntry.Publisher)"
-            Write-Log "  Install Location: $($newEntry.InstallLocation)"
+            $displayName = if ($newEntry.PSObject.Properties['DisplayName']) { $newEntry.DisplayName } else { "unknown" }
+            $displayVersion = if ($newEntry.PSObject.Properties['DisplayVersion']) { $newEntry.DisplayVersion } else { "" }
+            $publisher = if ($newEntry.PSObject.Properties['Publisher']) { $newEntry.Publisher } else { "" }
+            $installLocation = if ($newEntry.PSObject.Properties['InstallLocation']) { $newEntry.InstallLocation } else { "" }
+
+            Write-Log "Found registry entry: $displayName" "SUCCESS"
+            Write-Log "  Version: $displayVersion"
+            Write-Log "  Publisher: $publisher"
+            Write-Log "  Install Location: $installLocation"
 
             # Extract registry key
             $regPath = $newEntry.PSPath -replace 'Microsoft\.PowerShell\.Core\\Registry::', ''
@@ -588,13 +595,13 @@ function Test-PackageLifecycle {
                 Method = "registry"
                 RegistryKey = $regKey
                 RegistryValue = "DisplayVersion"
-                Name = $newEntry.DisplayName
-                Version = $newEntry.DisplayVersion
-                InstallLocation = $newEntry.InstallLocation
+                Name = $displayName
+                Version = $displayVersion
+                InstallLocation = $installLocation
             }
 
             # PE scan if we have install location
-            if ($newEntry.InstallLocation) {
+            if ($installLocation) {
                 Write-Log "Scanning for PE files..."
                 $peInfo = Get-PEVersionInfo -Path $newEntry.InstallLocation
                 if ($peInfo) {
