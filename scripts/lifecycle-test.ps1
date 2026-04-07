@@ -331,7 +331,7 @@ function Install-Package {
     Write-Log "  Silent args: '$silentArgs'" "INFO"
 
     if ($Method -eq "msi" -or $extension -eq ".msi") {
-        $process = Start-Process msiexec.exe -ArgumentList "/i `"$InstallerPath`" /qn /norestart" -Wait -PassThru -NoNewWindow
+        $process = Start-Process msiexec.exe -ArgumentList "/i `"$InstallerPath`" /qn /norestart" -PassThru
     } elseif ($Method -eq "zip" -or $Method -eq "zip_wrap" -or $extension -eq ".zip") {
         $extractDir = Join-Path $tempDir "extracted"
         Expand-Archive -Path $InstallerPath -DestinationPath $extractDir -Force
@@ -339,13 +339,14 @@ function Install-Package {
         return @{ Success = $true; ExitCode = 0; Message = "ZIP extracted" }
     } else {
         if ($silentArgs) {
-            $process = Start-Process -FilePath $InstallerPath -ArgumentList $silentArgs -Wait -PassThru -NoNewWindow
+            $process = Start-Process -FilePath $InstallerPath -ArgumentList $silentArgs -PassThru
         } else {
-            $process = Start-Process -FilePath $InstallerPath -Wait -PassThru -NoNewWindow
+            $process = Start-Process -FilePath $InstallerPath -PassThru
         }
     }
 
-    $timeout = 300 # 5 minutes
+    # Wait with timeout — catches non-silent installers that pop up a GUI
+    $timeout = 600 # 10 minutes — some installers are heavy
     $waited = 0
     while (-not $process.HasExited -and $waited -lt $timeout) {
         Start-Sleep -Seconds 1
@@ -353,9 +354,12 @@ function Install-Package {
     }
 
     if (-not $process.HasExited) {
-        Write-Log "Installation timeout after $timeout seconds, killing process" "WARN"
+        Write-Log "Installation timeout after ${timeout}s — installer may not support silent mode. Killing." "WARN"
         $process.Kill()
-        return @{ Success = $false; ExitCode = -1; Message = "Timeout" }
+        # Also kill any child processes with the same name
+        $procName = [System.IO.Path]::GetFileNameWithoutExtension($InstallerPath)
+        Get-Process -Name $procName -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+        return @{ Success = $false; ExitCode = -1; Message = "Timeout (installer may not support silent mode)" }
     }
 
     $exitCode = $process.ExitCode
