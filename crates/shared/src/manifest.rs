@@ -91,7 +91,7 @@ pub struct Checkver {
     #[serde(default)]
     pub css_selector: Option<String>,
     /// Tag prefix for GitHub/GitLab releases. Default: "v".
-    /// Set to "" for repos that tag without prefix (e.g., NexDome uses "4.0.0" not "v4.0.0").
+    /// Set to "" for repos that tag without prefix (e.g., `NexDome` uses "4.0.0" not "v4.0.0").
     #[serde(default)]
     pub tag_prefix: Option<String>,
     #[serde(default)]
