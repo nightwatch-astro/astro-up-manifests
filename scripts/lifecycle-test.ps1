@@ -144,20 +144,25 @@ function Compare-RegistrySnapshots {
     $beforeKeys = $Before | ForEach-Object { $_.PSPath }
     $afterKeys = $After | ForEach-Object { $_.PSPath }
 
-    $newKeys = $afterKeys | Where-Object { $_ -notin $beforeKeys }
+    $newKeys = @($afterKeys | Where-Object { $_ -notin $beforeKeys })
 
-    if ($newKeys) {
-        Write-Log "Found $(@($newKeys).Count) new registry entries" "SUCCESS"
+    if ($newKeys.Count -gt 0) {
+        Write-Log "Found $($newKeys.Count) new registry entries" "SUCCESS"
 
+        # Try name match first
         foreach ($key in $newKeys) {
             $entry = $After | Where-Object { $_.PSPath -eq $key }
             if ($entry.PSObject.Properties['DisplayName'] -and $entry.DisplayName -like "*$PackageName*") {
+                Write-Log "  Matched by name: $($entry.DisplayName)"
                 return $entry
             }
         }
 
-        # Return first new entry as fallback
-        return $After | Where-Object { $_.PSPath -eq $newKeys[0] }
+        # No name match — return first new entry (it's what we just installed)
+        $fallback = $After | Where-Object { $_.PSPath -eq $newKeys[0] }
+        $fbName = if ($fallback.PSObject.Properties['DisplayName']) { $fallback.DisplayName } else { "unknown" }
+        Write-Log "  No name match, using first new entry: $fbName" "WARN"
+        return $fallback
     }
 
     return $null
