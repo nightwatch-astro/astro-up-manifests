@@ -249,29 +249,16 @@ function Get-FileWithProgress {
     try {
         Write-Log "Downloading from $Url"
 
-        $webClient = New-Object System.Net.WebClient
-        $webClient.Headers.Add("User-Agent", "astro-up-lifecycle")
+        # Use Invoke-WebRequest — handles redirects (GitHub CDN) reliably
+        Invoke-WebRequest -Uri $Url -OutFile $OutFile -UseBasicParsing -UserAgent "astro-up-lifecycle"
 
-        Register-ObjectEvent -InputObject $webClient -EventName DownloadProgressChanged -SourceIdentifier WebClient.DownloadProgressChanged -Action {
-            Write-Progress -Activity "Downloading" -Status "$($EventArgs.ProgressPercentage)% complete" -PercentComplete $EventArgs.ProgressPercentage
-        } | Out-Null
-
-        Register-ObjectEvent -InputObject $webClient -EventName DownloadFileCompleted -SourceIdentifier WebClient.DownloadFileCompleted -Action {
-            Write-Progress -Activity "Downloading" -Completed
-        } | Out-Null
-
-        $webClient.DownloadFileAsync($Url, $OutFile)
-
-        while ($webClient.IsBusy) {
-            Start-Sleep -Milliseconds 100
-        }
-
-        Unregister-Event -SourceIdentifier WebClient.DownloadProgressChanged -ErrorAction SilentlyContinue
-        Unregister-Event -SourceIdentifier WebClient.DownloadFileCompleted -ErrorAction SilentlyContinue
-
-        if (Test-Path $OutFile) {
-            Write-Log "Downloaded to $OutFile" "SUCCESS"
+        if ((Test-Path $OutFile) -and (Get-Item $OutFile).Length -gt 0) {
+            $sizeMB = [math]::Round((Get-Item $OutFile).Length / 1MB, 1)
+            Write-Log "Downloaded to $OutFile ($sizeMB MB)" "SUCCESS"
             return $true
+        } else {
+            Write-Log "Download produced empty file" "ERROR"
+            return $false
         }
     } catch {
         Write-Log "Download failed: $_" "ERROR"
@@ -729,7 +716,7 @@ $summaryTable = $allResults | ForEach-Object {
         Install = $_.Install
         Detect = $_.Detection
         Uninstall = $_.Uninstall
-        Error = if ($_.Error) { $_.Error.Substring(0, [Math]::Min(40, $_.Error.Length)) } else { "" }
+        Error = if ($_.Error) { $_.Error } else { "" }
     }
 }
 
