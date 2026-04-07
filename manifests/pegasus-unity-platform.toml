@@ -17,7 +17,7 @@ fallback_path = "{program_dir}/Pegasus Astro/Unity Platform/UnityPlatform.exe"
 
 [install]
 method = "exe"
-elevation = true
+elevation = "required"
 
 [install.switches]
 silent = "/S"

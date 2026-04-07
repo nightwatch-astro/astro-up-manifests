@@ -17,7 +17,7 @@ fallback_path = "{program_dir}/ZWO/ASIStudio/ASIStudio.exe"
 
 [install]
 method = "exe"
-elevation = true
+elevation = "required"
 
 [install.switches]
 silent = "/S"
