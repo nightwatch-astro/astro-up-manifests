@@ -3,6 +3,9 @@ use astro_up_shared::manifest::{Checkver, Manifest};
 
 use super::{CheckError, CheckOutcome, CheckResult};
 
+/// # Errors
+///
+/// Returns `CheckError` if the HTTP request fails or no version match is found in headers.
 pub async fn check(
     _manifest: &Manifest,
     checkver: &Checkver,

@@ -44,6 +44,7 @@ const KNOWN_PROVIDERS: &[&str] = &[
 ];
 
 /// Default silent install switches per installer type.
+#[must_use]
 pub fn default_switches(method: &str) -> HashMap<String, String> {
     match method {
         "inno_setup" => HashMap::from([(
@@ -64,6 +65,7 @@ pub fn apply_default_switches(install: &mut Install) {
 }
 
 /// Validate a parsed manifest. Returns a list of validation errors.
+#[must_use]
 pub fn validate_manifest(manifest: &Manifest, file: &str) -> Vec<ValidationError> {
     let mut errors = Vec::new();
 

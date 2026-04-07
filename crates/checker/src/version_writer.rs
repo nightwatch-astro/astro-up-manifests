@@ -15,7 +15,11 @@ pub struct DiscoveredVersion {
 
 impl DiscoveredVersion {
     /// Write this discovered version as a JSON file.
-    /// Returns the path written, or None if skipped due to empty URL.
+    /// Returns the path written, or None if skipped due to empty URL or if the version already exists.
+    ///
+    /// # Errors
+    ///
+    /// Returns `io::Error` if the file cannot be written.
     pub fn write(&self, versions_dir: &Path) -> Result<Option<std::path::PathBuf>, std::io::Error> {
         // Validate that URL is non-empty
         if self.url.is_empty() {

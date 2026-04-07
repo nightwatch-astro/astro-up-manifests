@@ -1,3 +1,4 @@
+#![allow(clippy::expect_used)]
 use astro_up_compiler::{compile, manifest, schema, version_file};
 use astro_up_shared::version_file::VersionEntry;
 use chrono::Utc;
@@ -5,17 +6,21 @@ use rusqlite::Connection;
 use std::path::Path;
 
 fn compile_sample_db() -> (tempfile::TempDir, Connection) {
-    let dir = tempfile::tempdir().unwrap();
+    let dir = tempfile::tempdir().expect("tempdir should be created");
     let db_path = dir.path().join("test-catalog.db");
 
     let manifests_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../manifests");
-    let result = manifest::load_manifests(&manifests_dir).unwrap();
-    assert!(!result.manifests.is_empty());
+    let result = manifest::load_manifests(&manifests_dir).expect("manifests should load");
+    assert!(
+        !result.manifests.is_empty(),
+        "expected at least one manifest to load"
+    );
 
-    let conn = Connection::open(&db_path).unwrap();
-    schema::create_schema(&conn).unwrap();
+    let conn = Connection::open(&db_path).expect("SQLite connection should open");
+    schema::create_schema(&conn).expect("schema should be created");
     let icons_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../assets/icons");
-    compile::compile_manifests(&conn, &result.manifests, &icons_dir).unwrap();
+    compile::compile_manifests(&conn, &result.manifests, &icons_dir)
+        .expect("manifests should compile");
 
     (dir, conn)
 }
@@ -26,7 +31,7 @@ fn compile_produces_packages() {
 
     let count: i64 = conn
         .query_row("SELECT COUNT(*) FROM packages", [], |row| row.get(0))
-        .unwrap();
+        .expect("package count query should succeed");
     assert!(count >= 4, "expected at least 4 packages, got {count}");
 }
 
@@ -40,7 +45,7 @@ fn query_by_id() {
             ["nina-app"],
             |row| row.get(0),
         )
-        .unwrap();
+        .expect("nina-app should exist in packages");
     assert_eq!(name, "N.I.N.A.");
 }
 
@@ -50,11 +55,11 @@ fn query_by_category() {
 
     let mut stmt = conn
         .prepare("SELECT id FROM packages WHERE category = ?1")
-        .unwrap();
+        .expect("category query should prepare");
     let ids: Vec<String> = stmt
         .query_map(["capture"], |row| row.get(0))
-        .unwrap()
-        .filter_map(|r| r.ok())
+        .expect("category query should execute")
+        .filter_map(std::result::Result::ok)
         .collect();
 
     assert!(ids.contains(&"nina-app".to_string()));
@@ -67,11 +72,11 @@ fn fts5_search() {
 
     let mut stmt = conn
         .prepare("SELECT id FROM packages WHERE rowid IN (SELECT rowid FROM packages_fts WHERE packages_fts MATCH ?1)")
-        .unwrap();
+        .expect("FTS5 query should prepare");
     let ids: Vec<String> = stmt
         .query_map(["autoguiding"], |row| row.get(0))
-        .unwrap()
-        .filter_map(|r| r.ok())
+        .expect("FTS5 query should execute")
+        .filter_map(std::result::Result::ok)
         .collect();
 
     assert!(ids.contains(&"phd2-app".to_string()));
@@ -87,7 +92,7 @@ fn checkver_preserved() {
             ["nina-app"],
             |row| row.get(0),
         )
-        .unwrap();
+        .expect("checkver provider query should succeed");
     assert_eq!(provider, "html_scrape");
 
     let autoupdate: String = conn
@@ -96,7 +101,7 @@ fn checkver_preserved() {
             ["nina-app"],
             |row| row.get(0),
         )
-        .unwrap();
+        .expect("checkver autoupdate query should succeed");
     assert!(autoupdate.contains("backblazeb2"));
 }
 
@@ -110,7 +115,7 @@ fn hardware_compiled() {
             ["zwo-asi-driver"],
             |row| row.get(0),
         )
-        .unwrap();
+        .expect("hardware device_class query should succeed");
     assert_eq!(device_class, "Camera");
 }
 
@@ -124,7 +129,7 @@ fn meta_table_populated() {
             [],
             |row| row.get(0),
         )
-        .unwrap();
+        .expect("schema_version meta query should succeed");
     assert_eq!(schema_version, "1");
 
     let compiled_at: String = conn
@@ -133,19 +138,19 @@ fn meta_table_populated() {
             [],
             |row| row.get(0),
         )
-        .unwrap();
+        .expect("compiled_at meta query should succeed");
     assert!(!compiled_at.is_empty());
 }
 
 #[test]
 fn version_aggregation() {
-    let dir = tempfile::tempdir().unwrap();
+    let dir = tempfile::tempdir().expect("tempdir should be created");
     let db_path = dir.path().join("test-catalog.db");
     let versions_dir = dir.path().join("versions");
 
     // Create a version file
     let nina_versions = versions_dir.join("nina-app");
-    std::fs::create_dir_all(&nina_versions).unwrap();
+    std::fs::create_dir_all(&nina_versions).expect("version dir should be created");
     let entry = VersionEntry {
         url: "https://example.com/nina-3.1.2.exe".into(),
         sha256: Some("abc123".into()),
@@ -153,17 +158,21 @@ fn version_aggregation() {
         release_notes_url: Some("https://example.com/release".into()),
         pre_release: false,
     };
-    entry.write(&nina_versions.join("3.1.2.json")).unwrap();
+    entry
+        .write(&nina_versions.join("3.1.2.json"))
+        .expect("version entry should be written");
 
     // Compile with versions
     let manifests_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../manifests");
-    let result = manifest::load_manifests(&manifests_dir).unwrap();
+    let result = manifest::load_manifests(&manifests_dir).expect("manifests should load");
 
-    let conn = Connection::open(&db_path).unwrap();
-    schema::create_schema(&conn).unwrap();
+    let conn = Connection::open(&db_path).expect("SQLite connection should open");
+    schema::create_schema(&conn).expect("schema should be created");
     let icons_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../assets/icons");
-    compile::compile_manifests(&conn, &result.manifests, &icons_dir).unwrap();
-    let count = version_file::aggregate_versions(&conn, &versions_dir).unwrap();
+    compile::compile_manifests(&conn, &result.manifests, &icons_dir)
+        .expect("manifests should compile");
+    let count = version_file::aggregate_versions(&conn, &versions_dir)
+        .expect("version aggregation should succeed");
 
     assert_eq!(count, 1);
 
@@ -173,19 +182,19 @@ fn version_aggregation() {
             ["nina-app", "3.1.2"],
             |row| row.get(0),
         )
-        .unwrap();
+        .expect("version URL query should succeed");
     assert_eq!(url, "https://example.com/nina-3.1.2.exe");
 }
 
 #[test]
 fn orphaned_versions_skipped() {
-    let dir = tempfile::tempdir().unwrap();
+    let dir = tempfile::tempdir().expect("tempdir should be created");
     let db_path = dir.path().join("test-catalog.db");
     let versions_dir = dir.path().join("versions");
 
     // Create version file for a package that doesn't exist
     let orphan_dir = versions_dir.join("nonexistent-pkg");
-    std::fs::create_dir_all(&orphan_dir).unwrap();
+    std::fs::create_dir_all(&orphan_dir).expect("orphan dir should be created");
     let entry = VersionEntry {
         url: "https://example.com/orphan.exe".into(),
         sha256: None,
@@ -193,16 +202,20 @@ fn orphaned_versions_skipped() {
         release_notes_url: None,
         pre_release: false,
     };
-    entry.write(&orphan_dir.join("1.0.0.json")).unwrap();
+    entry
+        .write(&orphan_dir.join("1.0.0.json"))
+        .expect("orphan version entry should be written");
 
     let manifests_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../manifests");
-    let result = manifest::load_manifests(&manifests_dir).unwrap();
+    let result = manifest::load_manifests(&manifests_dir).expect("manifests should load");
 
-    let conn = Connection::open(&db_path).unwrap();
-    schema::create_schema(&conn).unwrap();
+    let conn = Connection::open(&db_path).expect("SQLite connection should open");
+    schema::create_schema(&conn).expect("schema should be created");
     let icons_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../assets/icons");
-    compile::compile_manifests(&conn, &result.manifests, &icons_dir).unwrap();
-    let count = version_file::aggregate_versions(&conn, &versions_dir).unwrap();
+    compile::compile_manifests(&conn, &result.manifests, &icons_dir)
+        .expect("manifests should compile");
+    let count = version_file::aggregate_versions(&conn, &versions_dir)
+        .expect("version aggregation should succeed");
 
     assert_eq!(count, 0, "orphaned version files should be skipped");
 }

@@ -13,6 +13,8 @@ pub struct RetryClient {
 }
 
 impl RetryClient {
+    #[must_use]
+    #[allow(clippy::missing_const_for_fn, reason = "reqwest::Client is not const")]
     pub fn new(client: reqwest::Client, max_retries: u32) -> Self {
         Self {
             inner: client,
@@ -20,6 +22,7 @@ impl RetryClient {
         }
     }
 
+    #[must_use]
     pub fn get(&self, url: &str) -> RetryRequestBuilder {
         RetryRequestBuilder {
             client: self.clone(),
@@ -27,6 +30,7 @@ impl RetryClient {
         }
     }
 
+    #[must_use]
     pub fn post(&self, url: &str) -> RetryRequestBuilder {
         RetryRequestBuilder {
             client: self.clone(),
@@ -34,6 +38,7 @@ impl RetryClient {
         }
     }
 
+    #[must_use]
     pub fn patch(&self, url: &str) -> RetryRequestBuilder {
         RetryRequestBuilder {
             client: self.clone(),
@@ -41,6 +46,7 @@ impl RetryClient {
         }
     }
 
+    #[must_use]
     pub fn head(&self, url: &str) -> RetryRequestBuilder {
         RetryRequestBuilder {
             client: self.clone(),
@@ -55,6 +61,7 @@ pub struct RetryRequestBuilder {
 }
 
 impl RetryRequestBuilder {
+    #[must_use]
     pub fn header<K, V>(self, key: K, value: V) -> Self
     where
         HeaderName: TryFrom<K>,
@@ -68,6 +75,7 @@ impl RetryRequestBuilder {
         }
     }
 
+    #[must_use]
     pub fn body(self, body: impl Into<reqwest::Body>) -> Self {
         Self {
             inner: self.inner.body(body),
@@ -75,11 +83,21 @@ impl RetryRequestBuilder {
         }
     }
 
+    /// Send the request with automatic retry on transient errors.
+    ///
+    /// # Errors
+    ///
+    /// Returns `reqwest::Error` if the request fails after all retry attempts.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the request body is not cloneable (e.g., streaming body).
     pub async fn send(self) -> Result<reqwest::Response, reqwest::Error> {
         let request = self.inner.build()?;
         let max_retries = self.client.max_retries;
 
         for attempt in 0..=max_retries {
+            #[expect(clippy::expect_used, reason = "retry requires cloneable body")]
             let cloned = request.try_clone().expect("request body must be cloneable");
             match self.client.inner.execute(cloned).await {
                 Ok(resp) if resp.status().is_server_error() && attempt < max_retries => {
@@ -108,16 +126,26 @@ impl RetryRequestBuilder {
         unreachable!()
     }
 
+    /// Get the response body as bytes.
+    ///
+    /// # Errors
+    ///
+    /// Returns `reqwest::Error` if the request or body read fails.
     pub async fn bytes(self) -> Result<bytes::Bytes, reqwest::Error> {
         self.send().await?.bytes().await
     }
 
+    /// Get the response body as text.
+    ///
+    /// # Errors
+    ///
+    /// Returns `reqwest::Error` if the request or body read fails.
     pub async fn text(self) -> Result<String, reqwest::Error> {
         self.send().await?.text().await
     }
 }
 
-fn backoff_delay(attempt: u32) -> Duration {
+const fn backoff_delay(attempt: u32) -> Duration {
     // 500ms, 1s, 2s, ...
     Duration::from_millis(500 * 2u64.pow(attempt))
 }

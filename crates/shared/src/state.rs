@@ -27,6 +27,10 @@ pub struct CheckerState {
 
 impl CheckerState {
     /// Read state from a JSON file. Returns default (empty) if file doesn't exist.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the file exists but cannot be read or parsed.
     pub fn read(path: &Path) -> Result<Self, std::io::Error> {
         if !path.exists() {
             return Ok(Self::default());
@@ -37,6 +41,10 @@ impl CheckerState {
     }
 
     /// Write state to a JSON file.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the file cannot be written.
     pub fn write(&self, path: &Path) -> Result<(), std::io::Error> {
         let data = serde_json::to_string_pretty(self)?;
         std::fs::write(path, data)
@@ -77,6 +85,7 @@ impl CheckerState {
     }
 
     /// Check if a manifest has reached the persistent failure threshold (8 consecutive).
+    #[must_use]
     pub fn needs_issue(&self, id: &str) -> bool {
         self.manifests
             .get(id)
@@ -84,6 +93,7 @@ impl CheckerState {
     }
 
     /// Check if a manifest's issue should be closed (was failing, now succeeded).
+    #[must_use]
     pub fn should_close_issue(&self, id: &str) -> Option<u64> {
         self.manifests.get(id).and_then(|s| {
             if s.consecutive_failures == 0 {

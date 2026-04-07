@@ -1,6 +1,8 @@
+#![allow(clippy::expect_used)]
 use astro_up_checker::providers::{self, CheckOutcome};
 use astro_up_checker::retry_client::RetryClient;
 use astro_up_shared::manifest::{Checkver, Install, Manifest};
+use std::collections::HashMap;
 
 fn test_client() -> RetryClient {
     RetryClient::new(
@@ -8,7 +10,7 @@ fn test_client() -> RetryClient {
             .user_agent("astro-up-checker-test")
             .timeout(std::time::Duration::from_secs(15))
             .build()
-            .unwrap(),
+            .expect("reqwest client should build"),
         2,
     )
 }
@@ -33,7 +35,7 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
             method: "zip_wrap".into(),
             scope: None,
             elevation: false,
-            switches: Default::default(),
+            switches: HashMap::default(),
             exit_codes: vec![],
             success_codes: vec![],
         },
@@ -56,14 +58,16 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
 }
 
 /// Integration test against a real GitHub repo.
-/// Ignored by default — run with `cargo test -- --ignored` or in CI with GITHUB_TOKEN.
+/// Ignored by default — run with `cargo test -- --ignored` or in CI with `GITHUB_TOKEN`.
 #[tokio::test]
-#[ignore]
+#[ignore = "requires network access and GITHUB_TOKEN"]
 async fn github_provider_finds_version() {
     let manifest = github_manifest("OpenPHDGuiding", "phd2");
     let client = test_client();
 
-    let result = providers::check_manifest(&manifest, &client).await.unwrap();
+    let result = providers::check_manifest(&manifest, &client)
+        .await
+        .expect("check_manifest should succeed");
     match result {
         CheckOutcome::Found(cr) => {
             assert!(!cr.version.is_empty(), "version should not be empty");

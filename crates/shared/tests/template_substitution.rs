@@ -1,3 +1,4 @@
+#![allow(clippy::expect_used)]
 use astro_up_shared::template::substitute;
 
 #[test]

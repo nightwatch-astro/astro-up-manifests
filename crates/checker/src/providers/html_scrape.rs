@@ -56,6 +56,9 @@ fn find_version_in_links(
     None
 }
 
+/// # Errors
+///
+/// Returns `CheckError` if the HTTP request fails or no version match is found.
 pub async fn check(
     _manifest: &Manifest,
     checkver: &Checkver,

@@ -1,11 +1,12 @@
 use rand::RngExt;
 use std::fmt::Write;
 
-/// Generate a SharpCap obfuscated download URL.
+/// Generate a `SharpCap` obfuscated download URL.
 ///
 /// Port of the Go implementation from astro-up/astro-up's
 /// `internal/scrape/sharpcap.go`. The algorithm interleaves version
 /// digits into a random UUID to construct a download path.
+#[must_use]
 pub fn sharpcap_download_url(version: &str, arch: &str) -> Option<String> {
     if version.len() < 10 {
         return None;
@@ -79,22 +80,27 @@ fn split_uuid(uuid: &str) -> Vec<&str> {
 }
 
 #[cfg(test)]
+#[allow(clippy::expect_used)]
 mod tests {
     use super::*;
 
     #[test]
     fn short_version_url() {
-        let url = sharpcap_download_url("4.1.1234.0", "x64").unwrap();
+        let url =
+            sharpcap_download_url("4.1.1234.0", "x64").expect("short version should produce a URL");
         assert!(url.starts_with("https://d.sharpcap.co.uk/file/"));
         assert!(url.ends_with("_x64"));
         // First char of first segment should be '4' (version[0])
-        let path = url.strip_prefix("https://d.sharpcap.co.uk/file/").unwrap();
+        let path = url
+            .strip_prefix("https://d.sharpcap.co.uk/file/")
+            .expect("URL should have expected prefix");
         assert_eq!(path.as_bytes()[0], b'4');
     }
 
     #[test]
     fn long_version_url() {
-        let url = sharpcap_download_url("4.1.14247.0", "x64").unwrap();
+        let url =
+            sharpcap_download_url("4.1.14247.0", "x64").expect("long version should produce a URL");
         assert!(url.starts_with("https://d.sharpcap.co.uk/file/a"));
         assert!(url.ends_with("_x64"));
     }
