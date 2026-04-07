@@ -250,8 +250,14 @@ function Get-FileWithProgress {
     try {
         Write-Log "Downloading from $Url"
 
-        # Use Invoke-WebRequest — handles redirects (GitHub CDN) reliably
-        Invoke-WebRequest -Uri $Url -OutFile $OutFile -UseBasicParsing -UserAgent "astro-up-lifecycle"
+        # Use curl.exe — PowerShell's Invoke-WebRequest has TLS issues with many vendor sites
+        $curlExe = Get-Command curl.exe -ErrorAction SilentlyContinue
+        if ($curlExe) {
+            & curl.exe -L -o $OutFile --fail --silent --show-error --progress-bar $Url 2>&1 | ForEach-Object { Write-Host $_ }
+        } else {
+            # Fallback to Invoke-WebRequest
+            Invoke-WebRequest -Uri $Url -OutFile $OutFile -UseBasicParsing
+        }
 
         if ((Test-Path $OutFile) -and (Get-Item $OutFile).Length -gt 0) {
             $sizeMB = [math]::Round((Get-Item $OutFile).Length / 1MB, 1)
