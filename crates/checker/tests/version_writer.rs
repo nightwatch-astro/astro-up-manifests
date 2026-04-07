@@ -1,5 +1,5 @@
 #![allow(clippy::expect_used)]
-use astro_up_shared::version_file::VersionEntry;
+use astro_up_shared::version_file::{VersionAsset, VersionEntry};
 // Import from the checker crate
 use astro_up_checker::version_writer::DiscoveredVersion;
 
@@ -140,4 +140,61 @@ fn date_version_format() {
             .expect("file name should be valid UTF-8"),
         "2026.03.29.json"
     );
+}
+
+#[test]
+fn write_with_assets_and_empty_url() {
+    let dir = tempfile::tempdir().expect("tempdir should be created");
+
+    let discovered = DiscoveredVersion {
+        package_id: "stellarium-app".into(),
+        version: "26.1".into(),
+        url: String::new(),
+        sha256: None,
+        release_notes_url: Some("https://github.com/Stellarium/stellarium/releases/tag/v26.1".into()),
+        pre_release: false,
+        assets: vec![
+            VersionAsset {
+                name: "stellarium-26.1-qt6-win64.exe".into(),
+                url: "https://github.com/Stellarium/stellarium/releases/download/v26.1/stellarium-26.1-qt6-win64.exe".into(),
+                size: 400_000_000,
+            },
+            VersionAsset {
+                name: "stellarium-26.1-qt5-win64.exe".into(),
+                url: "https://github.com/Stellarium/stellarium/releases/download/v26.1/stellarium-26.1-qt5-win64.exe".into(),
+                size: 350_000_000,
+            },
+        ],
+    };
+
+    let result = discovered
+        .write(dir.path())
+        .expect("write with assets and empty URL should succeed");
+    assert!(result.is_some(), "should write when assets are present even with empty URL");
+
+    let path = result.expect("write result should contain path");
+    let entry = VersionEntry::read(&path).expect("version entry should be readable");
+    assert!(entry.url.is_empty());
+    assert_eq!(entry.assets.len(), 2);
+    assert_eq!(entry.assets[0].name, "stellarium-26.1-qt6-win64.exe");
+}
+
+#[test]
+fn skip_write_when_no_url_and_no_assets() {
+    let dir = tempfile::tempdir().expect("tempdir should be created");
+
+    let discovered = DiscoveredVersion {
+        package_id: "broken-app".into(),
+        version: "1.0.0".into(),
+        url: String::new(),
+        sha256: None,
+        release_notes_url: None,
+        pre_release: false,
+        assets: vec![],
+    };
+
+    let result = discovered
+        .write(dir.path())
+        .expect("write should not error");
+    assert!(result.is_none(), "should skip when both URL and assets are empty");
 }
