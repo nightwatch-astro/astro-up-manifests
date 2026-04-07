@@ -41,7 +41,10 @@ param(
     [switch]$SkipUninstall,
 
     [Parameter()]
-    [switch]$Force
+    [switch]$Force,
+
+    [Parameter()]
+    [switch]$AutoCommit
 )
 
 Set-StrictMode -Version Latest
@@ -61,6 +64,7 @@ if (-not $isAdmin) {
     if ($DryRun) { $arguments += " -DryRun" }
     if ($SkipUninstall) { $arguments += " -SkipUninstall" }
     if ($Force) { $arguments += " -Force" }
+    if ($AutoCommit) { $arguments += " -AutoCommit" }
     if ($WhatIfPreference) { $arguments += " -WhatIf" }
 
     Start-Process powershell.exe -Verb RunAs -ArgumentList $arguments
@@ -922,7 +926,7 @@ if ($updatedManifests -and -not $WhatIfPreference) {
     Write-Log "`nUpdated $(@($updatedManifests).Count) manifests with detection config" "SUCCESS"
     Write-Log "Packages: $($updatedManifests -join ', ')"
 
-    $commit = Read-Host "`nCommit changes to git? (y/N)"
+    $commit = if ($AutoCommit) { 'y' } else { Read-Host "`nCommit changes to git? (y/N)" }
     if ($commit -eq 'y') {
         Push-Location $repoRoot
         try {
