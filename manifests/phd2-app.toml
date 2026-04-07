@@ -8,11 +8,6 @@ category = "guiding"
 type = "application"
 slug = "phd2-app"
 
-[detection]
-method = "registry"
-registry_key = "SOFTWARE\\PHDGuiding2"
-registry_value = "DisplayVersion"
-
 [install]
 method = "inno_setup"
 
@@ -26,3 +21,8 @@ repo = "phd2"
 
 [checkver.autoupdate]
 url = "https://openphdguiding.org/phd2-$version-installer.exe"
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\PHD 2_is1"
+registry_value = "DisplayVersion"

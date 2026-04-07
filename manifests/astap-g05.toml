@@ -8,10 +8,6 @@ category = "platesolving"
 type = "database"
 slug = "astap-g05"
 
-[detection]
-method = "file"
-path = "{config_dir}/astap/g05"
-
 [install]
 method = "exe"
 elevation = "required"
@@ -25,3 +21,8 @@ url = "https://sourceforge.net/projects/astap-program/files/star_databases/g05_s
 
 [dependencies]
 requires = ["astap-app"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ASTAP G05 star database. Star density up to 500 ~6874E3E9_is1"
+registry_value = "DisplayVersion"

@@ -8,10 +8,6 @@ category = "platesolving"
 type = "database"
 slug = "astap-d80"
 
-[detection]
-method = "file"
-path = "{config_dir}/astap/d80"
-
 [install]
 method = "exe"
 elevation = "required"
@@ -25,3 +21,8 @@ url = "https://sourceforge.net/projects/astap-program/files/star_databases/d80_s
 
 [dependencies]
 requires = ["astap-app"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ASTAP D80 star database. Star density up to 8000~93F1C46F_is1"
+registry_value = "DisplayVersion"

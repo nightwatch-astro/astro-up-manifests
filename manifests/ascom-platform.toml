@@ -8,11 +8,6 @@ category = "prerequisites"
 type = "runtime"
 slug = "ascom-platform"
 
-[detection]
-method = "registry"
-registry_key = "SOFTWARE\\ASCOM"
-registry_value = "PlatformVersion"
-
 [install]
 method = "inno_setup"
 
@@ -26,3 +21,12 @@ repo = "ASCOMPlatform"
 
 [checkver.autoupdate]
 asset_filter = "\\.exe$"
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ASCOM Platform 7.1 Update 3"
+registry_value = "DisplayVersion"
+
+[detection.fallback]
+method = "pe_file"
+path = "C:\\Program Files (x86)\\ASCOM\\Platform\\Tools\\ASCOM Diagnostics.exe"

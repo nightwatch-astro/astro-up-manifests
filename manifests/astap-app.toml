@@ -8,10 +8,6 @@ category = "platesolving"
 type = "application"
 slug = "astap-app"
 
-[detection]
-method = "file"
-path = "{program_dir}/astap/astap.exe"
-
 [install]
 method = "inno_setup"
 
@@ -25,3 +21,12 @@ regex = '\(v(\d{4}\.\d{2}\.\d{2})\)'
 
 [checkver.autoupdate]
 url = "https://sourceforge.net/projects/astap-program/files/windows_installer/astap_setup.exe/download"
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\AppName=ASTAP, the Astrometric STAcking Program,~D52A8A79_is1"
+registry_value = "DisplayVersion"
+
+[detection.fallback]
+method = "pe_file"
+path = "C:\\Program Files\\astap\\dcraw.exe"
