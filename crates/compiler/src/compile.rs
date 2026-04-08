@@ -189,11 +189,12 @@ fn insert_install(
     install: &astro_up_shared::manifest::Install,
 ) -> rusqlite::Result<usize> {
     conn.execute(
-        "INSERT INTO install (package_id, method, scope, elevation, switches, exit_codes, success_codes)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+        "INSERT INTO install (package_id, method, zip_wrapped, scope, elevation, switches, exit_codes, success_codes)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
         params![
             package_id,
             install.method,
+            i32::from(install.zip_wrapped),
             install.scope,
             install.elevation.as_deref(),
             serde_json::to_string(&install.switches).ok(),

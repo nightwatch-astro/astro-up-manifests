@@ -145,7 +145,7 @@ impl FileType {
             (Self::InnoSetup, "inno_setup" | "exe")
                 | (Self::Nsis, "nsis" | "exe")
                 | (Self::Msi, "msi" | "wix")
-                | (Self::PeExe, "exe" | "inno_setup" | "nsis")
+                | (Self::PeExe, "exe" | "inno_setup" | "nsis" | "burn")
                 | (Self::Zip, "download_only")
         )
     }

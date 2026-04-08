@@ -48,6 +48,7 @@ pub fn create_schema(conn: &Connection) -> anyhow::Result<()> {
         CREATE TABLE IF NOT EXISTS install (
             package_id TEXT PRIMARY KEY REFERENCES packages(id),
             method TEXT NOT NULL,
+            zip_wrapped INTEGER NOT NULL DEFAULT 0,
             scope TEXT,
             elevation TEXT,
             switches TEXT,
