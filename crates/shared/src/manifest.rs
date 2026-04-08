@@ -150,7 +150,7 @@ pub struct Autoupdate {
     /// Windows 64-bit EXE installers.
     #[serde(default)]
     pub asset_filter: Option<String>,
-    /// Skip browser user-agent for downloads. Some CDNs (e.g., SourceForge)
+    /// Skip browser user-agent for downloads. Some CDNs (e.g., `SourceForge`)
     /// serve JS redirect pages to browsers instead of following HTTP redirects.
     /// When `true`, the checker and lifecycle script use the default UA.
     #[serde(default)]
