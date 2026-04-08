@@ -8,9 +8,6 @@ category = "driver"
 type = "driver"
 slug = "nexdome-ascom"
 
-[detection]
-method = "file"
-
 [install]
 method = "exe"
 elevation = "required"
@@ -27,3 +24,8 @@ asset_filter = "\\.exe$"
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{3837291A-B03A-418B-966B-983585934419}"
+registry_value = "DisplayVersion"
