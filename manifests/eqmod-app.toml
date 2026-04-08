@@ -16,12 +16,12 @@ elevation = "required"
 silent = "/S"
 
 [checkver]
-provider = "html_scrape"
+provider = "manual"
 url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/"
-regex = 'EQASCOM_V(\d+\w+)_Setup\.exe'
+version_format = "raw"
 
 [checkver.autoupdate]
-url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/EQASCOM_V$version_Setup.exe/download"
+url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/EQASCOM_V200w_Setup.exe/download"
 skip_browser_ua = true
 
 [dependencies]

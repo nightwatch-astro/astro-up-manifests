@@ -89,7 +89,7 @@ jobs:
           rm /tmp/minisign.key
 
       - name: Save pipeline state
-        run: tar czf pipeline-state.tar.gz checker-state.json versions/
+        run: tar czf pipeline-state.tar.gz checker-state.json
 
       - name: Publish to release
         env:
