@@ -57,9 +57,6 @@ param(
     [switch]$Force,
 
     [Parameter()]
-    [switch]$AutoCommit,
-
-    [Parameter()]
     [switch]$VerifyOnly
 )
 
@@ -82,7 +79,6 @@ if (-not $isAdmin) {
     if ($DryRun) { $arguments += " -DryRun" }
     if ($SkipUninstall) { $arguments += " -SkipUninstall" }
     if ($Force) { $arguments += " -Force" }
-    if ($AutoCommit) { $arguments += " -AutoCommit" }
     if ($VerifyOnly) { $arguments += " -VerifyOnly" }
     if ($WhatIfPreference) { $arguments += " -WhatIf" }
 
@@ -1103,37 +1099,14 @@ function Test-PackageLifecycle {
         Write-Log "Test failed: $($_.Exception.Message)" "ERROR"
     }
 
-    # Save results
+    # Save results (includes DetectionConfig for manual review)
     $resultFile = Join-Path $resultsDir "$packageId.json"
     $result | ConvertTo-Json -Depth 10 | Set-Content -Path $resultFile
     Write-Log "Results saved to $resultFile"
 
-    # Write detection config to manifest (replace existing or append)
-    if ($result.DetectionConfig -and $PSCmdlet.ShouldProcess($ManifestPath, "Add detection config")) {
-        $content = Get-Content -Path $ManifestPath -Raw
-
-        # Remove existing [detection] and [detection.*] sections (line-by-line to handle sub-sections)
-        $lines = $content -split "`n"
-        $filtered = @()
-        $inDetection = $false
-        foreach ($line in $lines) {
-            if ($line -match '^\[detection') {
-                $inDetection = $true
-                continue
-            }
-            if ($inDetection -and $line -match '^\[' -and $line -notmatch '^\[detection') {
-                $inDetection = $false
-            }
-            if (-not $inDetection) {
-                $filtered += $line
-            }
-        }
-        $content = ($filtered -join "`n").TrimEnd()
-
-        # Append new detection config
-        $content += "`n`n$($result.DetectionConfig)`n"
-        Set-Content -Path $ManifestPath -Value $content -NoNewline
-        Write-Log "Wrote detection config to manifest" "SUCCESS"
+    if ($result.DetectionConfig) {
+        Write-Log "Suggested detection config (see JSON report):" "INFO"
+        Write-Log $result.DetectionConfig "INFO"
     }
 
     return $result
@@ -1262,32 +1235,10 @@ if ($methodResults) {
     }
 }
 
-# Offer to commit changes
-$updatedManifests = $allResults | Where-Object { $_.DetectionConfig } | ForEach-Object { $_.PackageId }
-
-if ($updatedManifests -and -not $WhatIfPreference) {
-    Write-Log "`nUpdated $(@($updatedManifests).Count) manifests with detection config" "SUCCESS"
-    $pkgList = $updatedManifests -join ", "
-    Write-Log "Packages: $pkgList"
-
-    $commit = if ($AutoCommit) { 'y' } else { Read-Host "`nCommit changes to git? (y/N)" }
-    if ($commit -eq 'y') {
-        Push-Location $repoRoot
-        try {
-            git add manifests/
-            $commitMsg = "feat: add detection config for $pkgList"
-            git commit -m $commitMsg
-            Write-Log "Committed changes" "SUCCESS"
-
-            $push = if ($AutoCommit) { 'y' } else { Read-Host "Push to remote? (y/N)" }
-            if ($push -eq 'y') {
-                git push
-                Write-Log "Pushed to remote" "SUCCESS"
-            }
-        } finally {
-            Pop-Location
-        }
-    }
+# Detection config summary
+$detectedManifests = $allResults | Where-Object { $_.DetectionConfig }
+if ($detectedManifests) {
+    Write-Log "`nDetection configs discovered for $(@($detectedManifests).Count) packages (saved in JSON reports)" "SUCCESS"
 }
 
 Write-Log "`nLifecycle testing complete!" "SUCCESS"
