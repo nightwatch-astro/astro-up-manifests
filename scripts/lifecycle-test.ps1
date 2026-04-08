@@ -922,8 +922,9 @@ function Test-PackageLifecycle {
         $result.Install = "OK (exit code: $($installResult.ExitCode))"
         Write-Log $installResult.Message "SUCCESS"
 
-        # Wait a moment for registry to settle
-        Start-Sleep -Seconds 2
+        # Wait for registry to settle — some installers spawn child processes
+        # and return before fully installed (e.g., PrimaLuce PLAY)
+        Start-Sleep -Seconds 5
 
         # 5. Post-install registry snapshot
         Write-Log "Step 5: Capturing post-install state"
