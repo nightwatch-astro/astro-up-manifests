@@ -24,10 +24,5 @@ url = "https://sourceforge.net/projects/astap-program/files/windows_installer/as
 skip_browser_ua = true
 
 [detection]
-method = "registry"
-registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\AppName=ASTAP, the Astrometric STAcking Program,~D52A8A79_is1"
-registry_value = "DisplayVersion"
-
-[detection.fallback]
 method = "pe_file"
 path = "C:\\Program Files\\astap\\dcraw.exe"
