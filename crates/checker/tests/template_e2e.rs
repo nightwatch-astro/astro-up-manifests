@@ -28,6 +28,7 @@ fn template_resolution_in_version_file() {
         release_notes_url: None,
         pre_release: false,
         assets: vec![],
+        url_status: None,
     };
 
     let path = dir.path().join("nina-app").join("3.1.2.json");

@@ -15,6 +15,7 @@ fn write_new_version() {
         release_notes_url: Some("https://example.com/release".into()),
         pre_release: false,
         assets: vec![],
+        url_status: None,
     };
 
     let result = discovered
@@ -48,6 +49,7 @@ fn overwrite_existing_version() {
         release_notes_url: None,
         pre_release: false,
         assets: vec![],
+        url_status: None,
     };
 
     // Write first time
@@ -75,6 +77,7 @@ fn pre_release_flag() {
         release_notes_url: None,
         pre_release: true,
         assets: vec![],
+        url_status: None,
     };
 
     let result = discovered
@@ -98,6 +101,7 @@ fn sanitize_unsafe_version_chars() {
         release_notes_url: None,
         pre_release: false,
         assets: vec![],
+        url_status: None,
     };
 
     let result = discovered
@@ -127,6 +131,7 @@ fn date_version_format() {
         release_notes_url: None,
         pre_release: false,
         assets: vec![],
+        url_status: None,
     };
 
     let result = discovered
@@ -165,6 +170,7 @@ fn write_with_assets_and_empty_url() {
                 size: 350_000_000,
             },
         ],
+        url_status: None,
     };
 
     let result = discovered
@@ -191,6 +197,7 @@ fn skip_write_when_no_url_and_no_assets() {
         release_notes_url: None,
         pre_release: false,
         assets: vec![],
+        url_status: None,
     };
 
     let result = discovered

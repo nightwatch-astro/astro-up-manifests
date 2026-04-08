@@ -322,6 +322,7 @@ async fn handle_found(
                 size: a.size,
             })
             .collect(),
+        url_status: None,
     };
 
     match discovered.write(versions_dir) {

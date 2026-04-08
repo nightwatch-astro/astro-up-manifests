@@ -26,9 +26,8 @@ const KNOWN_INSTALL_METHODS: &[&str] = &[
     "inno_setup",
     "msi",
     "nsis",
-    "zip_wrap",
-    "download_only",
     "exe",
+    "download_only",
 ];
 
 const KNOWN_PROVIDERS: &[&str] = &[

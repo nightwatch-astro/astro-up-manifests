@@ -100,7 +100,8 @@ category = "utility"
 type = "application"
 slug = "test"
 [install]
-method = "zip_wrap"
+method = "exe"
+zip_wrapped = true
 "#,
     )
     .expect("good.toml should be written");

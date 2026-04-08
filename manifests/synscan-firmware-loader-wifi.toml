@@ -12,7 +12,8 @@ slug = "synscan-firmware-loader-wifi"
 method = "file"
 
 [install]
-method = "zip_wrap"
+method = "exe"
+zip_wrapped = true
 
 [checkver]
 provider = "html_scrape"

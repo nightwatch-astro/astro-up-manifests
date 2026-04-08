@@ -158,6 +158,7 @@ fn version_aggregation() {
         release_notes_url: Some("https://example.com/release".into()),
         pre_release: false,
         assets: vec![],
+        url_status: None,
     };
     entry
         .write(&nina_versions.join("3.1.2.json"))
@@ -203,6 +204,7 @@ fn orphaned_versions_skipped() {
         release_notes_url: None,
         pre_release: false,
         assets: vec![],
+        url_status: None,
     };
     entry
         .write(&orphan_dir.join("1.0.0.json"))

@@ -32,7 +32,8 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
         icon: None,
         detection: None,
         install: Install {
-            method: "zip_wrap".into(),
+            method: "exe".into(),
+            zip_wrapped: true,
             scope: None,
             elevation: None,
             switches: HashMap::default(),
