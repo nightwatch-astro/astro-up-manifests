@@ -926,7 +926,9 @@ function Test-PackageLifecycle {
 
         # 6. WMI snapshot
         Write-Log "Step 6: WMI snapshot"
-        $wmiSnapshot = Get-WMISnapshot -PackageName $packageName
+        $wmiAliases = @($Manifest.publisher) + $Manifest.aliases
+        if ($Manifest.inf_provider) { $wmiAliases += $Manifest.inf_provider }
+        $wmiSnapshot = Get-WMISnapshot -PackageName $packageName -Aliases $wmiAliases
         if ($wmiSnapshot.Products.Count -gt 0) {
             Write-Log "  WMI found $($wmiSnapshot.Products.Count) matching products" "SUCCESS"
             foreach ($p in $wmiSnapshot.Products) {
@@ -1001,7 +1003,20 @@ function Test-PackageLifecycle {
             }
         }
 
-        # Method 2: WMI driver (if no registry match, check drivers)
+        # Method 2: WMI product (if no registry match, check Win32_InstalledWin32Program)
+        if (-not $detectionMethod -and $wmiSnapshot.Products.Count -gt 0) {
+            $bestProduct = $wmiSnapshot.Products | Select-Object -First 1
+            Write-Log "WMI product: $($bestProduct.Name) v$($bestProduct.Version)" "SUCCESS"
+            $detectionInfo = @{
+                Method = "wmi"
+                Name = $bestProduct.Name
+                Version = $bestProduct.Version
+                ProgramId = $bestProduct.ProgramId
+            }
+            $detectionMethod = "wmi"
+        }
+
+        # Method 3: WMI driver (if no registry or product match, check PnP drivers)
         if (-not $detectionMethod -and $wmiSnapshot.Drivers.Count -gt 0) {
             $bestDriver = $wmiSnapshot.Drivers | Select-Object -First 1
             Write-Log "WMI driver: $($bestDriver.DeviceName) v$($bestDriver.DriverVersion)" "SUCCESS"
@@ -1016,7 +1031,7 @@ function Test-PackageLifecycle {
             $detectionMethod = "wmi"
         }
 
-        # Method 3: PE file (if no registry or WMI match)
+        # Method 4: PE file (if no registry or WMI match)
         if (-not $detectionMethod -and @($fileResults).Count -gt 0) {
             $bestPE = @($fileResults) | Where-Object { $_.ProductVersion } | Select-Object -First 1
             if ($bestPE) {
@@ -1031,7 +1046,7 @@ function Test-PackageLifecycle {
             }
         }
 
-        # Method 4: File exists (last resort — just check exe exists)
+        # Method 5: File exists (last resort — just check exe exists)
         if (-not $detectionMethod -and @($fileResults).Count -gt 0) {
             $bestFile = @($fileResults) | Select-Object -First 1
             Write-Log "File exists: $($bestFile.Path)" "SUCCESS"
@@ -1160,6 +1175,9 @@ function Get-PackagesToTest {
             zip_wrapped = $zipWrapped
             skip_browser_ua = if ($autoupdate.Contains('skip_browser_ua')) { $autoupdate.skip_browser_ua -eq $true } else { $false }
             autoupdate_url = if ($autoupdate.Contains('url')) { $autoupdate.url } else { $null }
+            publisher = if ($toml.Contains('publisher')) { $toml.publisher } else { "" }
+            aliases = if ($toml.Contains('aliases')) { @($toml.aliases) } else { @() }
+            inf_provider = if ($toml.Contains('hardware') -and $toml.hardware.Contains('inf_provider')) { $toml.hardware.inf_provider } else { $null }
         }
 
         $packages += @{

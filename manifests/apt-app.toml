@@ -9,7 +9,7 @@ type = "application"
 slug = "apt-app"
 
 [install]
-method = "nsis"
+method = "inno_setup"
 
 [install.switches]
 silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"

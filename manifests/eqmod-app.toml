@@ -9,7 +9,7 @@ type = "application"
 slug = "eqmod-app"
 
 [install]
-method = "exe"
+method = "inno_setup"
 elevation = "required"
 
 [install.switches]

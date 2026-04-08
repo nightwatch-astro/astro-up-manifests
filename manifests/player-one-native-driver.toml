@@ -14,7 +14,7 @@ registry_key = "SOFTWARE\\Player One Astronomy\\Camera Driver"
 registry_value = "Version"
 
 [install]
-method = "exe"
+method = "nsis"
 zip_wrapped = true
 
 [checkver]

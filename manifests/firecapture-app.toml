@@ -14,6 +14,7 @@ path = "{program_dir}/FireCapture/FireCapture.exe"
 
 [install]
 method = "exe"
+zip_wrapped = true
 elevation = "required"
 
 [install.switches]

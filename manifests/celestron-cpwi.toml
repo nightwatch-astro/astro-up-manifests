@@ -9,7 +9,7 @@ type = "application"
 slug = "celestron-cpwi"
 
 [install]
-method = "nsis"
+method = "inno_setup"
 elevation = "required"
 
 [install.switches]

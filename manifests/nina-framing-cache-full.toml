@@ -13,8 +13,7 @@ method = "file"
 path = "{config_dir}/NINA/FramingAssistantCache/Full"
 
 [install]
-method = "exe"
-elevation = "required"
+method = "download_only"
 
 [checkver]
 provider = "manual"

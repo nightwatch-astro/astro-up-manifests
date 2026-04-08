@@ -318,16 +318,14 @@ async fn handle_found(
     summary: &Arc<Mutex<Summary>>,
     versions_dir: &Path,
 ) {
-    // When the provider returned assets (e.g. GitHub with asset_filter), the client
-    // resolves the primary download from the assets array at install time.  We only
-    // fall back to the template URL when no assets are available.
-    let url = if result.assets.is_empty() {
-        resolve_download_url(manifest, &result.version).or_else(|| result.url.clone())
-    } else {
-        // Provider found filtered assets — don't override with a (possibly stale) template.
-        // Use the provider's primary URL if set, otherwise leave empty for client resolution.
-        result.url.clone()
-    };
+    // Resolve the download URL. Priority:
+    // 1. Resolver (e.g., SharpCap obfuscator) — always wins when configured
+    // 2. Autoupdate URL template with $version substitution
+    // 3. Provider's result.url (final redirect URL, page link, etc.)
+    // When assets are present (GitHub, html_scrape), the client picks from
+    // assets at install time — but we still need a primary URL for the catalog.
+    let resolved = resolve_download_url(manifest, &result.version);
+    let url = resolved.or_else(|| result.url.clone());
 
     let sha256 = hash::discover_hash(
         manifest.checkver.as_ref().and_then(|cv| cv.hash.as_ref()),

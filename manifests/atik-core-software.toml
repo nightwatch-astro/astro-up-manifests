@@ -9,7 +9,7 @@ type = "driver"
 slug = "atik-core-software"
 
 [install]
-method = "nsis"
+method = "inno_setup"
 elevation = "required"
 
 [install.switches]
