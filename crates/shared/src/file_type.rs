@@ -101,6 +101,13 @@ fn classify_pe(bytes: &[u8]) -> FileType {
     if contains_bytes(bytes, b"Inno Setup") {
         return FileType::InnoSetup;
     }
+    // WiX Burn bootstrapper — search for WiX-specific signatures
+    if contains_bytes(bytes, b".wixburn")
+        || contains_bytes(bytes, b"WixBurn")
+        || contains_bytes(bytes, b"Windows Installer XML")
+    {
+        return FileType::Burn;
+    }
     FileType::PeExe
 }
 

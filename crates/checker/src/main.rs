@@ -60,6 +60,7 @@ struct Summary {
     new_versions: Vec<String>,
     failed: Vec<String>,
     skipped: Vec<String>,
+    method_mismatches: Vec<String>,
 }
 
 #[tokio::main]
@@ -120,6 +121,7 @@ async fn main() -> anyhow::Result<()> {
         new_versions: Vec::new(),
         failed: Vec::new(),
         skipped: Vec::new(),
+        method_mismatches: Vec::new(),
     }));
 
     let results: Vec<_> = stream::iter(manifests)
@@ -199,6 +201,13 @@ fn print_summary(summary: &Summary, concurrency: usize, state: &CheckerState) {
     }
     if !summary.skipped.is_empty() {
         println!("  Skipped: {} (manual)", summary.skipped.len());
+    }
+    if !summary.method_mismatches.is_empty() {
+        println!(
+            "  Install method mismatches: {} ({})",
+            summary.method_mismatches.len(),
+            summary.method_mismatches.join(", ")
+        );
     }
 
     for (id, ms) in &state.manifests {
@@ -318,10 +327,47 @@ async fn handle_found(
         return;
     }
 
+    // URL validation + install method detection (non-audit mode)
+    let download_url = url.clone().unwrap_or_default();
+    let url_status = if !download_url.is_empty() {
+        let url_result =
+            astro_up_checker::url_validate::validate_url(client, &download_url).await;
+        // Install method detection from downloaded bytes
+        if !url_result.downloaded_bytes.is_empty()
+            && manifest.install.method != "download_only"
+        {
+            let file_type =
+                astro_up_shared::file_type::detect_file_type(&url_result.downloaded_bytes);
+            if !file_type.matches_install_method(&manifest.install.method) {
+                tracing::warn!(
+                    "{}: install method mismatch — declared={}, detected={:?}",
+                    manifest.id,
+                    manifest.install.method,
+                    file_type,
+                );
+                let mut sum = summary.lock().await;
+                sum.method_mismatches.push(format!(
+                    "{} (declared={}, detected={:?})",
+                    manifest.id, manifest.install.method, file_type
+                ));
+            }
+        }
+        match url_result.check.status {
+            astro_up_shared::audit_types::CheckStatus::Pass => Some("reachable".to_string()),
+            astro_up_shared::audit_types::CheckStatus::Fail => {
+                tracing::warn!("{}: URL unreachable: {download_url}", manifest.id);
+                Some("unreachable".to_string())
+            }
+            _ => Some("unchecked".to_string()),
+        }
+    } else {
+        None
+    };
+
     let discovered = DiscoveredVersion {
         package_id: manifest.id.clone(),
         version: result.version.clone(),
-        url: url.unwrap_or_default(),
+        url: download_url,
         sha256,
         release_notes_url: result.release_notes_url.clone(),
         pre_release: result.pre_release,
@@ -334,7 +380,7 @@ async fn handle_found(
                 size: a.size,
             })
             .collect(),
-        url_status: None,
+        url_status,
     };
 
     match discovered.write(versions_dir) {

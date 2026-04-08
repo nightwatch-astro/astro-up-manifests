@@ -33,6 +33,7 @@ pub enum FileType {
     Msi,
     Nsis,
     InnoSetup,
+    Burn,
     Unknown,
 }
 
@@ -132,6 +133,7 @@ impl FileType {
             Self::InnoSetup => "inno_setup",
             Self::Nsis => "nsis",
             Self::Msi => "msi",
+            Self::Burn => "burn",
             Self::PeExe | Self::Unknown => "exe",
             Self::Zip => "download_only",
         }
@@ -145,6 +147,7 @@ impl FileType {
             (Self::InnoSetup, "inno_setup" | "exe")
                 | (Self::Nsis, "nsis" | "exe")
                 | (Self::Msi, "msi" | "wix")
+                | (Self::Burn, "burn" | "exe")
                 | (Self::PeExe, "exe" | "inno_setup" | "nsis" | "burn")
                 | (Self::Zip, "download_only")
         )
