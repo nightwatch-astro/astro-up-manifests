@@ -433,7 +433,8 @@ function Install-Package {
         [string]$InstallerPath,
         [string]$Method,
         [hashtable]$Switches,
-        [bool]$ZipWrapped = $false
+        [bool]$ZipWrapped = $false,
+        [string]$ZipInnerPath = ""
     )
 
     # Handle zip_wrapped: extract ZIP first, find inner installer, recurse
@@ -447,7 +448,9 @@ function Install-Package {
             Write-Log "  Unwrapped ZIP to $extractDir" "INFO"
 
             # Find the inner installer (.exe or .msi, largest first)
-            $innerFile = Get-ChildItem -Path $extractDir -Recurse -File |
+            $searchDir = if ($ZipInnerPath) { Join-Path $extractDir $ZipInnerPath } else { $extractDir }
+            if (-not (Test-Path $searchDir)) { $searchDir = $extractDir }
+            $innerFile = Get-ChildItem -Path $searchDir -Recurse -File |
                 Where-Object { $_.Extension -in @('.exe', '.msi') } |
                 Sort-Object Length -Descending |
                 Select-Object -First 1
@@ -914,7 +917,8 @@ function Test-PackageLifecycle {
         Write-Log "Step 4: Installing package"
         $switches = if ($Manifest.Contains('install_switches')) { $Manifest.install_switches } else { @{} }
         $isZipWrapped = if ($Manifest.Contains('zip_wrapped')) { $Manifest.zip_wrapped } else { $false }
-        $installResult = Install-Package -InstallerPath $installerPath -Method $Manifest.install_method -Switches $switches -ZipWrapped $isZipWrapped
+        $zipInner = if ($Manifest.Contains('zip_inner_path')) { $Manifest.zip_inner_path } else { "" }
+        $installResult = Install-Package -InstallerPath $installerPath -Method $Manifest.install_method -Switches $switches -ZipWrapped $isZipWrapped -ZipInnerPath $zipInner
 
         if (-not $installResult.Success) {
             throw "Installation failed: $($installResult.Message)"
@@ -1179,6 +1183,7 @@ function Get-PackagesToTest {
             install_method = if ($install.Contains('method')) { $install.method } else { "" }
             install_switches = $switches
             zip_wrapped = $zipWrapped
+            zip_inner_path = if ($install.Contains('zip_inner_path')) { $install.zip_inner_path } else { "" }
             skip_browser_ua = if ($autoupdate.Contains('skip_browser_ua')) { $autoupdate.skip_browser_ua -eq $true } else { $false }
             autoupdate_url = if ($autoupdate.Contains('url')) { $autoupdate.url } else { $null }
             publisher = if ($toml.Contains('publisher')) { $toml.publisher } else { "" }

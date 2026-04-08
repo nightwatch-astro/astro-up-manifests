@@ -81,6 +81,10 @@ pub struct Install {
     /// A plain zip (portable app) uses `download_only` + `zip_wrapped = true`.
     #[serde(default)]
     pub zip_wrapped: bool,
+    /// Subfolder inside the ZIP to find the installer (e.g., `"x64"` for 64-bit).
+    /// When set, only files under this path are considered for installation.
+    #[serde(default)]
+    pub zip_inner_path: Option<String>,
     #[serde(default)]
     pub scope: Option<String>,
     #[serde(default)]

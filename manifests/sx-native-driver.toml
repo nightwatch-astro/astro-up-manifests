@@ -16,6 +16,7 @@ registry_value = "Version"
 [install]
 method = "exe"
 zip_wrapped = true
+zip_inner_path = "x64"
 
 [checkver]
 provider = "html_scrape"
