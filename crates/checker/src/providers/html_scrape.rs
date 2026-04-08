@@ -46,7 +46,7 @@ fn find_version_in_links(
                     let resolved = extract_href(&element, base_url);
                     if first_version.is_none() {
                         first_version = Some(m.as_str().to_string());
-                        first_url = resolved.clone();
+                        first_url.clone_from(&resolved);
                     }
                     if let Some(ref url) = resolved {
                         let name = url.rsplit('/').next().unwrap_or(url).to_string();
