@@ -106,13 +106,22 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
         let document = scraper::Html::parse_document(&content);
         let a_selector = scraper::Selector::parse("a[href]")
             .map_err(|e| CheckError::Browser(format!("selector parse error: {e:?}")))?;
+        let page_url = url::Url::parse(url).ok();
         for element in document.select(&a_selector) {
             if let Some(href) = element.value().attr("href") {
                 if re.is_match(href) {
-                    let name = href.rsplit('/').next().unwrap_or(href).to_string();
+                    // Resolve relative/protocol-relative URLs against the page URL
+                    let resolved = if href.starts_with("http://") || href.starts_with("https://") {
+                        href.to_string()
+                    } else if let Some(ref base) = page_url {
+                        base.join(href).map_or_else(|_| href.to_string(), |u| u.to_string())
+                    } else {
+                        href.to_string()
+                    };
+                    let name = resolved.rsplit('/').next().unwrap_or(&resolved).to_string();
                     assets.push(super::ReleaseAsset {
                         name,
-                        url: href.to_string(),
+                        url: resolved,
                         size: 0,
                     });
                 }
