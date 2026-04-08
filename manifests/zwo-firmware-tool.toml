@@ -14,11 +14,6 @@ path = "{program_dir}/ZWO/FirmwareUpgradeTool/FirmwareUpgradeTool.exe"
 
 [install]
 method = "download_only"
-zip_wrapped = true
-elevation = "required"
-
-[install.switches]
-silent = "/S"
 
 [checkver]
 provider = "redirect"
