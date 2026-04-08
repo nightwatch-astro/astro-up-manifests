@@ -8,11 +8,6 @@ category = "capture"
 type = "application"
 slug = "sharpcap-app"
 
-[detection]
-method = "registry"
-registry_key = "SOFTWARE\\SharpCap"
-registry_value = "DisplayVersion"
-
 [install]
 method = "inno_setup"
 
@@ -29,3 +24,8 @@ resolver = "sharpcap"
 
 [checkver.autoupdate.resolver_args]
 arch = "x64"
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{881672E1-F0EA-445C-89ED-78B74013DED2}"
+registry_value = "DisplayVersion"
