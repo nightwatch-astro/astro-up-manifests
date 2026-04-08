@@ -8,9 +8,6 @@ category = "driver"
 type = "driver"
 slug = "moonlite-nitecrawler-ascom"
 
-[detection]
-method = "file"
-
 [install]
 method = "exe"
 zip_wrapped = true
@@ -25,3 +22,12 @@ url = "https://focuser.com/media/Downloads/NiteCrawler/Ascom/NiteCrawler%20Setup
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{a4a31249-f8c9-4890-9dd5-7e6070270038}_is1"
+registry_value = "DisplayVersion"
+
+[detection.fallback]
+method = "pe_file"
+path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\Focuser\\NiteCrawler\\ASCOM.NiteCrawler.Server.exe"
