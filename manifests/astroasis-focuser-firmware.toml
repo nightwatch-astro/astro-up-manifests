@@ -15,7 +15,7 @@ zip_wrapped = true
 [checkver]
 provider = "html_scrape"
 url = "https://www.astroasis.com/download/"
-regex = 'Ver_(\d+\.\d+\.\d+)'
+regex = 'Focuser_Rose_Firmware_Ver_(\d+\.\d+\.\d+)'
 
 [checkver.autoupdate]
 url = "https://www.astroasis.com/download/files/focuser/Oasis_Focuser_Rose_Firmware_Ver_$version.zip"

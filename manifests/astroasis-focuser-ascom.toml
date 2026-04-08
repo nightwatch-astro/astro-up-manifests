@@ -13,7 +13,7 @@ method = "file"
 path = "{program_dir}/Common Files/ASCOM/Focuser/Astroasis.Focuser.dll"
 
 [install]
-method = "download_only"
+method = "exe"
 zip_wrapped = true
 elevation = "required"
 
@@ -23,7 +23,7 @@ silent = "/S"
 [checkver]
 provider = "html_scrape"
 url = "https://www.astroasis.com/download/"
-regex = '_(\d+\.\d+\.\d+\.\d+)_'
+regex = 'Focuser_ASCOM_(\d+\.\d+\.\d+\.\d+)_Setup'
 
 [checkver.autoupdate]
 url = "https://www.astroasis.com/download/files/focuser/Astroasis_Oasis_Focuser_ASCOM_$version_Setup.zip"

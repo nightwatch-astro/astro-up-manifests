@@ -20,5 +20,6 @@ provider = "browser_scrape"
 url = "https://www.wandererastro.com/en/h-col-106.html"
 regex = 'WandererEmpire-V(\d+\.\d+\.\d+)-Setup'
 
-[checkver.autoupdate]
-url = "https://www.wandererastro.com/download/WandererEmpire-V$version-Setup.exe"
+# No autoupdate URL — Wanderer uses a CDN with dynamic hashed URLs.
+# The scraper discovers the version; the download link must be resolved
+# from the downloads page at install time.

@@ -9,13 +9,13 @@ type = "resource"
 slug = "astroasis-fw-firmware"
 
 [install]
-method = "exe"
+method = "download_only"
 zip_wrapped = true
 
 [checkver]
 provider = "html_scrape"
 url = "https://www.astroasis.com/download/"
-regex = 'Ver_(\d+\.\d+\.\d+)'
+regex = 'Filter_Wheel_Firmware_Ver_(\d+\.\d+\.\d+)'
 
 [checkver.autoupdate]
 url = "https://www.astroasis.com/download/files/filterwheel/Oasis_Filter_Wheel_Firmware_Ver_$version.zip"
