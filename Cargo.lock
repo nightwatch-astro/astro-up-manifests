@@ -88,6 +88,7 @@ dependencies = [
  "clap",
  "futures",
  "http",
+ "lenient_semver",
  "pelite",
  "rand 0.10.0",
  "regex",

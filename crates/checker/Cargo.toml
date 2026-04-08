@@ -27,6 +27,7 @@ chromiumoxide.workspace = true
 pelite.workspace = true
 sha2.workspace = true
 semver.workspace = true
+lenient_semver.workspace = true
 chrono.workspace = true
 regex.workspace = true
 futures.workspace = true
