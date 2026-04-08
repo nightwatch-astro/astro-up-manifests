@@ -8,11 +8,6 @@ category = "driver"
 type = "driver"
 slug = "zwo-ascom-driver-pack"
 
-[detection]
-method = "registry"
-registry_key = "SOFTWARE\\ZWO\\ASCOMDriver"
-registry_value = "Version"
-
 [install]
 method = "inno_setup"
 elevation = "required"
@@ -30,3 +25,12 @@ url = "https://dl.zwoastro.com/software?app=ASCOMDrive&platform=windows64&region
 
 [dependencies]
 requires = ["ascom-platform", "zwo-native-driver"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ZWO ASCOM Driver_is1"
+registry_value = "DisplayVersion"
+
+[detection.fallback]
+method = "pe_file"
+path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\ZWO\\ASIMount\\AM5Install.exe"
