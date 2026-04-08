@@ -809,7 +809,9 @@ function Test-PackageLifecycle {
         # 2. Download installer
         Write-Log "Step 2: Downloading installer"
         $autoupdateUrl = if ($Manifest.Contains('autoupdate_url')) { $Manifest.autoupdate_url } else { $null }
-        $downloadUrl = if ($versionInfo.Url) { $versionInfo.Url } elseif ($autoupdateUrl) { $autoupdateUrl -replace '\$version', $version } else { throw "No download URL available" }
+        # Catalog URL may be just a filename (no scheme) — fall through to autoupdate template
+        $catalogUrl = if ($versionInfo.Url -and $versionInfo.Url -match '^https?://') { $versionInfo.Url } else { $null }
+        $downloadUrl = if ($catalogUrl) { $catalogUrl } elseif ($autoupdateUrl) { $autoupdateUrl -replace '\$version', $version } else { throw "No download URL available" }
         $installerFileName = [System.IO.Path]::GetFileName($downloadUrl)
         if ($installerFileName -notmatch '\.\w+$') {
             $installerFileName = "$packageId-$version.exe"
