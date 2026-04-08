@@ -21,12 +21,13 @@ elevation = "required"
 silent = "/S"
 
 [checkver]
+# First AllInOne link on the page is the beta
 provider = "browser_scrape"
 url = "https://www.qhyccd.com/download/"
-regex = 'Ver\. (\d{8})\(Beta\)'
+regex = 'QHYCCD_Win_AllInOne\.(\d+\.\d+\.\d+\.\d+)\.exe'
 
 [checkver.autoupdate]
-url = "https://www.qhyccd.com/file/repository/AllInOne/V$version/QHY_AllInOne_V$version.exe"
+url = "https://www.qhyccd.com/file/repository/publish/AllInOne/$majorVersion.$minorVersion.$patchVersion/QHYCCD_Win_AllInOne.$version.exe"
 
 [dependencies]
 requires = ["ascom-platform"]

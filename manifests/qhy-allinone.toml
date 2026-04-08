@@ -23,7 +23,8 @@ silent = "/S"
 [checkver]
 provider = "browser_scrape"
 url = "https://www.qhyccd.com/download/"
-regex = 'QHYCCD_Win_AllInOne\.(\d+\.\d+\.\d+\.\d+)\.exe'
+# "Recommended" stable link — uses the second AllInOne URL on the page
+regex = 'Recommended.*?QHYCCD_Win_AllInOne\.(\d+\.\d+\.\d+\.\d+)\.exe'
 
 [checkver.autoupdate]
 url = "https://www.qhyccd.com/file/repository/publish/AllInOne/$majorVersion.$minorVersion.$patchVersion/QHYCCD_Win_AllInOne.$version.exe"
