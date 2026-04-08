@@ -10,14 +10,12 @@ fn extract_href(element: &scraper::ElementRef, base_url: &str) -> Option<String>
     let href = element.value().attr("href")?;
     if href.starts_with("http://") || href.starts_with("https://") {
         Some(href.to_string())
-    } else if href.starts_with('/') {
-        // Resolve relative URL against base
+    } else {
+        // Resolve any relative URL (including bare filenames) against the base page URL
         url::Url::parse(base_url)
             .ok()
             .and_then(|base| base.join(href).ok())
             .map(|u| u.to_string())
-    } else {
-        Some(href.to_string())
     }
 }
 
