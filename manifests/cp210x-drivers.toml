@@ -10,7 +10,7 @@ slug = "cp210x-drivers"
 
 [detection]
 method = "registry"
-registry_key = "SOFTWARE\\SiLabs\\CP210x"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\SiLabs\\CP210x"
 registry_value = "Version"
 
 [install]

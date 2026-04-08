@@ -24,5 +24,5 @@ url = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
 
 [detection]
 method = "registry"
-registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{43B0D101-A022-48F4-9D04-BA404CEB1D53}"
-registry_value = "DisplayVersion"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\VisualStudio\\14.0\\VC\\Runtimes\\X64"
+registry_value = "Version"

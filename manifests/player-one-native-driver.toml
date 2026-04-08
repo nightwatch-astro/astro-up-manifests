@@ -10,7 +10,7 @@ slug = "player-one-native-driver"
 
 [detection]
 method = "registry"
-registry_key = "SOFTWARE\\Player One Astronomy\\Camera Driver"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Player One Astronomy\\Camera Driver"
 registry_value = "Version"
 
 [install]

@@ -24,10 +24,5 @@ url = "https://www.sxccd.com/wp-content/files/ascom-1.zip"
 requires = ["ascom-platform"]
 
 [detection]
-method = "registry"
-registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ASTAP w08 star database up to magnitude 8_is1"
-registry_value = "DisplayVersion"
-
-[detection.fallback]
-method = "pe_file"
-path = "C:\\Program Files\\astap\\dcraw.exe"
+method = "file"
+path = "{program_dir}/Common Files/ASCOM/FilterWheel/SX.FilterWheel.dll"

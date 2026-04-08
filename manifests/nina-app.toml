@@ -29,5 +29,6 @@ url = "https://f002.backblazeb2.com/file/ninasetup/Releases/$version/NINASetupBu
 config_paths = ["$LOCALAPPDATA/NINA"]
 
 [detection]
-method = "pe_file"
-path = "C:\\Program Files\\N.I.N.A. - Nighttime Imaging 'N' Astronomy\\NINA.exe"
+method = "registry"
+registry_key = "HKEY_CURRENT_USER\\Software\\NINA"
+registry_value = "Version"

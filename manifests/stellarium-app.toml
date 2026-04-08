@@ -24,5 +24,6 @@ url = "https://github.com/Stellarium/stellarium/releases/download/v$version/stel
 asset_filter = "qt6-win64\\.exe$"
 
 [detection]
-method = "pe_file"
-path = "C:\\Program Files\\Stellarium\\QtWebEngineProcess.exe"
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Stellarium"
+registry_value = "DisplayVersion"

@@ -10,7 +10,7 @@ slug = "zwo-native-driver"
 
 [detection]
 method = "registry"
-registry_key = "SOFTWARE\\ZWO\\ASICamera"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\ZWO\\ASICamera"
 registry_value = "Version"
 
 [install]

@@ -10,7 +10,7 @@ slug = "sx-native-driver"
 
 [detection]
 method = "registry"
-registry_key = "SOFTWARE\\Starlight Xpress\\CCD Drivers"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Starlight Xpress\\CCD Drivers"
 registry_value = "Version"
 
 [install]

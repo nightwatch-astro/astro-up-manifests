@@ -10,7 +10,7 @@ slug = "dotnet-desktop-8"
 
 [detection]
 method = "registry"
-registry_key = "SOFTWARE\\dotnet\\Setup\\InstalledVersions\\x64\\sharedfx\\Microsoft.WindowsDesktop.App"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\dotnet\\Setup\\InstalledVersions\\x64\\sharedfx\\Microsoft.WindowsDesktop.App"
 registry_value = ""
 
 [install]
