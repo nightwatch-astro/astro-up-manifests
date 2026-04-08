@@ -41,13 +41,17 @@ pub async fn check(
     let re = regex::Regex::new(regex_pat)
         .map_err(|e| CheckError::Other(format!("invalid regex: {e}")))?;
 
-    // Check the final URL (after all redirects)
+    // Store the original redirect URL (not the final signed/CDN URL which may expire).
+    // The download client follows the redirect chain at download time.
+    let stable_url = url.to_string();
+
+    // Check the final URL (after all redirects) for version extraction
     let final_url = resp.url().to_string();
     if let Some(caps) = re.captures(&final_url) {
         if let Some(m) = caps.get(1) {
             return Ok(CheckOutcome::Found(CheckResult {
                 version: m.as_str().to_string(),
-                url: Some(final_url),
+                url: Some(stable_url),
                 sha256: None,
                 release_notes_url: None,
                 pre_release: false,
@@ -63,7 +67,7 @@ pub async fn check(
                 if let Some(m) = caps.get(1) {
                     return Ok(CheckOutcome::Found(CheckResult {
                         version: m.as_str().to_string(),
-                        url: Some(final_url),
+                        url: Some(stable_url),
                         sha256: None,
                         release_notes_url: None,
                         pre_release: false,
@@ -81,7 +85,7 @@ pub async fn check(
                 if let Some(m) = caps.get(1) {
                     return Ok(CheckOutcome::Found(CheckResult {
                         version: m.as_str().to_string(),
-                        url: Some(val.to_string()),
+                        url: Some(stable_url),
                         sha256: None,
                         release_notes_url: None,
                         pre_release: false,
