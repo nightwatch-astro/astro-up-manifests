@@ -25,5 +25,8 @@ provider = "redirect"
 url = "https://dl.zwoastro.com/software?app=ASCOMDrive&platform=windows64&region=Overseas"
 regex = 'ASCOM_Setup_V(\d+\.\d+\.\d+)\.exe'
 
+[checkver.autoupdate]
+url = "https://dl.zwoastro.com/software?app=ASCOMDrive&platform=windows64&region=Overseas"
+
 [dependencies]
 requires = ["ascom-platform", "zwo-native-driver"]

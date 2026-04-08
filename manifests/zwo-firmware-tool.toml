@@ -24,3 +24,6 @@ silent = "/S"
 provider = "redirect"
 url = "https://dl.zwoastro.com/software?app=FirmwareUpgradeTool&platform=windows86&region=Overseas"
 regex = 'FWUpdate_Windows_v(\d+\.\d+\.\d+)\.'
+
+[checkver.autoupdate]
+url = "https://dl.zwoastro.com/software?app=FirmwareUpgradeTool&platform=windows86&region=Overseas"
