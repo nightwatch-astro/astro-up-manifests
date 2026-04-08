@@ -8,10 +8,6 @@ category = "driver"
 type = "driver"
 slug = "sx-camera-ascom"
 
-[detection]
-method = "file"
-path = "{program_dir}/Common Files/ASCOM/Camera/SX.Camera.dll"
-
 [install]
 method = "exe"
 zip_wrapped = true
@@ -26,3 +22,12 @@ url = "https://www.sxccd.com/wp-content/files/sxAscomInstaller-v6.2.1.18182.exe_
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\sxASCOM_is1"
+registry_value = "DisplayVersion"
+
+[detection.fallback]
+method = "pe_file"
+path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\Camera\\sxCamera\\ASCOM.sxCamera.exe"
