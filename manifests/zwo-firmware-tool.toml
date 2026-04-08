@@ -9,7 +9,7 @@ type = "application"
 slug = "zwo-firmware-tool"
 
 [detection]
-method = "file"
+method = "pe_file"
 path = "{program_dir}/ZWO/FirmwareUpgradeTool/FirmwareUpgradeTool.exe"
 
 [install]

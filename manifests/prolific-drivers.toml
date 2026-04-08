@@ -11,7 +11,7 @@ slug = "prolific-drivers"
 
 [detection]
 method = "registry"
-registry_key = "SOFTWARE\\Prolific\\PL2303"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Prolific\\PL2303"
 registry_value = "Version"
 
 [install]

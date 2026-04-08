@@ -10,7 +10,7 @@ type = "application"
 slug = "firecapture-app"
 
 [detection]
-method = "file"
+method = "pe_file"
 path = "{program_dir}/FireCapture/FireCapture.exe"
 
 [install]
