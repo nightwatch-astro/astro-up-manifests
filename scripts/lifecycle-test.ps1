@@ -390,7 +390,11 @@ function Get-FileWithProgress {
         # Use curl.exe — PowerShell's Invoke-WebRequest has TLS issues with many vendor sites
         $curlExe = Get-Command curl.exe -ErrorAction SilentlyContinue
         if ($curlExe) {
-            & curl.exe -L -o $OutFile --fail --silent --show-error --progress-bar $Url 2>&1 | ForEach-Object { Write-Host $_ }
+            # Don't pipe — curl's progress bar uses \r which gets swallowed by pipelines
+            $curlProc = Start-Process -FilePath curl.exe -ArgumentList "-L -o `"$OutFile`" --fail --show-error --progress-bar `"$Url`"" -NoNewWindow -Wait -PassThru
+            if ($curlProc.ExitCode -ne 0) {
+                Write-Log "curl exited with code $($curlProc.ExitCode)" "ERROR"
+            }
         } else {
             # Fallback to Invoke-WebRequest
             Invoke-WebRequest -Uri $Url -OutFile $OutFile -UseBasicParsing
