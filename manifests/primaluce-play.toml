@@ -7,6 +7,7 @@ homepage = "https://www.primalucelab.com"
 category = "capture"
 type = "application"
 slug = "primaluce-play"
+aliases = ["PLAY"]
 
 [detection]
 method = "registry"
