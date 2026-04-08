@@ -8,9 +8,6 @@ category = "driver"
 type = "driver"
 slug = "celestron-focuser-usb-ascom"
 
-[detection]
-method = "file"
-
 [install]
 method = "inno_setup"
 elevation = "required"
@@ -27,3 +24,12 @@ url = "https://software.celestron.com/public_release/Focuser_USB_ASCOM_Setup.exe
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{9f0d3fe4-c081-4f93-8706-999f57555dd5}_is1"
+registry_value = "DisplayVersion"
+
+[detection.fallback]
+method = "pe_file"
+path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\Focuser\\FocusSim.exe"
