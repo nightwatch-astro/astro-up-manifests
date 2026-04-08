@@ -147,8 +147,9 @@ function Get-InstallerTypeFromBytes {
 
     # Check MZ header (PE executable)
     if ($Bytes[0] -eq 0x4D -and $Bytes[1] -eq 0x5A) {
-        # Scan full binary for installer signatures (matches Rust classify_pe behavior)
-        $text = [System.Text.Encoding]::ASCII.GetString($Bytes, 0, $Bytes.Length)
+        # Scan up to 10MB for installer signatures — full binary can OOM on large files
+        $scanLen = [Math]::Min(10 * 1024 * 1024, $Bytes.Length)
+        $text = [System.Text.Encoding]::ASCII.GetString($Bytes, 0, $scanLen)
         # NSIS: NullsoftInst string only — DEADBEEF magic (0xEFBEADDE) causes
         # false positives on full-binary scans (common byte sequence in large PEs)
         if ($text.Contains("NullsoftInst")) { return "nsis" }
