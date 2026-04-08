@@ -25,9 +25,9 @@ requires = ["ascom-platform"]
 
 [detection]
 method = "registry"
-registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{b56ae4fc-baf0-4ece-a46f-3152c38e3285}_is1"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ASTAP w08 star database up to magnitude 8_is1"
 registry_value = "DisplayVersion"
 
 [detection.fallback]
 method = "pe_file"
-path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\FilterWheel\\FilterWheelSim.exe"
+path = "C:\\Program Files\\astap\\dcraw.exe"
