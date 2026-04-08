@@ -8,10 +8,6 @@ category = "driver"
 type = "driver"
 slug = "player-one-directshow"
 
-[detection]
-method = "file"
-path = "{program_dir}/Player One Astronomy\\DirectShow Driver\\PlayerOneDirectShow.dll"
-
 [install]
 method = "exe"
 zip_wrapped = true
@@ -23,3 +19,12 @@ regex = 'DirectShow_PlayerOne_Camera_Driver_V(\d+\.\d+\.\d+\.\d+)\.zip'
 
 [checkver.autoupdate]
 url = "https://player-one-astronomy.com/download/softwares/DirectShow_PlayerOne_Camera_Driver_V$version.zip"
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{AFFA9880-7881-4DB5-AD03-8FA3B369D39B}_is1"
+registry_value = "DisplayVersion"
+
+[detection.fallback]
+method = "pe_file"
+path = "C:\\Program Files (x86)\\PlayerOneAstronomyDshow\\POACamService.exe"

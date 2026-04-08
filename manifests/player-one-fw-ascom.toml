@@ -8,10 +8,6 @@ category = "driver"
 type = "driver"
 slug = "player-one-fw-ascom"
 
-[detection]
-method = "file"
-path = "{program_dir}/Common Files/ASCOM/FilterWheel/PlayerOne.FilterWheel.dll"
-
 [install]
 method = "exe"
 zip_wrapped = true
@@ -26,3 +22,8 @@ url = "https://player-one-astronomy.com/download/softwares/ASCOM_PlayerOne_Filte
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{9e5bce96-dd5a-4765-a2a1-4b12a68f0ee1}_is1"
+registry_value = "DisplayVersion"

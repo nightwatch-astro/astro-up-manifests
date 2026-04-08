@@ -8,10 +8,6 @@ category = "driver"
 type = "driver"
 slug = "sx-fw-ascom"
 
-[detection]
-method = "file"
-path = "{program_dir}/Common Files/ASCOM/FilterWheel/SX.FilterWheel.dll"
-
 [install]
 method = "exe"
 zip_wrapped = true
@@ -26,3 +22,8 @@ url = "https://www.sxccd.com/wp-content/files/ascom-1.zip"
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{b56ae4fc-baf0-4ece-a46f-3152c38e3285}_is1"
+registry_value = "DisplayVersion"

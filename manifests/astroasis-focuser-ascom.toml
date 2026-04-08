@@ -8,10 +8,6 @@ category = "driver"
 type = "driver"
 slug = "astroasis-focuser-ascom"
 
-[detection]
-method = "file"
-path = "{program_dir}/Common Files/ASCOM/Focuser/Astroasis.Focuser.dll"
-
 [install]
 method = "exe"
 zip_wrapped = true
@@ -30,3 +26,8 @@ url = "https://www.astroasis.com/download/files/focuser/Astroasis_Oasis_Focuser_
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{3f45475d-8e69-4288-9a36-c770d14a7e96}_is1"
+registry_value = "DisplayVersion"

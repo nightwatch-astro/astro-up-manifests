@@ -8,9 +8,6 @@ category = "driver"
 type = "driver"
 slug = "synscan-app-ascom"
 
-[detection]
-method = "file"
-
 [install]
 method = "exe"
 elevation = "required"
@@ -28,3 +25,8 @@ url = "https://inter-static.skywatcher.com/downloads/setup_synscan_app_ascom_dri
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{9f08ae3e-e063-460b-9cd1-7022450495d2}_is1"
+registry_value = "DisplayVersion"

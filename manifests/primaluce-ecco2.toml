@@ -8,10 +8,6 @@ category = "driver"
 type = "driver"
 slug = "primaluce-ecco2"
 
-[detection]
-method = "file"
-path = "{program_dir}/PrimaLuceLab/ECCO2/ECCO2.exe"
-
 [install]
 method = "exe"
 zip_wrapped = true
@@ -23,3 +19,12 @@ regex = 'ECCO2-software-package-(\d+-\d+(?:-\d+)*)\.zip'
 
 [checkver.autoupdate]
 url = "https://www.primalucelab.com/downloads/ECCO2-software-package-3-2.zip"
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{66647901-73a4-43e1-960d-dd91aaf44438}_is1"
+registry_value = "DisplayVersion"
+
+[detection.fallback]
+method = "pe_file"
+path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\ObservingConditions\\PLL\\ASCOM.ObCo_srv.exe"

@@ -8,11 +8,6 @@ category = "driver"
 type = "driver"
 slug = "atik-core-software"
 
-[detection]
-method = "registry"
-registry_key = "SOFTWARE\\Atik Cameras\\Core"
-registry_value = "Version"
-
 [install]
 method = "nsis"
 elevation = "required"
@@ -30,3 +25,8 @@ url = "https://downloads.atik-cameras.com/SetupAtikCamerasUniversal-$version.exe
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\A71F468143F181DDC9BC8A9C59F4A375361817B9"
+registry_value = "DisplayVersion"

@@ -8,9 +8,6 @@ category = "driver"
 type = "application"
 slug = "ioptron-commander-ascom"
 
-[detection]
-method = "file"
-
 [install]
 method = "exe"
 elevation = "required"
@@ -28,3 +25,8 @@ url = "https://www.ioptron.com/v/ASCOM/iOptronCommander_ASCOM_DriverInstaller920
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\892E753CAA49FA683EE00041855E6194256B3DC7"
+registry_value = "DisplayVersion"

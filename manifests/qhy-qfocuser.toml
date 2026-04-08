@@ -8,10 +8,6 @@ category = "driver"
 type = "driver"
 slug = "qhy-qfocuser"
 
-[detection]
-method = "file"
-path = "{program_dir}/Common Files/ASCOM/Focuser/QHYCCD.QFocuser.dll"
-
 [install]
 method = "inno_setup"
 elevation = "required"
@@ -29,3 +25,8 @@ url = "https://www.qhyccd.com/file/repository/ASCOM/QFOCUS-ASCOM-Platform6-V$ver
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{340ce2aa-2cac-4078-94f4-5e544936c399}_is1"
+registry_value = "DisplayVersion"

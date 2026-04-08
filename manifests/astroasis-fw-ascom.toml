@@ -8,10 +8,6 @@ category = "driver"
 type = "driver"
 slug = "astroasis-fw-ascom"
 
-[detection]
-method = "file"
-path = "{program_dir}/Common Files/ASCOM/FilterWheel/Astroasis.FilterWheel.dll"
-
 [install]
 method = "exe"
 zip_wrapped = true
@@ -30,3 +26,8 @@ url = "https://www.astroasis.com/download/files/filterwheel/Astroasis_Oasis_Filt
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{4c7fa56d-b586-4abf-806d-be8ff302910c}_is1"
+registry_value = "DisplayVersion"

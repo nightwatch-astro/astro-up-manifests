@@ -8,11 +8,6 @@ category = "planetarium"
 type = "application"
 slug = "stellarium-app"
 
-[detection]
-method = "registry"
-registry_key = "SOFTWARE\\Stellarium"
-registry_value = "DisplayVersion"
-
 [install]
 method = "inno_setup"
 
@@ -27,3 +22,7 @@ repo = "stellarium"
 [checkver.autoupdate]
 url = "https://github.com/Stellarium/stellarium/releases/download/v$version/stellarium-$version-win64.exe"
 asset_filter = "qt6-win64\\.exe$"
+
+[detection]
+method = "pe_file"
+path = "C:\\Program Files\\Stellarium\\QtWebEngineProcess.exe"

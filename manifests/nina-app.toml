@@ -11,11 +11,6 @@ tags = ["imaging", "capture", "sequencer", "phd2", "platesolving"]
 aliases = ["nina"]
 license = "MPL-2.0"
 
-[detection]
-method = "registry"
-registry_key = "HKCU\\Software\\NINA"
-registry_value = "Version"
-
 [install]
 method = "burn"
 zip_wrapped = true
@@ -32,3 +27,7 @@ url = "https://f002.backblazeb2.com/file/ninasetup/Releases/$version/NINASetupBu
 
 [backup]
 config_paths = ["$LOCALAPPDATA/NINA"]
+
+[detection]
+method = "pe_file"
+path = "C:\\Program Files\\N.I.N.A. - Nighttime Imaging 'N' Astronomy\\NINA.exe"
