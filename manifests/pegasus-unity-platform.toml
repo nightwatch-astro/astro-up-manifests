@@ -16,11 +16,11 @@ fallback_method = "file"
 fallback_path = "{program_dir}/Pegasus Astro/Unity Platform/UnityPlatform.exe"
 
 [install]
-method = "exe"
+method = "burn"
 elevation = "required"
 
 [install.switches]
-silent = "/S"
+silent = "/quiet /norestart"
 
 [checkver]
 provider = "pe_download"
