@@ -10,8 +10,8 @@ slug = "dotnet-desktop-8"
 
 [detection]
 method = "registry"
-registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\dotnet\\Setup\\InstalledVersions\\x64\\sharedfx\\Microsoft.WindowsDesktop.App"
-registry_value = ""
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\dotnet\\Setup\\InstalledVersions\\x64\\sharedhost"
+registry_value = "Version"
 
 [install]
 method = "burn"
