@@ -8,11 +8,6 @@ category = "utilities"
 type = "application"
 slug = "eqmod-app"
 
-[detection]
-method = "registry"
-registry_key = "SOFTWARE\\EQMOD"
-registry_value = "DisplayVersion"
-
 [install]
 method = "exe"
 elevation = "required"
@@ -31,3 +26,7 @@ skip_browser_ua = true
 
 [dependencies]
 requires = ["ascom-platform"]
+
+[detection]
+method = "pe_file"
+path = "C:\\Program Files (x86)\\EQMOD\\eqascom_run.exe"
