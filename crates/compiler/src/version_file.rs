@@ -59,6 +59,18 @@ pub fn aggregate_versions(conn: &Connection, versions_dir: &Path) -> anyhow::Res
 
             match VersionEntry::read(&version_path) {
                 Ok(ve) => {
+                    // Reject version entries with invalid URLs (no scheme)
+                    if !ve.url.is_empty()
+                        && !ve.url.starts_with("http://")
+                        && !ve.url.starts_with("https://")
+                    {
+                        tracing::warn!(
+                            "{package_id}/{version}: invalid URL '{}' (no scheme) — skipping",
+                            ve.url
+                        );
+                        continue;
+                    }
+
                     let assets_json = if ve.assets.is_empty() {
                         None
                     } else {
