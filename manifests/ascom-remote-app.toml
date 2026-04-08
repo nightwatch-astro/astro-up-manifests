@@ -9,7 +9,7 @@ type = "application"
 slug = "ascom-remote-app"
 
 [install]
-method = "inno_setup"
+method = "nsis"
 
 [install.switches]
 silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"

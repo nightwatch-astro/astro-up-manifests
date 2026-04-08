@@ -9,7 +9,8 @@ type = "resource"
 slug = "synscan-mc029-firmware"
 
 [install]
-method = "exe"
+method = "download_only"
+zip_wrapped = true
 elevation = "required"
 
 [checkver]

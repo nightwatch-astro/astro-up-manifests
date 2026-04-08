@@ -69,7 +69,7 @@ pub async fn validate_url(client: &RetryClient, url: &str) -> UrlValidationResul
 async fn try_range_get(client: &RetryClient, url: &str) -> UrlValidationResult {
     match client
         .get(url)
-        .header("Range", "bytes=0-8191")
+        .header("Range", "bytes=0-262143")
         .send()
         .await
     {
@@ -113,7 +113,7 @@ async fn try_plain_get(client: &RetryClient, url: &str) -> UrlValidationResult {
             let status = resp.status().as_u16();
             if resp.status().is_success() {
                 let bytes = resp.bytes().await.unwrap_or_default();
-                let truncated: Vec<u8> = bytes.iter().take(8192).copied().collect();
+                let truncated: Vec<u8> = bytes.iter().take(262_144).copied().collect();
                 UrlValidationResult {
                     check: UrlCheck {
                         status: CheckStatus::Pass,

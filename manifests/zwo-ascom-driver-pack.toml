@@ -14,7 +14,7 @@ registry_key = "SOFTWARE\\ZWO\\ASCOMDriver"
 registry_value = "Version"
 
 [install]
-method = "exe"
+method = "inno_setup"
 elevation = "required"
 
 [install.switches]

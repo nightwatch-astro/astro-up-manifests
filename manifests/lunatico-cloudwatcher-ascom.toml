@@ -9,7 +9,7 @@ type = "driver"
 slug = "lunatico-cloudwatcher-ascom"
 
 [install]
-method = "exe"
+method = "inno_setup"
 elevation = "required"
 
 [install.switches]

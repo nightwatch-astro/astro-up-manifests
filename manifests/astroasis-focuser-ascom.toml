@@ -13,7 +13,8 @@ method = "file"
 path = "{program_dir}/Common Files/ASCOM/Focuser/Astroasis.Focuser.dll"
 
 [install]
-method = "exe"
+method = "download_only"
+zip_wrapped = true
 elevation = "required"
 
 [install.switches]

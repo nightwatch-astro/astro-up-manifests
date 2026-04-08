@@ -9,7 +9,7 @@ type = "resource"
 slug = "astroasis-focuser-firmware"
 
 [install]
-method = "exe"
+method = "download_only"
 zip_wrapped = true
 
 [checkver]
