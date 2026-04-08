@@ -926,7 +926,9 @@ function Test-PackageLifecycle {
 
         # 6. WMI snapshot
         Write-Log "Step 6: WMI snapshot"
-        $wmiSnapshot = Get-WMISnapshot -PackageName $packageName
+        $wmiAliases = @($Manifest.publisher) + $Manifest.aliases
+        if ($Manifest.inf_provider) { $wmiAliases += $Manifest.inf_provider }
+        $wmiSnapshot = Get-WMISnapshot -PackageName $packageName -Aliases $wmiAliases
         if ($wmiSnapshot.Products.Count -gt 0) {
             Write-Log "  WMI found $($wmiSnapshot.Products.Count) matching products" "SUCCESS"
             foreach ($p in $wmiSnapshot.Products) {
@@ -1160,6 +1162,9 @@ function Get-PackagesToTest {
             zip_wrapped = $zipWrapped
             skip_browser_ua = if ($autoupdate.Contains('skip_browser_ua')) { $autoupdate.skip_browser_ua -eq $true } else { $false }
             autoupdate_url = if ($autoupdate.Contains('url')) { $autoupdate.url } else { $null }
+            publisher = if ($toml.Contains('publisher')) { $toml.publisher } else { "" }
+            aliases = if ($toml.Contains('aliases')) { @($toml.aliases) } else { @() }
+            inf_provider = if ($toml.Contains('hardware') -and $toml.hardware.Contains('inf_provider')) { $toml.hardware.inf_provider } else { $null }
         }
 
         $packages += @{
