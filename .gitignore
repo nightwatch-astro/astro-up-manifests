@@ -8,3 +8,5 @@
 .DS_Store
 catalog.db
 catalog.db.minisig
+versions/*
+!versions/.gitkeep
