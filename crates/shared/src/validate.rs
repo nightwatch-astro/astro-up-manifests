@@ -27,6 +27,7 @@ const KNOWN_INSTALL_METHODS: &[&str] = &[
     "msi",
     "nsis",
     "wix",
+    "burn",
     "exe",
     "download_only",
 ];

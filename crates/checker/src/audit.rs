@@ -89,16 +89,20 @@ async fn audit_one(
     }
 
     // 2. Resolve download URL
-    let resolved_url = check_result
-        .as_ref()
-        .map_or_else(String::new, |cr| resolve_download_url(manifest, &cr.version, cr));
+    let resolved_url = check_result.as_ref().map_or_else(String::new, |cr| {
+        resolve_download_url(manifest, &cr.version, cr)
+    });
 
     // 3. URL validation + bytes
     let url_result = if skip_url_validation || resolved_url.is_empty() {
         url_validate::UrlValidationResult {
             check: UrlCheck {
                 status: CheckStatus::Skip,
-                url: if resolved_url.is_empty() { None } else { Some(resolved_url.clone()) },
+                url: if resolved_url.is_empty() {
+                    None
+                } else {
+                    Some(resolved_url.clone())
+                },
                 http_status: None,
                 failure_type: None,
                 method_used: None,
@@ -110,7 +114,8 @@ async fn audit_one(
     };
 
     // 4. File type + install method check
-    let install_method_check = check_install_method(manifest, &url_result.downloaded_bytes, is_manual);
+    let install_method_check =
+        check_install_method(manifest, &url_result.downloaded_bytes, is_manual);
 
     // 5. Version precision
     // When the provider returned assets (e.g., GitHub with asset_filter),
@@ -132,7 +137,10 @@ async fn audit_one(
 
     // 6. Version format validation
     if let Some(ref cr) = check_result {
-        let vf = manifest.checkver.as_ref().and_then(|cv| cv.version_format.as_deref());
+        let vf = manifest
+            .checkver
+            .as_ref()
+            .and_then(|cv| cv.version_format.as_deref());
         let fmt_status = version_precision::validate_version_format(&cr.version, vf);
         if fmt_status == CheckStatus::Fail {
             tracing::warn!(id = %manifest.id, version = %cr.version, "version format mismatch");
@@ -143,7 +151,9 @@ async fn audit_one(
     let has_failure = version_check.status == CheckStatus::Fail
         || url_result.check.status == CheckStatus::Fail
         || install_method_check.status == CheckStatus::Fail
-        || version_precision.as_ref().is_some_and(|p| p.status == CheckStatus::Fail);
+        || version_precision
+            .as_ref()
+            .is_some_and(|p| p.status == CheckStatus::Fail);
 
     let status = if has_failure {
         ResultStatus::Fail
@@ -202,7 +212,10 @@ fn check_install_method(manifest: &Manifest, bytes: &[u8], is_manual: bool) -> I
 
     let method_ok = detected_method == manifest.install.method
         || (detected_method == "exe"
-            && matches!(manifest.install.method.as_str(), "inno_setup" | "nsis" | "exe"));
+            && matches!(
+                manifest.install.method.as_str(),
+                "inno_setup" | "nsis" | "exe"
+            ));
     let zip_ok = detected_zip == manifest.install.zip_wrapped;
     let ok = method_ok && zip_ok;
 
@@ -220,17 +233,29 @@ fn check_install_method(manifest: &Manifest, bytes: &[u8], is_manual: bool) -> I
     }
 
     InstallMethodCheck {
-        status: if ok { CheckStatus::Pass } else { CheckStatus::Fail },
+        status: if ok {
+            CheckStatus::Pass
+        } else {
+            CheckStatus::Fail
+        },
         declared_method: manifest.install.method.clone(),
         declared_zip_wrapped: manifest.install.zip_wrapped,
         detected_file_type: Some(file_type),
         detected_method: Some(detected_method),
         detected_zip_wrapped: detected_zip,
-        match_result: if ok { MatchResult::Match } else { MatchResult::Mismatch },
+        match_result: if ok {
+            MatchResult::Match
+        } else {
+            MatchResult::Mismatch
+        },
     }
 }
 
-fn fail_early(manifest: &Manifest, provider: &str, version_check: VersionCheck) -> PackageValidationResult {
+fn fail_early(
+    manifest: &Manifest,
+    provider: &str,
+    version_check: VersionCheck,
+) -> PackageValidationResult {
     PackageValidationResult {
         id: manifest.id.clone(),
         provider: provider.to_string(),
@@ -270,11 +295,19 @@ async fn discover_version(
             Some(result),
         ),
         Ok(CheckOutcome::Skipped { reason }) => (
-            VersionCheck { status: CheckStatus::Skip, version: None, error: Some(reason) },
+            VersionCheck {
+                status: CheckStatus::Skip,
+                version: None,
+                error: Some(reason),
+            },
             None,
         ),
         Err(e) => (
-            VersionCheck { status: CheckStatus::Fail, version: None, error: Some(e.to_string()) },
+            VersionCheck {
+                status: CheckStatus::Fail,
+                version: None,
+                error: Some(e.to_string()),
+            },
             None,
         ),
     }
@@ -288,9 +321,15 @@ fn resolve_download_url(manifest: &Manifest, version: &str, cr: &providers::Chec
             .and_then(|cv| cv.autoupdate.as_ref())
             .and_then(|au| {
                 if let Some(resolver_name) = &au.resolver {
-                    return providers::download_resolver::resolve(resolver_name, version, &au.resolver_args);
+                    return providers::download_resolver::resolve(
+                        resolver_name,
+                        version,
+                        &au.resolver_args,
+                    );
                 }
-                au.url.as_ref().map(|tmpl| template::substitute(tmpl, version))
+                au.url
+                    .as_ref()
+                    .map(|tmpl| template::substitute(tmpl, version))
             })
             .or_else(|| cr.url.clone())
             .unwrap_or_default()
@@ -301,29 +340,50 @@ fn resolve_download_url(manifest: &Manifest, version: &str, cr: &providers::Chec
 
 /// Print human-readable summary to stderr.
 pub fn print_summary(report: &AuditReport) {
-    eprintln!("Audit: {} checked, {} passed, {} failed, {} skipped",
-        report.manifests_checked, report.manifests_passed, report.manifests_failed, report.manifests_skipped);
+    eprintln!(
+        "Audit: {} checked, {} passed, {} failed, {} skipped",
+        report.manifests_checked,
+        report.manifests_passed,
+        report.manifests_failed,
+        report.manifests_skipped
+    );
     if report.manifests_failed > 0 {
         let s = &report.summary;
-        eprintln!("  Failures: url={}, version={}, method={}, precision={}",
-            s.failed_url, s.failed_version, s.failed_install_method, s.failed_precision);
+        eprintln!(
+            "  Failures: url={}, version={}, method={}, precision={}",
+            s.failed_url, s.failed_version, s.failed_install_method, s.failed_precision
+        );
         for r in &report.results {
             if r.status == ResultStatus::Fail {
                 let mut reasons = Vec::new();
                 if r.version_discovery.status == CheckStatus::Fail {
-                    reasons.push(format!("version: {}", r.version_discovery.error.as_deref().unwrap_or("?")));
+                    reasons.push(format!(
+                        "version: {}",
+                        r.version_discovery.error.as_deref().unwrap_or("?")
+                    ));
                 }
                 if r.url_reachability.status == CheckStatus::Fail {
-                    reasons.push(format!("url: {} ({})",
+                    reasons.push(format!(
+                        "url: {} ({})",
                         r.url_reachability.url.as_deref().unwrap_or("?"),
-                        r.url_reachability.http_status.map_or_else(|| "timeout".to_string(), |s| s.to_string())));
+                        r.url_reachability
+                            .http_status
+                            .map_or_else(|| "timeout".to_string(), |s| s.to_string())
+                    ));
                 }
                 if r.install_method.status == CheckStatus::Fail {
-                    reasons.push(format!("method: {}(zip={}) != {:?}(zip={})",
-                        r.install_method.declared_method, r.install_method.declared_zip_wrapped,
-                        r.install_method.detected_method, r.install_method.detected_zip_wrapped));
+                    reasons.push(format!(
+                        "method: {}(zip={}) != {:?}(zip={})",
+                        r.install_method.declared_method,
+                        r.install_method.declared_zip_wrapped,
+                        r.install_method.detected_method,
+                        r.install_method.detected_zip_wrapped
+                    ));
                 }
-                if r.version_precision.as_ref().is_some_and(|p| p.status == CheckStatus::Fail) {
+                if r.version_precision
+                    .as_ref()
+                    .is_some_and(|p| p.status == CheckStatus::Fail)
+                {
                     reasons.push("precision: version too short for URL".to_string());
                 }
                 eprintln!("    {} — {}", r.id, reasons.join("; "));

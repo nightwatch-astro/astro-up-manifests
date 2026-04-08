@@ -51,16 +51,16 @@ pub fn check_precision(
 pub fn validate_version_format(version: &str, version_format: Option<&str>) -> CheckStatus {
     match version_format {
         Some("semver") => {
-            if semver::Version::parse(version).is_ok()
-                || lenient_semver::parse(version).is_ok()
-            {
+            if semver::Version::parse(version).is_ok() || lenient_semver::parse(version).is_ok() {
                 CheckStatus::Pass
             } else {
                 CheckStatus::Fail
             }
         }
         Some("date") => {
-            let is_date = version.chars().all(|c| c.is_ascii_digit() || c == '.' || c == '-');
+            let is_date = version
+                .chars()
+                .all(|c| c.is_ascii_digit() || c == '.' || c == '-');
             if is_date && version.len() >= 6 {
                 CheckStatus::Pass
             } else {
@@ -125,14 +125,26 @@ mod tests {
 
     #[test]
     fn semver_format_valid() {
-        assert_eq!(validate_version_format("3.2.0", Some("semver")), CheckStatus::Pass);
-        assert_eq!(validate_version_format("bad", Some("semver")), CheckStatus::Fail);
+        assert_eq!(
+            validate_version_format("3.2.0", Some("semver")),
+            CheckStatus::Pass
+        );
+        assert_eq!(
+            validate_version_format("bad", Some("semver")),
+            CheckStatus::Fail
+        );
     }
 
     #[test]
     fn date_format_valid() {
-        assert_eq!(validate_version_format("2026.04.07", Some("date")), CheckStatus::Pass);
-        assert_eq!(validate_version_format("abc", Some("date")), CheckStatus::Fail);
+        assert_eq!(
+            validate_version_format("2026.04.07", Some("date")),
+            CheckStatus::Pass
+        );
+        assert_eq!(
+            validate_version_format("abc", Some("date")),
+            CheckStatus::Fail
+        );
     }
 
     #[test]

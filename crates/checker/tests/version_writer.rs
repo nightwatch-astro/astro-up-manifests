@@ -176,7 +176,10 @@ fn write_with_assets_and_empty_url() {
     let result = discovered
         .write(dir.path())
         .expect("write with assets and empty URL should succeed");
-    assert!(result.is_some(), "should write when assets are present even with empty URL");
+    assert!(
+        result.is_some(),
+        "should write when assets are present even with empty URL"
+    );
 
     let path = result.expect("write result should contain path");
     let entry = VersionEntry::read(&path).expect("version entry should be readable");
@@ -203,5 +206,8 @@ fn skip_write_when_no_url_and_no_assets() {
     let result = discovered
         .write(dir.path())
         .expect("write should not error");
-    assert!(result.is_none(), "should skip when both URL and assets are empty");
+    assert!(
+        result.is_none(),
+        "should skip when both URL and assets are empty"
+    );
 }

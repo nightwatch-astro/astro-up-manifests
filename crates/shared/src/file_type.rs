@@ -128,12 +128,18 @@ mod tests {
 
     #[test]
     fn zip() {
-        assert_eq!(detect_file_type(&[0x50, 0x4B, 0x03, 0x04, 0, 0, 0, 0]), FileType::Zip);
+        assert_eq!(
+            detect_file_type(&[0x50, 0x4B, 0x03, 0x04, 0, 0, 0, 0]),
+            FileType::Zip
+        );
     }
 
     #[test]
     fn msi() {
-        assert_eq!(detect_file_type(&[0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1]), FileType::Msi);
+        assert_eq!(
+            detect_file_type(&[0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1]),
+            FileType::Msi
+        );
     }
 
     #[test]
@@ -166,7 +172,10 @@ mod tests {
     #[test]
     fn unknown() {
         assert_eq!(detect_file_type(&[]), FileType::Unknown);
-        assert_eq!(detect_file_type(&[0x7F, 0x45, 0x4C, 0x46]), FileType::Unknown);
+        assert_eq!(
+            detect_file_type(&[0x7F, 0x45, 0x4C, 0x46]),
+            FileType::Unknown
+        );
     }
 
     #[test]
@@ -176,7 +185,10 @@ mod tests {
         b.extend_from_slice(&[0x50, 0x4B, 0x01, 0x02]);
         b.extend_from_slice(&[0; 24]);
         let name = b"setup.exe";
-        #[expect(clippy::cast_possible_truncation, reason = "test fixture: name is <10 bytes")]
+        #[expect(
+            clippy::cast_possible_truncation,
+            reason = "test fixture: name is <10 bytes"
+        )]
         b.extend_from_slice(&(name.len() as u16).to_le_bytes());
         b.extend_from_slice(&[0; 16]);
         b.extend_from_slice(name);
@@ -191,7 +203,10 @@ mod tests {
         b.extend_from_slice(&[0x50, 0x4B, 0x01, 0x02]);
         b.extend_from_slice(&[0; 24]);
         let name = b"readme.txt";
-        #[expect(clippy::cast_possible_truncation, reason = "test fixture: name is <10 bytes")]
+        #[expect(
+            clippy::cast_possible_truncation,
+            reason = "test fixture: name is <10 bytes"
+        )]
         b.extend_from_slice(&(name.len() as u16).to_le_bytes());
         b.extend_from_slice(&[0; 16]);
         b.extend_from_slice(name);

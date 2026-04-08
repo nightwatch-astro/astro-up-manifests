@@ -114,7 +114,8 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
                     let resolved = if href.starts_with("http://") || href.starts_with("https://") {
                         href.to_string()
                     } else if let Some(ref base) = page_url {
-                        base.join(href).map_or_else(|_| href.to_string(), |u| u.to_string())
+                        base.join(href)
+                            .map_or_else(|_| href.to_string(), |u| u.to_string())
                     } else {
                         href.to_string()
                     };
