@@ -95,7 +95,7 @@ pub fn zip_contains_installer(bytes: &[u8]) -> bool {
 }
 
 fn classify_pe(bytes: &[u8]) -> FileType {
-    if contains_bytes(bytes, b"NullsoftInst") || contains_bytes(bytes, &[0xEF, 0xBE, 0xAD, 0xDE]) {
+    if contains_bytes(bytes, b"NullsoftInst") {
         return FileType::Nsis;
     }
     if contains_bytes(bytes, b"Inno Setup") {
@@ -159,12 +159,13 @@ mod tests {
     }
 
     #[test]
-    fn nsis_magic() {
+    fn deadbeef_magic_no_longer_matches_nsis() {
+        // DEADBEEF magic causes false positives on large binaries — removed
         let mut b = vec![0x4D, 0x5A];
         b.extend_from_slice(&[0; 100]);
         b.extend_from_slice(&[0xEF, 0xBE, 0xAD, 0xDE]);
         b.extend_from_slice(&[0; 100]);
-        assert_eq!(detect_file_type(&b), FileType::Nsis);
+        assert_eq!(detect_file_type(&b), FileType::PeExe);
     }
 
     #[test]

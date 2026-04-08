@@ -149,9 +149,9 @@ function Get-InstallerTypeFromBytes {
     if ($Bytes[0] -eq 0x4D -and $Bytes[1] -eq 0x5A) {
         # Scan full binary for installer signatures (matches Rust classify_pe behavior)
         $text = [System.Text.Encoding]::ASCII.GetString($Bytes, 0, $Bytes.Length)
-        # NSIS: NullsoftInst string or DEADBEEF magic (0xEFBEADDE little-endian)
-        $nsisMagic = [System.Text.Encoding]::ASCII.GetString([byte[]]@(0xEF, 0xBE, 0xAD, 0xDE))
-        if ($text.Contains("NullsoftInst") -or $text.Contains($nsisMagic)) { return "nsis" }
+        # NSIS: NullsoftInst string only — DEADBEEF magic (0xEFBEADDE) causes
+        # false positives on full-binary scans (common byte sequence in large PEs)
+        if ($text.Contains("NullsoftInst")) { return "nsis" }
         if ($text.Contains("Inno Setup")) { return "inno_setup" }
         # WiX Burn: .wixburn section, WixBurn string, or Windows Installer XML
         if ($text.Contains(".wixburn") -or $text.Contains("WixBurn") -or $text.Contains("Windows Installer XML")) { return "burn" }
