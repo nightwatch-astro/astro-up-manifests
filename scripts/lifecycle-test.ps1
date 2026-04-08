@@ -596,7 +596,7 @@ function Get-WMISnapshot {
         Write-Log "  WMI: querying installed programs..." "INFO"
         foreach ($term in $searchTerms) {
             $products = Get-CimInstance -ClassName Win32_InstalledWin32Program -ErrorAction SilentlyContinue |
-                Where-Object { $_.Name -like "*$term*" }
+                Where-Object { $_.Name -like "*$term*" -or $_.Vendor -like "*$term*" }
             if ($products) {
                 $snapshot.Products += @($products | Select-Object Name, Version, ProgramId)
             }
