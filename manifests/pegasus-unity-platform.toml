@@ -7,6 +7,7 @@ homepage = "https://pegasusastro.com"
 category = "driver"
 type = "application"
 slug = "pegasus-unity-platform"
+aliases = ["Unity3 Platform"]
 
 [detection]
 method = "registry"
