@@ -8,9 +8,6 @@ category = "driver"
 type = "application"
 slug = "ioptron-upgrade-utility-v3-21"
 
-[detection]
-method = "file"
-
 [install]
 method = "download_only"
 elevation = "required"
@@ -25,3 +22,8 @@ regex = 'Utility_V(\d+)\.exe'
 
 [checkver.autoupdate]
 url = "https://www.ioptron.com/v/firmware/iOptronUpgradeUtility_V321.exe"
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{43B0D101-A022-48F4-9D04-BA404CEB1D53}"
+registry_value = "DisplayVersion"
