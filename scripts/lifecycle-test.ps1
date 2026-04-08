@@ -540,7 +540,9 @@ function Install-Package {
     }
 
     $exitCode = $process.ExitCode
-    $success = $exitCode -eq 0 -or $exitCode -eq 3010 # 3010 = reboot required
+    # 0 = success, 3010 = reboot required, 256 = driver install success (SX)
+    # TODO: read success_codes from manifest instead of hardcoding
+    $success = $exitCode -eq 0 -or $exitCode -eq 3010 -or $exitCode -eq 256
 
     return @{
         Success = $success

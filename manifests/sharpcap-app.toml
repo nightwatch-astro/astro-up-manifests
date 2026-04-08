@@ -9,7 +9,7 @@ type = "application"
 slug = "sharpcap-app"
 
 [install]
-method = "inno_setup"
+method = "burn"
 
 [install.switches]
 silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
