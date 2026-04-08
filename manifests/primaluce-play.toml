@@ -9,11 +9,6 @@ type = "application"
 slug = "primaluce-play"
 aliases = ["PLAY"]
 
-[detection]
-method = "registry"
-registry_key = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\PLAY"
-registry_value = "DisplayVersion"
-
 [install]
 method = "exe"
 zip_wrapped = true
@@ -25,3 +20,7 @@ regex = 'PLAY-(\d+-\d+-\d+(?:-\d+)*)-Setup\.zip'
 
 [checkver.autoupdate]
 url = "https://www.primalucelab.com/downloads/PLAY-1-9-7-Setup.zip"
+
+[detection]
+method = "wmi"
+program_id = "0000727d77f43a4a140464252695ce263df30000ffff"
