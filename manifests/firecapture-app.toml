@@ -1,4 +1,5 @@
 manifest_version = 1
+disabled = true  # Author requires manual download (captcha-protected)
 id = "firecapture-app"
 name = "FireCapture"
 description = "FireCapture — planetary imaging capture"

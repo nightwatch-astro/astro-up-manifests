@@ -9,8 +9,9 @@ type = "application"
 slug = "primaluce-play"
 
 [detection]
-method = "file"
-path = "{program_dir}/PrimaLuceLab/PLAY/PLAY.exe"
+method = "registry"
+registry_key = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\PLAY"
+registry_value = "DisplayVersion"
 
 [install]
 method = "exe"

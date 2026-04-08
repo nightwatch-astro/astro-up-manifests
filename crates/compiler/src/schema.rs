@@ -49,6 +49,7 @@ pub fn create_schema(conn: &Connection) -> anyhow::Result<()> {
             package_id TEXT PRIMARY KEY REFERENCES packages(id),
             method TEXT NOT NULL,
             zip_wrapped INTEGER NOT NULL DEFAULT 0,
+            zip_inner_path TEXT,
             scope TEXT,
             elevation TEXT,
             switches TEXT,

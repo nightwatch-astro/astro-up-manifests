@@ -9,7 +9,7 @@ type = "database"
 slug = "astap-w08"
 
 [install]
-method = "exe"
+method = "inno_setup"
 elevation = "required"
 
 [checkver]
