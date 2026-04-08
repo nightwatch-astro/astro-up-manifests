@@ -37,24 +37,40 @@ fn find_version_in_links(
         Box::new(document.select(&a_selector))
     };
 
+    let mut first_version = None;
+    let mut first_url = None;
+    let mut assets = Vec::new();
+
     for element in elements {
         if let Some(href) = element.value().attr("href") {
             if let Some(caps) = re.captures(href) {
                 if let Some(m) = caps.get(1) {
-                    return Some(CheckResult {
-                        version: m.as_str().to_string(),
-                        url: extract_href(&element, base_url),
-                        sha256: None,
-                        release_notes_url: None,
-                        pre_release: false,
-                        assets: Vec::new(),
-                    });
+                    let resolved = extract_href(&element, base_url);
+                    if first_version.is_none() {
+                        first_version = Some(m.as_str().to_string());
+                        first_url = resolved.clone();
+                    }
+                    if let Some(ref url) = resolved {
+                        let name = url.rsplit('/').next().unwrap_or(url).to_string();
+                        assets.push(super::ReleaseAsset {
+                            name,
+                            url: url.clone(),
+                            size: 0,
+                        });
+                    }
                 }
             }
         }
     }
 
-    None
+    first_version.map(|version| CheckResult {
+        version,
+        url: first_url,
+        sha256: None,
+        release_notes_url: None,
+        pre_release: false,
+        assets,
+    })
 }
 
 /// # Errors

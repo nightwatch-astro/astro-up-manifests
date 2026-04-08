@@ -28,8 +28,7 @@ url = "https://www.qhyccd.com/download/"
 css_selector = "js:Array.from(document.querySelectorAll('a[href*=\"QHYCCD_Win_AllInOne\"]'))[1]?.href || ''"
 regex = 'QHYCCD_Win_AllInOne\.(\d+\.\d+\.\d+\.\d+)\.exe'
 
-[checkver.autoupdate]
-url = "https://www.qhyccd.com/file/repository/publish/AllInOne/$majorVersion.$minorVersion.$patchVersion/QHYCCD_Win_AllInOne.$version.exe"
+# No autoupdate URL — download URL extracted from page as asset (like GitHub)
 
 [dependencies]
 requires = ["ascom-platform"]
