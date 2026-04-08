@@ -9,7 +9,7 @@ type = "application"
 slug = "qhy-polemaster"
 
 [install]
-method = "exe"
+method = "inno_setup"
 zip_wrapped = true
 
 [checkver]

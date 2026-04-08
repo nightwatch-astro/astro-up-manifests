@@ -9,7 +9,7 @@ type = "driver"
 slug = "moonlite-nitecrawler-ascom"
 
 [install]
-method = "exe"
+method = "inno_setup"
 zip_wrapped = true
 
 [checkver]

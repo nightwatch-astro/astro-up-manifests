@@ -9,7 +9,7 @@ type = "driver"
 slug = "nexdome-ascom"
 
 [install]
-method = "exe"
+method = "burn"
 elevation = "required"
 
 [checkver]

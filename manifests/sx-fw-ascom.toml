@@ -9,7 +9,7 @@ type = "driver"
 slug = "sx-fw-ascom"
 
 [install]
-method = "exe"
+method = "inno_setup"
 zip_wrapped = true
 
 [checkver]

@@ -14,7 +14,7 @@ registry_key = "SOFTWARE\\dotnet\\Setup\\InstalledVersions\\x64\\sharedfx\\Micro
 registry_value = ""
 
 [install]
-method = "exe"
+method = "burn"
 elevation = "required"
 
 [install.switches]

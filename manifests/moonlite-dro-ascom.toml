@@ -9,7 +9,7 @@ type = "driver"
 slug = "moonlite-dro-ascom"
 
 [install]
-method = "exe"
+method = "inno_setup"
 zip_wrapped = true
 
 [checkver]
