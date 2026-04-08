@@ -439,7 +439,8 @@ function Install-Package {
     if ($ZipWrapped) {
         $extension = [System.IO.Path]::GetExtension($InstallerPath).ToLower()
         if ($extension -eq ".zip") {
-            $extractDir = Join-Path $tempDir "zip-unwrap"
+            $pkgName = [System.IO.Path]::GetFileNameWithoutExtension($InstallerPath)
+            $extractDir = Join-Path $tempDir "zip-unwrap-$pkgName"
             if (Test-Path $extractDir) { Remove-Item $extractDir -Recurse -Force }
             Expand-Archive -Path $InstallerPath -DestinationPath $extractDir -Force
             Write-Log "  Unwrapped ZIP to $extractDir" "INFO"
