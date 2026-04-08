@@ -13,6 +13,11 @@
 .PARAMETER DryRun
     Download and probe only, skip installation and uninstallation.
 
+.PARAMETER VerifyOnly
+    Download and verify install method only, skip installation and uninstallation.
+    Like DryRun but focused on method verification — reports mismatches between
+    declared install method and detected file type (Inno Setup, NSIS, MSI, etc.).
+
 .PARAMETER WhatIf
     Show what would be tested without making changes.
 
@@ -27,6 +32,14 @@
 .EXAMPLE
     .\scripts\lifecycle-test.ps1 -DryRun
     Download and probe only
+
+.EXAMPLE
+    .\scripts\lifecycle-test.ps1 -VerifyOnly
+    Download all packages, verify declared install method matches detected file type
+
+.EXAMPLE
+    .\scripts\lifecycle-test.ps1 -VerifyOnly -PackageId nina-app
+    Verify install method for a single package
 #>
 
 [CmdletBinding(SupportsShouldProcess)]
@@ -44,7 +57,10 @@ param(
     [switch]$Force,
 
     [Parameter()]
-    [switch]$AutoCommit
+    [switch]$AutoCommit,
+
+    [Parameter()]
+    [switch]$VerifyOnly
 )
 
 #Requires -Version 7.0
@@ -67,6 +83,7 @@ if (-not $isAdmin) {
     if ($SkipUninstall) { $arguments += " -SkipUninstall" }
     if ($Force) { $arguments += " -Force" }
     if ($AutoCommit) { $arguments += " -AutoCommit" }
+    if ($VerifyOnly) { $arguments += " -VerifyOnly" }
     if ($WhatIfPreference) { $arguments += " -WhatIf" }
 
     Start-Process powershell.exe -Verb RunAs -ArgumentList $arguments
@@ -117,6 +134,115 @@ function Read-ManifestToml {
 function Test-TomlSection {
     param([object]$Toml, [string]$Section)
     return $null -ne $Toml.$Section
+}
+
+#endregion
+
+#region Install Method Verification
+
+function Get-InstallerTypeFromBytes {
+    param([byte[]]$Bytes)
+
+    if ($Bytes.Length -lt 2) { return "unknown" }
+
+    # Check MZ header (PE executable)
+    if ($Bytes[0] -eq 0x4D -and $Bytes[1] -eq 0x5A) {
+        # Scan first 64KB for installer signatures
+        $scanLen = [Math]::Min(65536, $Bytes.Length)
+        $text = [System.Text.Encoding]::ASCII.GetString($Bytes, 0, $scanLen)
+        if ($text -match "Inno Setup") { return "inno_setup" }
+        if ($text -match "Nullsoft|NullsoftInst") { return "nsis" }
+        if ($text -match "WiX|Windows Installer XML|Burn") { return "burn" }
+        return "generic_exe"
+    }
+
+    # Check PK header (ZIP)
+    if ($Bytes[0] -eq 0x50 -and $Bytes[1] -eq 0x4B) { return "zip" }
+
+    # Check MSI (OLE compound document: D0 CF 11 E0)
+    if ($Bytes.Length -ge 4 -and $Bytes[0] -eq 0xD0 -and $Bytes[1] -eq 0xCF -and $Bytes[2] -eq 0x11 -and $Bytes[3] -eq 0xE0) {
+        return "msi"
+    }
+
+    return "unknown"
+}
+
+function Test-InstallMethodMatch {
+    param(
+        [string]$DeclaredMethod,
+        [bool]$ZipWrapped,
+        [string]$DetectedType
+    )
+
+    # If zip_wrapped, the download should be a ZIP
+    if ($ZipWrapped) {
+        if ($DetectedType -eq "zip") {
+            return @{ Match = $true; Message = "ZIP (zip_wrapped=true, inner method=$DeclaredMethod)" }
+        } else {
+            return @{ Match = $false; Message = "Expected ZIP (zip_wrapped=true) but got $DetectedType" }
+        }
+    }
+
+    # Exact match for specific installer types
+    $expectedTypes = switch ($DeclaredMethod) {
+        "inno_setup"    { @("inno_setup") }
+        "nsis"          { @("nsis") }
+        "msi"           { @("msi") }
+        "burn"          { @("burn") }
+        "download_only" { @("zip", "generic_exe", "inno_setup", "nsis", "msi", "burn", "unknown") }
+        "ledger"        { @("zip", "generic_exe", "unknown") }
+        "exe" {
+            # "exe" is underspecified — if we can detect the real type, flag it for upgrade
+            if ($DetectedType -in @("inno_setup", "nsis", "burn")) {
+                return @{ Match = $false; Message = "UPGRADE: declared=exe, detected=$DetectedType — update manifest to '$DetectedType'" }
+            }
+            @("generic_exe")  # only truly unidentifiable PEs should stay as "exe"
+        }
+        default { @($DeclaredMethod) }
+    }
+
+    if ($DetectedType -in $expectedTypes) {
+        return @{ Match = $true; Message = "OK ($DeclaredMethod -> $DetectedType)" }
+    }
+
+    return @{ Match = $false; Message = "MISMATCH: declared=$DeclaredMethod, detected=$DetectedType" }
+}
+
+function Test-ZipContents {
+    param([string]$ZipPath, [string]$DeclaredMethod)
+
+    $extractDir = Join-Path $env:TEMP "astro-up-lifecycle-zipcheck"
+    if (Test-Path $extractDir) { Remove-Item $extractDir -Recurse -Force }
+    New-Item -ItemType Directory -Force -Path $extractDir | Out-Null
+
+    try {
+        Expand-Archive -Path $ZipPath -DestinationPath $extractDir -Force
+
+        # Find the inner installer
+        $innerFiles = Get-ChildItem -Path $extractDir -Recurse -File |
+            Where-Object { $_.Extension -in @('.exe', '.msi') } |
+            Sort-Object Length -Descending |
+            Select-Object -First 1
+
+        if (-not $innerFiles) {
+            return @{ InnerType = "no_installer_found"; InnerPath = $null; Match = $false; Message = "ZIP contains no .exe or .msi" }
+        }
+
+        $innerBytes = [System.IO.File]::ReadAllBytes($innerFiles.FullName)
+        $innerType = Get-InstallerTypeFromBytes -Bytes $innerBytes
+
+        $matchResult = Test-InstallMethodMatch -DeclaredMethod $DeclaredMethod -ZipWrapped $false -DetectedType $innerType
+        return @{
+            InnerType = $innerType
+            InnerPath = $innerFiles.Name
+            Match = $matchResult.Match
+            Message = "ZIP inner: $($innerFiles.Name) -> $innerType ($($matchResult.Message))"
+        }
+    } catch {
+        return @{ InnerType = "extract_failed"; InnerPath = $null; Match = $false; Message = "ZIP extraction failed: $_" }
+    } finally {
+        if (Test-Path $extractDir) { Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue }
+    }
 }
 
 #endregion
@@ -293,48 +419,76 @@ function Install-Package {
     param(
         [string]$InstallerPath,
         [string]$Method,
-        [hashtable]$Switches
+        [hashtable]$Switches,
+        [bool]$ZipWrapped = $false
     )
+
+    # Handle zip_wrapped: extract ZIP first, find inner installer, recurse
+    if ($ZipWrapped) {
+        $extension = [System.IO.Path]::GetExtension($InstallerPath).ToLower()
+        if ($extension -eq ".zip") {
+            $extractDir = Join-Path $tempDir "zip-unwrap"
+            if (Test-Path $extractDir) { Remove-Item $extractDir -Recurse -Force }
+            Expand-Archive -Path $InstallerPath -DestinationPath $extractDir -Force
+            Write-Log "  Unwrapped ZIP to $extractDir" "INFO"
+
+            # Find the inner installer (.exe or .msi, largest first)
+            $innerFile = Get-ChildItem -Path $extractDir -Recurse -File |
+                Where-Object { $_.Extension -in @('.exe', '.msi') } |
+                Sort-Object Length -Descending |
+                Select-Object -First 1
+
+            if (-not $innerFile) {
+                Write-Log "  No installer found inside ZIP" "ERROR"
+                return @{ Success = $false; ExitCode = -1; Message = "zip_wrapped but no .exe/.msi inside ZIP" }
+            }
+
+            Write-Log "  Inner installer: $($innerFile.Name)" "INFO"
+            return Install-Package -InstallerPath $innerFile.FullName -Method $Method -Switches $Switches -ZipWrapped $false
+        } else {
+            Write-Log "  zip_wrapped=true but file is not a ZIP ($extension), treating as direct installer" "WARN"
+        }
+    }
 
     $extension = [System.IO.Path]::GetExtension($InstallerPath).ToLower()
 
     Write-Log "  Install method: '$Method', Extension: '$extension'" "INFO"
 
     # Determine silent switches
-    # For explicit methods (inno_setup, nullsoft, msi), use manifest switches.
+    # For explicit methods (inno_setup, nsis, msi), use manifest switches.
     # For generic "exe", always auto-detect from binary — manifest switches are often wrong.
-    $silentArgs = if ($Method -ne "exe" -and $Switches -and $Switches.Contains('silent')) {
+    $silentArgs = if ($Method -notin @("exe", "") -and $Switches -and $Switches.Contains('silent')) {
         $Switches['silent']
     } else {
-        # For generic "exe", detect installer type from binary
+        # For generic "exe" or unspecified, detect installer type from binary
         $effectiveMethod = $Method
         if ($Method -eq "exe" -or -not $Method) {
             $bytes = [System.IO.File]::ReadAllBytes($InstallerPath)
-            $text = [System.Text.Encoding]::ASCII.GetString($bytes, 0, [Math]::Min(65536, $bytes.Length))
-            if ($text -match "Inno Setup") {
+            $detectedType = Get-InstallerTypeFromBytes -Bytes $bytes
+            if ($detectedType -eq "inno_setup") {
                 $effectiveMethod = "inno_setup"
                 Write-Log "  Detected InnoSetup installer" "INFO"
-            } elseif ($text -match "Nullsoft") {
-                $effectiveMethod = "nullsoft"
+            } elseif ($detectedType -eq "nsis") {
+                $effectiveMethod = "nsis"
                 Write-Log "  Detected Nullsoft/NSIS installer" "INFO"
-            } elseif ($text -match "WiX" -or $text -match "Windows Installer XML") {
+            } elseif ($detectedType -eq "burn") {
                 $effectiveMethod = "burn"
                 Write-Log "  Detected WiX/Burn installer" "INFO"
             }
         }
         switch ($effectiveMethod) {
             "inno_setup" { "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES" }
-            "nullsoft" { "/S" }
-            "burn" { "/quiet /norestart" }
-            "exe" { "/S" }
-            default { "" }
+            "nsis"       { "/S" }
+            "burn"       { "/quiet /norestart" }
+            "exe"        { "/S" }
+            default      { "" }
         }
     }
     Write-Log "  Silent args: '$silentArgs'" "INFO"
 
     if ($Method -eq "msi" -or $extension -eq ".msi") {
         $process = Start-Process msiexec.exe -ArgumentList "/i `"$InstallerPath`" /qn /norestart" -PassThru
-    } elseif ($Method -eq "zip" -or $Method -eq "zip_wrap" -or $extension -eq ".zip") {
+    } elseif ($Method -eq "zip" -or $extension -eq ".zip") {
         $extractDir = Join-Path $tempDir "extracted"
         Expand-Archive -Path $InstallerPath -DestinationPath $extractDir -Force
         Write-Log "Extracted ZIP to $extractDir" "SUCCESS"
@@ -633,6 +787,7 @@ function Test-PackageLifecycle {
         PackageName = $packageName
         Version = $null
         Download = $null
+        MethodVerify = $null
         Install = $null
         Detection = $null
         Uninstall = $null
@@ -666,8 +821,37 @@ function Test-PackageLifecycle {
         }
         $result.Download = "OK"
 
-        if ($DryRun) {
-            Write-Log "DryRun mode: skipping installation" "INFO"
+        # 2b. Verify install method against downloaded file
+        Write-Log "Step 2b: Verifying install method"
+        $dlBytes = [System.IO.File]::ReadAllBytes($installerPath)
+        $detectedFileType = Get-InstallerTypeFromBytes -Bytes $dlBytes
+        $zipWrapped = if ($Manifest.Contains('zip_wrapped')) { $Manifest.zip_wrapped } else { $false }
+        $methodMatch = Test-InstallMethodMatch -DeclaredMethod $Manifest.install_method -ZipWrapped $zipWrapped -DetectedType $detectedFileType
+
+        if ($methodMatch.Match) {
+            Write-Log "  Method verification: $($methodMatch.Message)" "SUCCESS"
+            $result.MethodVerify = "OK"
+        } else {
+            Write-Log "  Method verification: $($methodMatch.Message)" "WARN"
+            $result.MethodVerify = $methodMatch.Message
+        }
+
+        # 2c. If zip_wrapped, also verify inner contents
+        if ($zipWrapped -and $detectedFileType -eq "zip") {
+            Write-Log "  Checking ZIP contents for inner installer type..." "INFO"
+            $innerCheck = Test-ZipContents -ZipPath $installerPath -DeclaredMethod $Manifest.install_method
+            if ($innerCheck.Match) {
+                Write-Log "  Inner: $($innerCheck.Message)" "SUCCESS"
+                $result.MethodVerify = "OK (zip_wrapped: $($innerCheck.InnerType))"
+            } else {
+                Write-Log "  Inner: $($innerCheck.Message)" "WARN"
+                $result.MethodVerify = $innerCheck.Message
+            }
+        }
+
+        if ($DryRun -or $VerifyOnly) {
+            $mode = if ($VerifyOnly) { "VerifyOnly" } else { "DryRun" }
+            Write-Log "$mode mode: skipping installation" "INFO"
             $result.Install = "SKIPPED"
             $result.Detection = "SKIPPED"
             $result.Uninstall = "SKIPPED"
@@ -681,7 +865,8 @@ function Test-PackageLifecycle {
         # 4. Install
         Write-Log "Step 4: Installing package"
         $switches = if ($Manifest.Contains('install_switches')) { $Manifest.install_switches } else { @{} }
-        $installResult = Install-Package -InstallerPath $installerPath -Method $Manifest.install_method -Switches $switches
+        $isZipWrapped = if ($Manifest.Contains('zip_wrapped')) { $Manifest.zip_wrapped } else { $false }
+        $installResult = Install-Package -InstallerPath $installerPath -Method $Manifest.install_method -Switches $switches -ZipWrapped $isZipWrapped
 
         if (-not $installResult.Success) {
             throw "Installation failed: $($installResult.Message)"
@@ -905,6 +1090,12 @@ function Get-PackagesToTest {
             continue
         }
 
+        # Skip disabled packages
+        if ($toml.Contains('disabled') -and $toml.disabled -eq $true) {
+            Write-Log "  Skipping $($file.BaseName): disabled" "INFO"
+            continue
+        }
+
         # Skip resource packages
         if ($toml.type -eq "resource") {
             continue
@@ -915,6 +1106,7 @@ function Get-PackagesToTest {
         $checkver = if ($toml.Contains('checkver')) { $toml.checkver } else { @{} }
         $autoupdate = if ($checkver.Contains('autoupdate')) { $checkver.autoupdate } else { @{} }
         $switches = if ($install.Contains('switches')) { $install.switches } else { @{} }
+        $zipWrapped = if ($install.Contains('zip_wrapped')) { $install.zip_wrapped -eq $true } else { $false }
 
         $manifest = @{
             id = $toml.id
@@ -922,6 +1114,7 @@ function Get-PackagesToTest {
             type = $toml.type
             install_method = if ($install.Contains('method')) { $install.method } else { "" }
             install_switches = $switches
+            zip_wrapped = $zipWrapped
             autoupdate_url = if ($autoupdate.Contains('url')) { $autoupdate.url } else { $null }
         }
 
@@ -970,6 +1163,7 @@ $summaryTable = $allResults | ForEach-Object {
     [PSCustomObject]@{
         Package = $_.PackageId
         Version = $_.Version
+        Method = $_.MethodVerify
         Install = $_.Install
         Detect = $_.Detection
         Uninstall = $_.Uninstall
@@ -978,6 +1172,20 @@ $summaryTable = $allResults | ForEach-Object {
 }
 
 $summaryTable | Format-Table -AutoSize
+
+# Method verification summary
+$methodResults = $allResults | Where-Object { $_.MethodVerify }
+$methodPass = @($methodResults | Where-Object { $_.MethodVerify -eq "OK" -or $_.MethodVerify -like "OK (*" }).Count
+$methodFail = @($methodResults | Where-Object { $_.MethodVerify -ne "OK" -and $_.MethodVerify -notlike "OK (*" }).Count
+if ($methodResults) {
+    Write-Log "`nMethod verification: $methodPass passed, $methodFail mismatches out of $(@($methodResults).Count) tested" $(if ($methodFail -gt 0) { "WARN" } else { "SUCCESS" })
+    if ($methodFail -gt 0) {
+        $mismatches = $allResults | Where-Object { $_.MethodVerify -and $_.MethodVerify -ne "OK" -and $_.MethodVerify -notlike "OK (*" }
+        foreach ($m in $mismatches) {
+            Write-Log "  $($m.PackageId): $($m.MethodVerify)" "WARN"
+        }
+    }
+}
 
 # Offer to commit changes
 $updatedManifests = $allResults | Where-Object { $_.DetectionConfig } | ForEach-Object { $_.PackageId }

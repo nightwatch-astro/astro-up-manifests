@@ -1,0 +1,4 @@
+[default.extend-words]
+# Windows API: Plug and Play
+PnP = "PnP"
+Pn = "Pn"
