@@ -19,6 +19,7 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
     Manifest {
         id: format!("{owner}-{repo}"),
         manifest_version: 1,
+        disabled: false,
         name: repo.to_string(),
         description: None,
         publisher: None,

@@ -80,14 +80,14 @@ async fn main() -> anyhow::Result<()> {
     // 1. Load manifests
     let all_manifests = load_manifests(&cli.manifests)?;
 
-    // 2. Apply filter
+    // 2. Apply filter (skip disabled manifests)
     let manifests: Vec<&Manifest> = if let Some(ref filter) = cli.filter {
         all_manifests
             .iter()
-            .filter(|m| matches_filter(m, filter))
+            .filter(|m| !m.disabled && matches_filter(m, filter))
             .collect()
     } else {
-        all_manifests.iter().collect()
+        all_manifests.iter().filter(|m| !m.disabled).collect()
     };
 
     tracing::info!(

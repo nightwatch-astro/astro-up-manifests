@@ -1,4 +1,5 @@
 manifest_version = 1
+disabled = true  # CDN blocks programmatic downloads (403)
 id = "synscan-mc030-firmware"
 name = "SynScan MC030 Firmware"
 description = "Wave 150i/100i firmware"

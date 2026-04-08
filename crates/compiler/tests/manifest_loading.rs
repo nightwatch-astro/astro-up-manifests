@@ -71,15 +71,15 @@ fn manual_provider_accepted() {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../manifests");
     let result = load_manifests(&dir).expect("manifests directory should load");
 
-    let prolific = result
+    let cp210x = result
         .manifests
         .iter()
-        .find(|m| m.id == "prolific-drivers")
-        .expect("prolific-drivers manifest should exist");
-    let checkver = prolific
+        .find(|m| m.id == "cp210x-drivers")
+        .expect("cp210x-drivers manifest should exist");
+    let checkver = cp210x
         .checkver
         .as_ref()
-        .expect("prolific-drivers should have checkver");
+        .expect("cp210x-drivers should have checkver");
     assert_eq!(checkver.provider, "manual");
 }
 

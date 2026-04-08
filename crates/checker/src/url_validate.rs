@@ -153,8 +153,8 @@ async fn try_plain_get(client: &RetryClient, url: &str) -> UrlValidationResult {
 
 const fn classify_failure(status: u16) -> UrlFailureType {
     match status {
-        404 | 403 | 410 | 401 => UrlFailureType::Permanent,
-        416 => UrlFailureType::Blocked,
+        404 | 410 => UrlFailureType::Permanent,
+        403 | 401 | 416 => UrlFailureType::Blocked,
         _ if status >= 500 => UrlFailureType::Transient,
         _ => UrlFailureType::Permanent,
     }

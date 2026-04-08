@@ -7,6 +7,9 @@ pub struct Manifest {
     pub id: String,
     pub manifest_version: u32,
     pub name: String,
+    /// When true, the checker and compiler skip this manifest entirely.
+    #[serde(default)]
+    pub disabled: bool,
     #[serde(default)]
     pub description: Option<String>,
     #[serde(default)]

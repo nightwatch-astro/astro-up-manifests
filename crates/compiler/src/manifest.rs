@@ -35,6 +35,10 @@ pub fn load_manifests(dir: &Path) -> anyhow::Result<LoadResult> {
         let file_name = path.display().to_string();
         match load_single_manifest(path) {
             Ok(manifest) => {
+                if manifest.disabled {
+                    tracing::debug!("{file_name}: disabled, skipping");
+                    continue;
+                }
                 let validation_errors = validate_manifest(&manifest, &file_name);
                 if validation_errors.is_empty() {
                     manifests.push(manifest);
