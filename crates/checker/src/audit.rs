@@ -113,13 +113,20 @@ async fn audit_one(
     let install_method_check = check_install_method(manifest, &url_result.downloaded_bytes, is_manual);
 
     // 5. Version precision
+    // When the provider returned assets (e.g., GitHub with asset_filter),
+    // the URL was resolved from assets, not the template — use normalized comparison.
     let version_precision = check_result.as_ref().map(|cr| {
-        let template_url = manifest
-            .checkver
-            .as_ref()
-            .and_then(|cv| cv.autoupdate.as_ref())
-            .and_then(|au| au.url.as_ref())
-            .map(String::as_str);
+        let has_assets = !cr.assets.is_empty();
+        let template_url = if has_assets {
+            None // Asset-resolved URL — don't compare against template
+        } else {
+            manifest
+                .checkver
+                .as_ref()
+                .and_then(|cv| cv.autoupdate.as_ref())
+                .and_then(|au| au.url.as_ref())
+                .map(String::as_str)
+        };
         version_precision::check_precision(&resolved_url, &cr.version, template_url)
     });
 

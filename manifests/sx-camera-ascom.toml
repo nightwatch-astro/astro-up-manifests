@@ -13,7 +13,7 @@ method = "file"
 path = "{program_dir}/Common Files/ASCOM/Camera/SX.Camera.dll"
 
 [install]
-method = "download_only"
+method = "exe"
 zip_wrapped = true
 
 [checkver]

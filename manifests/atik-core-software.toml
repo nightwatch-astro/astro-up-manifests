@@ -14,7 +14,7 @@ registry_key = "SOFTWARE\\Atik Cameras\\Core"
 registry_value = "Version"
 
 [install]
-method = "exe"
+method = "nsis"
 elevation = "required"
 
 [install.switches]

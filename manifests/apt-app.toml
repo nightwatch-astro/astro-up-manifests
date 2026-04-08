@@ -14,7 +14,7 @@ registry_key = "SOFTWARE\\APT"
 registry_value = "DisplayVersion"
 
 [install]
-method = "inno_setup"
+method = "nsis"
 
 [install.switches]
 silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"

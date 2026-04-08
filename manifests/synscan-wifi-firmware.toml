@@ -9,7 +9,7 @@ type = "resource"
 slug = "synscan-wifi-firmware"
 
 [install]
-method = "download_only"
+method = "exe"
 zip_wrapped = true
 elevation = "required"
 

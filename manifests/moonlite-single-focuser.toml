@@ -12,7 +12,7 @@ slug = "moonlite-single-focuser"
 method = "file"
 
 [install]
-method = "download_only"
+method = "exe"
 zip_wrapped = true
 
 [checkver]

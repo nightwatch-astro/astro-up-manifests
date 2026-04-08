@@ -12,7 +12,7 @@ slug = "synscan-firmware-loader"
 method = "file"
 
 [install]
-method = "download_only"
+method = "exe"
 zip_wrapped = true
 
 [checkver]

@@ -21,10 +21,12 @@ elevation = "required"
 silent = "/S"
 
 [checkver]
+# Stable version — match the "Recommended" link (appears after beta on page)
+# Use js: selector to extract the stable URL from the second AllInOne link
 provider = "browser_scrape"
 url = "https://www.qhyccd.com/download/"
-# "Recommended" stable link — uses the second AllInOne URL on the page
-regex = 'Recommended.*?QHYCCD_Win_AllInOne\.(\d+\.\d+\.\d+\.\d+)\.exe'
+css_selector = "js:Array.from(document.querySelectorAll('a[href*=\"QHYCCD_Win_AllInOne\"]'))[1]?.href || ''"
+regex = 'QHYCCD_Win_AllInOne\.(\d+\.\d+\.\d+\.\d+)\.exe'
 
 [checkver.autoupdate]
 url = "https://www.qhyccd.com/file/repository/publish/AllInOne/$majorVersion.$minorVersion.$patchVersion/QHYCCD_Win_AllInOne.$version.exe"
