@@ -28,5 +28,6 @@ skip_browser_ua = true
 requires = ["ascom-platform"]
 
 [detection]
-method = "wmi"
-program_id = "0000161d6420a247a9175feda759c2c4497f0000ffff"
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\EQMOD EQASCOM Telescope Driver_is1"
+registry_value = "DisplayVersion"
