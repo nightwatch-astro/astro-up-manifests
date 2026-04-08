@@ -188,6 +188,7 @@ function Test-InstallMethodMatch {
         "inno_setup"    { @("inno_setup") }
         "nsis"          { @("nsis") }
         "msi"           { @("msi") }
+        "wix"           { @("msi") }
         "burn"          { @("burn") }
         "download_only" { @("zip", "generic_exe", "inno_setup", "nsis", "msi", "burn", "unknown") }
         "ledger"        { @("zip", "generic_exe", "unknown") }
@@ -484,6 +485,7 @@ function Install-Package {
         switch ($effectiveMethod) {
             "inno_setup" { "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES" }
             "nsis"       { "/S" }
+            "wix"        { "/qn /norestart" }
             "burn"       { "/quiet /norestart" }
             "exe"        { "/S" }
             default      { "" }

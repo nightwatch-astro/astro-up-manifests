@@ -10,3 +10,4 @@ catalog.db
 catalog.db.minisig
 versions/*
 !versions/.gitkeep
+lifecycle-results/
