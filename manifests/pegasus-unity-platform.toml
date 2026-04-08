@@ -9,13 +9,6 @@ type = "application"
 slug = "pegasus-unity-platform"
 aliases = ["Unity3 Platform"]
 
-[detection]
-method = "registry"
-registry_key = "SOFTWARE\\Pegasus Astro\\Unity Platform"
-registry_value = "Version"
-fallback_method = "file"
-fallback_path = "{program_dir}/Pegasus Astro/Unity Platform/UnityPlatform.exe"
-
 [install]
 method = "burn"
 elevation = "required"
@@ -29,3 +22,7 @@ url = "https://pegasusastro.com/release/unity3/setup/PegasusAstroUnityPlatform.e
 
 [checkver.autoupdate]
 url = "https://pegasusastro.com/release/unity3/setup/PegasusAstroUnityPlatform.exe"
+
+[detection]
+method = "wmi"
+program_id = "0000cb9719e004e13fcd7191cc505bc40bf50000ffff"
