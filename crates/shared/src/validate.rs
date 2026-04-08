@@ -26,6 +26,7 @@ const KNOWN_INSTALL_METHODS: &[&str] = &[
     "inno_setup",
     "msi",
     "nsis",
+    "wix",
     "exe",
     "download_only",
 ];
