@@ -684,14 +684,19 @@ function New-DetectionConfig {
         $lines += "path = `"$escapedPath`""
     } elseif ($DetectionInfo.Method -eq "wmi") {
         $lines += "method = `"wmi`""
-        if ($DetectionInfo.DriverProvider) {
+        # WMI driver detection (PnP signed drivers)
+        if ($DetectionInfo.Contains('DriverProvider') -and $DetectionInfo.DriverProvider) {
             $lines += "inf_provider = `"$($DetectionInfo.DriverProvider)`""
         }
-        if ($DetectionInfo.DeviceClass) {
+        if ($DetectionInfo.Contains('DeviceClass') -and $DetectionInfo.DeviceClass) {
             $lines += "device_class = `"$($DetectionInfo.DeviceClass)`""
         }
-        if ($DetectionInfo.InfName) {
+        if ($DetectionInfo.Contains('InfName') -and $DetectionInfo.InfName) {
             $lines += "inf_name = `"$($DetectionInfo.InfName)`""
+        }
+        # WMI product detection (Win32_InstalledWin32Program)
+        if ($DetectionInfo.Contains('ProgramId') -and $DetectionInfo.ProgramId) {
+            $lines += "program_id = `"$($DetectionInfo.ProgramId)`""
         }
     } elseif ($DetectionInfo.Method -eq "file") {
         $escapedPath = $DetectionInfo.Path.Replace('\', '\\')
@@ -917,8 +922,9 @@ function Test-PackageLifecycle {
         $result.Install = "OK (exit code: $($installResult.ExitCode))"
         Write-Log $installResult.Message "SUCCESS"
 
-        # Wait a moment for registry to settle
-        Start-Sleep -Seconds 2
+        # Wait for registry to settle — some installers spawn child processes
+        # and return before fully installed (e.g., PrimaLuce PLAY)
+        Start-Sleep -Seconds 5
 
         # 5. Post-install registry snapshot
         Write-Log "Step 5: Capturing post-install state"
