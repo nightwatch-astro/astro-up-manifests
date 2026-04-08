@@ -34,7 +34,8 @@ pub async fn validate_url(client: &RetryClient, url: &str) -> UrlValidationResul
             if resp.status().is_success() || resp.status().is_redirection() {
                 return try_range_get(client, url).await;
             }
-            if status == 405 {
+            if status == 405 || status == 403 {
+                // Many servers reject HEAD but accept GET
                 return try_range_get(client, url).await;
             }
             return UrlValidationResult {

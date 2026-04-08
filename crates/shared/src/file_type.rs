@@ -26,12 +26,49 @@ pub fn detect_file_type(bytes: &[u8]) -> FileType {
 }
 
 /// Check if a ZIP archive contains a nested installer (exe or msi).
+///
+/// Scans both local file headers (`PK\x03\x04`, at start of zip) and
+/// central directory headers (`PK\x01\x02`, typically at end).
+/// Local headers are available even with partial downloads (range requests).
 #[must_use]
 pub fn zip_contains_installer(bytes: &[u8]) -> bool {
-    let sig = [0x50, 0x4B, 0x01, 0x02];
+    // Scan local file headers (PK\x03\x04) — available in first bytes
+    // Local header: filename length at offset 26, filename at offset 30
+    let local_sig = [0x50, 0x4B, 0x03, 0x04];
     let mut pos = 0;
+    while pos + 30 < bytes.len() {
+        if let Some(offset) = find_bytes(&bytes[pos..], &local_sig) {
+            let abs = pos + offset;
+            if abs + 30 > bytes.len() {
+                break;
+            }
+            let name_len = u16::from_le_bytes([bytes[abs + 26], bytes[abs + 27]]) as usize;
+            let extra_len = u16::from_le_bytes([bytes[abs + 28], bytes[abs + 29]]) as usize;
+            let name_start = abs + 30;
+            let name_end = name_start + name_len;
+            if name_end <= bytes.len() {
+                if let Ok(name_str) = std::str::from_utf8(&bytes[name_start..name_end]) {
+                    let path = std::path::Path::new(name_str);
+                    if let Some(ext) = path.extension() {
+                        if ext.eq_ignore_ascii_case("exe") || ext.eq_ignore_ascii_case("msi") {
+                            return true;
+                        }
+                    }
+                }
+            }
+            // Skip past this entry (header + name + extra + compressed data)
+            // We don't know the compressed size without reading more, so just advance past the name
+            pos = name_start + name_len + extra_len + 1;
+        } else {
+            break;
+        }
+    }
+
+    // Also scan central directory headers (PK\x01\x02) if present
+    let central_sig = [0x50, 0x4B, 0x01, 0x02];
+    pos = 0;
     while pos + 46 < bytes.len() {
-        if let Some(offset) = find_bytes(&bytes[pos..], &sig) {
+        if let Some(offset) = find_bytes(&bytes[pos..], &central_sig) {
             let abs = pos + offset;
             if abs + 46 > bytes.len() {
                 break;
