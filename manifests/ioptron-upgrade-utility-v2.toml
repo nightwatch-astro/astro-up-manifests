@@ -12,7 +12,7 @@ slug = "ioptron-upgrade-utility-v2"
 method = "file"
 
 [install]
-method = "exe"
+method = "download_only"
 elevation = "required"
 
 [install.switches]
