@@ -22,6 +22,7 @@ url = "https://sourceforge.net/projects/astap-program/files/star_databases/d50_s
 
 [checkver.autoupdate]
 url = "https://sourceforge.net/projects/astap-program/files/star_databases/d50_star_database.exe/download"
+skip_browser_ua = true
 
 [dependencies]
 requires = ["astap-app"]

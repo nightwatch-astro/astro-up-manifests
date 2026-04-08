@@ -104,14 +104,24 @@ async fn main() -> anyhow::Result<()> {
     // 3. Load state
     let state = Arc::new(Mutex::new(CheckerState::read(&cli.state)?));
 
-    // 4. Build HTTP client with retry
-    let client = RetryClient::new(
+    // 4. Build HTTP clients with retry
+    // Browser UA for version scraping; plain UA for downloads where vendor CDN
+    // (e.g., SourceForge) serves JS pages to browsers instead of redirecting.
+    let browser_client = RetryClient::new(
         reqwest::Client::builder()
             .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
             .timeout(std::time::Duration::from_secs(30))
             .build()?,
         2,
     );
+    let plain_client = RetryClient::new(
+        reqwest::Client::builder()
+            .timeout(std::time::Duration::from_secs(30))
+            .build()?,
+        2,
+    );
+    // Version scraping always uses browser UA
+    let client = browser_client.clone();
 
     // 5. Run checks with bounded concurrency
     let versions_dir = cli.versions.clone();
@@ -127,6 +137,7 @@ async fn main() -> anyhow::Result<()> {
     let results: Vec<_> = stream::iter(manifests)
         .map(|manifest| {
             let client = client.clone();
+            let plain_client = plain_client.clone();
             let state = state.clone();
             let summary = summary.clone();
             let versions_dir = versions_dir.clone();
@@ -135,6 +146,7 @@ async fn main() -> anyhow::Result<()> {
                 process_manifest(
                     manifest,
                     &client,
+                    &plain_client,
                     &state,
                     &summary,
                     &versions_dir,
@@ -225,6 +237,7 @@ fn print_summary(summary: &Summary, concurrency: usize, state: &CheckerState) {
 async fn process_manifest(
     manifest: &Manifest,
     client: &RetryClient,
+    plain_client: &RetryClient,
     state: &Arc<Mutex<CheckerState>>,
     summary: &Arc<Mutex<Summary>>,
     versions_dir: &Path,
@@ -255,13 +268,20 @@ async fn process_manifest(
         }
     }
 
+    // Use plain client for downloads when manifest opts out of browser UA
+    let download_client = if manifest.skip_browser_ua() {
+        plain_client
+    } else {
+        client
+    };
+
     match providers::check_manifest(manifest, client).await {
         Ok(CheckOutcome::Found(result)) => {
             handle_found(
                 manifest,
                 &result,
                 provider,
-                client,
+                download_client,
                 state,
                 summary,
                 versions_dir,
@@ -330,12 +350,9 @@ async fn handle_found(
     // URL validation + install method detection (non-audit mode)
     let download_url = url.clone().unwrap_or_default();
     let url_status = if !download_url.is_empty() {
-        let url_result =
-            astro_up_checker::url_validate::validate_url(client, &download_url).await;
+        let url_result = astro_up_checker::url_validate::validate_url(client, &download_url).await;
         // Install method detection from downloaded bytes
-        if !url_result.downloaded_bytes.is_empty()
-            && manifest.install.method != "download_only"
-        {
+        if !url_result.downloaded_bytes.is_empty() && manifest.install.method != "download_only" {
             let file_type =
                 astro_up_shared::file_type::detect_file_type(&url_result.downloaded_bytes);
             if !file_type.matches_install_method(&manifest.install.method) {
@@ -494,7 +511,7 @@ async fn run_audit_mode(
     versions_dir: &Path,
     skip_url_validation: bool,
 ) -> anyhow::Result<()> {
-    let client = RetryClient::new(
+    let browser_client = RetryClient::new(
         reqwest::Client::builder()
             .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
             .timeout(std::time::Duration::from_secs(30))
@@ -502,9 +519,21 @@ async fn run_audit_mode(
             .build()?,
         2,
     );
-    let report =
-        astro_up_checker::audit::run_audit(manifests, &client, versions_dir, skip_url_validation)
-            .await;
+    let plain_client = RetryClient::new(
+        reqwest::Client::builder()
+            .timeout(std::time::Duration::from_secs(30))
+            .redirect(reqwest::redirect::Policy::limited(10))
+            .build()?,
+        2,
+    );
+    let report = astro_up_checker::audit::run_audit(
+        manifests,
+        &browser_client,
+        &plain_client,
+        versions_dir,
+        skip_url_validation,
+    )
+    .await;
     astro_up_checker::audit::print_summary(&report);
     let json = serde_json::to_string_pretty(&report)?;
     println!("{json}");

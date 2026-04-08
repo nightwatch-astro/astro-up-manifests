@@ -150,6 +150,11 @@ pub struct Autoupdate {
     /// Windows 64-bit EXE installers.
     #[serde(default)]
     pub asset_filter: Option<String>,
+    /// Skip browser user-agent for downloads. Some CDNs (e.g., SourceForge)
+    /// serve JS redirect pages to browsers instead of following HTTP redirects.
+    /// When `true`, the checker and lifecycle script use the default UA.
+    #[serde(default)]
+    pub skip_browser_ua: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -172,4 +177,15 @@ pub struct Backup {
 pub struct Dependencies {
     #[serde(default)]
     pub requires: Vec<String>,
+}
+
+impl Manifest {
+    /// Whether this manifest's download should skip the browser user-agent.
+    #[must_use]
+    pub fn skip_browser_ua(&self) -> bool {
+        self.checkver
+            .as_ref()
+            .and_then(|cv| cv.autoupdate.as_ref())
+            .is_some_and(|au| au.skip_browser_ua)
+    }
 }

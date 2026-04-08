@@ -394,8 +394,12 @@ function Get-FileWithProgress {
         # Browser user-agent avoids bot blocks on vendor download sites
         $curlExe = Get-Command curl.exe -ErrorAction SilentlyContinue
         if ($curlExe) {
-            $ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-            & curl.exe -L -o $OutFile --fail --show-error --progress-bar -A $ua $Url
+            if ($script:currentManifestSkipBrowserUa) {
+                & curl.exe -L -o $OutFile --fail --show-error --progress-bar $Url
+            } else {
+                $ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+                & curl.exe -L -o $OutFile --fail --show-error --progress-bar -A $ua $Url
+            }
             if ($LASTEXITCODE -ne 0) {
                 Write-Log "curl exited with code $LASTEXITCODE" "ERROR"
             }
@@ -794,6 +798,9 @@ function Test-PackageLifecycle {
     Write-Log "Testing: $packageId ($packageName)" "INFO"
     Write-Log "========================================" "INFO"
 
+    # Set per-manifest UA flag for Get-FileWithProgress
+    $script:currentManifestSkipBrowserUa = if ($Manifest.Contains('skip_browser_ua')) { $Manifest.skip_browser_ua } else { $false }
+
     $result = @{
         PackageId = $packageId
         PackageName = $packageName
@@ -1149,6 +1156,7 @@ function Get-PackagesToTest {
             install_method = if ($install.Contains('method')) { $install.method } else { "" }
             install_switches = $switches
             zip_wrapped = $zipWrapped
+            skip_browser_ua = if ($autoupdate.Contains('skip_browser_ua')) { $autoupdate.skip_browser_ua -eq $true } else { $false }
             autoupdate_url = if ($autoupdate.Contains('url')) { $autoupdate.url } else { $null }
         }
 

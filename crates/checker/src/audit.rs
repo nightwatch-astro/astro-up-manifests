@@ -17,7 +17,8 @@ use crate::version_precision;
 #[tracing::instrument(skip_all, fields(manifest_count = manifests.len()))]
 pub async fn run_audit(
     manifests: &[&Manifest],
-    client: &RetryClient,
+    browser_client: &RetryClient,
+    plain_client: &RetryClient,
     versions_dir: &Path,
     skip_url_validation: bool,
 ) -> AuditReport {
@@ -31,6 +32,11 @@ pub async fn run_audit(
             .map_or("none", |cv| cv.provider.as_str());
         tracing::info!(id = %manifest.id, provider, "auditing");
 
+        let client = if manifest.skip_browser_ua() {
+            plain_client
+        } else {
+            browser_client
+        };
         let result = audit_one(manifest, client, versions_dir, skip_url_validation).await;
 
         match result.status {

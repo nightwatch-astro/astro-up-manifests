@@ -27,6 +27,7 @@ regex = 'EQASCOM_V(\d+\w+)_Setup\.exe'
 
 [checkver.autoupdate]
 url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/EQASCOM_V$version_Setup.exe/download"
+skip_browser_ua = true
 
 [dependencies]
 requires = ["ascom-platform"]

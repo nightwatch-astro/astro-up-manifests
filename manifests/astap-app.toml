@@ -21,6 +21,7 @@ regex = '\(v(\d{4}\.\d{2}\.\d{2})\)'
 
 [checkver.autoupdate]
 url = "https://sourceforge.net/projects/astap-program/files/windows_installer/astap_setup.exe/download"
+skip_browser_ua = true
 
 [detection]
 method = "registry"
