@@ -684,14 +684,19 @@ function New-DetectionConfig {
         $lines += "path = `"$escapedPath`""
     } elseif ($DetectionInfo.Method -eq "wmi") {
         $lines += "method = `"wmi`""
-        if ($DetectionInfo.DriverProvider) {
+        # WMI driver detection (PnP signed drivers)
+        if ($DetectionInfo.Contains('DriverProvider') -and $DetectionInfo.DriverProvider) {
             $lines += "inf_provider = `"$($DetectionInfo.DriverProvider)`""
         }
-        if ($DetectionInfo.DeviceClass) {
+        if ($DetectionInfo.Contains('DeviceClass') -and $DetectionInfo.DeviceClass) {
             $lines += "device_class = `"$($DetectionInfo.DeviceClass)`""
         }
-        if ($DetectionInfo.InfName) {
+        if ($DetectionInfo.Contains('InfName') -and $DetectionInfo.InfName) {
             $lines += "inf_name = `"$($DetectionInfo.InfName)`""
+        }
+        # WMI product detection (Win32_InstalledWin32Program)
+        if ($DetectionInfo.Contains('ProgramId') -and $DetectionInfo.ProgramId) {
+            $lines += "program_id = `"$($DetectionInfo.ProgramId)`""
         }
     } elseif ($DetectionInfo.Method -eq "file") {
         $escapedPath = $DetectionInfo.Path.Replace('\', '\\')
