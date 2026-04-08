@@ -9,11 +9,6 @@ type = "driver"
 slug = "zwo-asi-driver"
 tags = ["driver", "camera", "zwo", "asi"]
 
-[detection]
-method = "file"
-path = "$PROGRAMFILES/ASIStudio/ASICamera2.dll"
-file_version = true
-
 [install]
 method = "nsis"
 scope = "machine"
@@ -31,3 +26,8 @@ url = "https://dl.zwoastro.com/software?app=AsiCameraDriver&platform=windows64&r
 device_class = "Camera"
 inf_provider = "ZWO"
 vid_pid = ["03c3:120e", "03c3:120f", "03c3:1210"]
+
+[detection]
+method = "registry"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ZWO_USB_Cameras_driver"
+registry_value = "DisplayVersion"
