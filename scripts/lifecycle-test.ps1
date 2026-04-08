@@ -827,9 +827,17 @@ function Test-PackageLifecycle {
             $catalogUrl = $null
         }
         $downloadUrl = if ($catalogUrl) { $catalogUrl } elseif ($autoupdateUrl) { $autoupdateUrl -replace '\$version', $version } else { throw "No download URL available" }
-        $installerFileName = [System.IO.Path]::GetFileName($downloadUrl)
-        if ($installerFileName -notmatch '\.\w+$') {
-            $installerFileName = "$packageId-$version.exe"
+        # Extract filename — handle query params (e.g., download.php?file=Foo.zip)
+        $uri = [System.Uri]::new($downloadUrl)
+        $installerFileName = [System.IO.Path]::GetFileName($uri.LocalPath)
+        if ($installerFileName -notmatch '\.\w+$' -or $installerFileName -match '\.(php|asp|html)$') {
+            # Try extracting from query string
+            $queryFile = [System.Web.HttpUtility]::ParseQueryString($uri.Query)["file"]
+            if ($queryFile) {
+                $installerFileName = [System.IO.Path]::GetFileName($queryFile)
+            } else {
+                $installerFileName = "$packageId-$version.exe"
+            }
         }
         $installerPath = Join-Path $tempDir $installerFileName
 
@@ -840,7 +848,16 @@ function Test-PackageLifecycle {
 
         # 2b. Verify install method against downloaded file
         Write-Log "Step 2b: Verifying install method"
-        $dlBytes = [System.IO.File]::ReadAllBytes($installerPath)
+        $fileSize = (Get-Item $installerPath).Length
+        if ($fileSize -gt 2GB) {
+            Write-Log "  File too large for method verification ($([math]::Round($fileSize / 1GB, 1)) GB) — reading first 1MB only" "WARN"
+            $stream = [System.IO.File]::OpenRead($installerPath)
+            $dlBytes = [byte[]]::new(1MB)
+            $stream.Read($dlBytes, 0, $dlBytes.Length) | Out-Null
+            $stream.Close()
+        } else {
+            $dlBytes = [System.IO.File]::ReadAllBytes($installerPath)
+        }
         $detectedFileType = Get-InstallerTypeFromBytes -Bytes $dlBytes
         $zipWrapped = if ($Manifest.Contains('zip_wrapped')) { $Manifest.zip_wrapped } else { $false }
         $methodMatch = Test-InstallMethodMatch -DeclaredMethod $Manifest.install_method -ZipWrapped $zipWrapped -DetectedType $detectedFileType
