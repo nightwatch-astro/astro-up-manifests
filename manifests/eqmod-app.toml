@@ -28,5 +28,5 @@ skip_browser_ua = true
 requires = ["ascom-platform"]
 
 [detection]
-method = "pe_file"
-path = "C:\\Program Files (x86)\\EQMOD\\eqascom_run.exe"
+method = "wmi"
+program_id = "0000161d6420a247a9175feda759c2c4497f0000ffff"
