@@ -308,7 +308,7 @@ function Initialize-Catalog {
     $catalogPath = Join-Path $repoRoot "catalog.db"
     if (-not (Test-Path $catalogPath)) {
         Write-Log "Downloading catalog.db from latest release..." "INFO"
-        $releaseUrl = "https://api.github.com/repos/nightwatch-astro/astro-up-manifests/releases/tags/catalog/latest"
+        $releaseUrl = "https://api.github.com/repos/nightwatch-astro/astro-up-manifests/releases/tags/catalog%2Flatest"
         try {
             $release = Invoke-RestMethod -Uri $releaseUrl -Headers @{ "User-Agent" = "astro-up-lifecycle" }
             $asset = $release.assets | Where-Object { $_.name -eq "catalog.db" }
