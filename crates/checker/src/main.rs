@@ -349,7 +349,9 @@ async fn handle_found(
 
     // URL validation + install method detection (non-audit mode)
     let download_url = url.clone().unwrap_or_default();
-    let url_status = if !download_url.is_empty() {
+    let url_status = if download_url.is_empty() {
+        None
+    } else {
         let url_result = astro_up_checker::url_validate::validate_url(client, &download_url).await;
         // Install method detection from downloaded bytes
         if !url_result.downloaded_bytes.is_empty() && manifest.install.method != "download_only" {
@@ -377,8 +379,6 @@ async fn handle_found(
             }
             _ => Some("unchecked".to_string()),
         }
-    } else {
-        None
     };
 
     let discovered = DiscoveredVersion {

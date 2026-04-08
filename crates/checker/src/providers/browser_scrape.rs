@@ -99,35 +99,7 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
         let caps = re.captures(&content).ok_or(CheckError::NoMatch)?;
         let version = caps.get(1).ok_or(CheckError::NoMatch)?.as_str().to_string();
 
-        // Extract download URLs from <a href> attributes that match the regex.
-        // This gives us asset URLs (like GitHub's asset_filter) for providers
-        // where the download link is on the page.
-        let mut assets = Vec::new();
-        let document = scraper::Html::parse_document(&content);
-        let a_selector = scraper::Selector::parse("a[href]")
-            .map_err(|e| CheckError::Browser(format!("selector parse error: {e:?}")))?;
-        let page_url = url::Url::parse(url).ok();
-        for element in document.select(&a_selector) {
-            if let Some(href) = element.value().attr("href") {
-                if re.is_match(href) {
-                    // Resolve relative/protocol-relative URLs against the page URL
-                    let resolved = if href.starts_with("http://") || href.starts_with("https://") {
-                        href.to_string()
-                    } else if let Some(ref base) = page_url {
-                        base.join(href)
-                            .map_or_else(|_| href.to_string(), |u| u.to_string())
-                    } else {
-                        href.to_string()
-                    };
-                    let name = resolved.rsplit('/').next().unwrap_or(&resolved).to_string();
-                    assets.push(super::ReleaseAsset {
-                        name,
-                        url: resolved,
-                        size: 0,
-                    });
-                }
-            }
-        }
+        let assets = extract_assets(&content, &re, url);
 
         // Use the first matching asset URL as the primary download URL
         let primary_url = assets.first().map(|a| a.url.clone());
@@ -148,4 +120,35 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
     handler_task.abort();
 
     result
+}
+
+/// Extract download URLs from `<a href>` attributes that match the regex.
+fn extract_assets(content: &str, re: &regex::Regex, page_url: &str) -> Vec<super::ReleaseAsset> {
+    let mut assets = Vec::new();
+    let document = scraper::Html::parse_document(content);
+    let Ok(a_selector) = scraper::Selector::parse("a[href]") else {
+        return assets;
+    };
+    let base = url::Url::parse(page_url).ok();
+    for element in document.select(&a_selector) {
+        if let Some(href) = element.value().attr("href") {
+            if re.is_match(href) {
+                let resolved = if href.starts_with("http://") || href.starts_with("https://") {
+                    href.to_string()
+                } else if let Some(ref b) = base {
+                    b.join(href)
+                        .map_or_else(|_| href.to_string(), |u| u.to_string())
+                } else {
+                    href.to_string()
+                };
+                let name = resolved.rsplit('/').next().unwrap_or(&resolved).to_string();
+                assets.push(super::ReleaseAsset {
+                    name,
+                    url: resolved,
+                    size: 0,
+                });
+            }
+        }
+    }
+    assets
 }
