@@ -13,12 +13,13 @@ method = "file"
 path = "{program_dir}/PoleMaster/PoleMaster.exe"
 
 [install]
-method = "zip_wrap"
+method = "exe"
+zip_wrapped = true
 
 [checkver]
-provider = "html_scrape"
+provider = "browser_scrape"
 url = "https://www.qhyccd.com/download/"
-regex = '_V(\d+\.\d+\.\d+\.\d+)\.'
+regex = 'PoleMaster_QtforWindows_V(\d+\.\d+\.\d+\.\d+)\.zip'
 
 [checkver.autoupdate]
-url = "https://www.qhyccd.com/file/repository/PoleMaster/PoleMaster_V$version.zip"
+url = "https://www.qhyccd.com/file/repository/latestSoftAndDirver/Soft/PoleMaster_QtforWindows_V$version.zip"

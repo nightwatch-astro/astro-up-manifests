@@ -7,6 +7,9 @@ pub struct Manifest {
     pub id: String,
     pub manifest_version: u32,
     pub name: String,
+    /// When true, the checker and compiler skip this manifest entirely.
+    #[serde(default)]
+    pub disabled: bool,
     #[serde(default)]
     pub description: Option<String>,
     #[serde(default)]
@@ -72,7 +75,12 @@ pub struct Detection {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Install {
+    /// Installer framework: `inno_setup`, `nsis`, `msi`, `exe`, `download_only`.
     pub method: String,
+    /// Whether the download is a zip containing the installer.
+    /// A plain zip (portable app) uses `download_only` + `zip_wrapped = true`.
+    #[serde(default)]
+    pub zip_wrapped: bool,
     #[serde(default)]
     pub scope: Option<String>,
     #[serde(default)]

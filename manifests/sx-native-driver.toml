@@ -14,7 +14,8 @@ registry_key = "SOFTWARE\\Starlight Xpress\\CCD Drivers"
 registry_value = "Version"
 
 [install]
-method = "zip_wrap"
+method = "exe"
+zip_wrapped = true
 
 [checkver]
 provider = "html_scrape"

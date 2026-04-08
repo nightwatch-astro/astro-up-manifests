@@ -13,19 +13,19 @@ method = "file"
 path = "{program_dir}/Common Files/ASCOM/Focuser/QHYCCD.QFocuser.dll"
 
 [install]
-method = "exe"
+method = "inno_setup"
 elevation = "required"
 
 [install.switches]
 silent = "/S"
 
 [checkver]
-provider = "html_scrape"
-url = "https://www.qhyccd.com/download/"
-regex = '-V(\d+\.\d+\.\d+\.\d+)\.'
+provider = "browser_scrape"
+url = "https://www.qhyccd.com/download/#a2"
+regex = 'QFOCUS-ASCOM-Platform6-V(\d+\.\d+\.\d+\.\d+)\.exe'
 
 [checkver.autoupdate]
-url = "https://www.qhyccd.com/file/repository/QFocuser/QFocuser-V$version.exe"
+url = "https://www.qhyccd.com/file/repository/ASCOM/QFOCUS-ASCOM-Platform6-V$version.exe"
 
 [dependencies]
 requires = ["ascom-platform"]

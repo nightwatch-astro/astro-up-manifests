@@ -12,6 +12,7 @@ pub struct DiscoveredVersion {
     pub release_notes_url: Option<String>,
     pub pre_release: bool,
     pub assets: Vec<VersionAsset>,
+    pub url_status: Option<String>,
 }
 
 impl DiscoveredVersion {
@@ -44,6 +45,7 @@ impl DiscoveredVersion {
             release_notes_url: self.release_notes_url.clone(),
             pre_release: self.pre_release,
             assets: self.assets.clone(),
+            url_status: self.url_status.clone(),
         };
 
         entry.write(&path)?;

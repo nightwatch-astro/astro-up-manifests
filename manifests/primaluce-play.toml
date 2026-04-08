@@ -13,7 +13,8 @@ method = "file"
 path = "{program_dir}/PrimaLuceLab/PLAY/PLAY.exe"
 
 [install]
-method = "zip_wrap"
+method = "exe"
+zip_wrapped = true
 
 [checkver]
 provider = "browser_scrape"

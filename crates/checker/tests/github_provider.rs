@@ -19,6 +19,7 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
     Manifest {
         id: format!("{owner}-{repo}"),
         manifest_version: 1,
+        disabled: false,
         name: repo.to_string(),
         description: None,
         publisher: None,
@@ -32,7 +33,8 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
         icon: None,
         detection: None,
         install: Install {
-            method: "zip_wrap".into(),
+            method: "exe".into(),
+            zip_wrapped: true,
             scope: None,
             elevation: None,
             switches: HashMap::default(),

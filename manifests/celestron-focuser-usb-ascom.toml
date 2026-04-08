@@ -12,7 +12,7 @@ slug = "celestron-focuser-usb-ascom"
 method = "file"
 
 [install]
-method = "exe"
+method = "inno_setup"
 elevation = "required"
 
 [install.switches]

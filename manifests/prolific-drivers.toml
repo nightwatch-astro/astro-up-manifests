@@ -1,7 +1,8 @@
 manifest_version = 1
+disabled = true  # Prolific no longer provides direct downloads; driver via Windows Update
 id = "prolific-drivers"
 name = "Prolific PL2303 Drivers"
-description = "Prolific PL2303 USB-serial drivers"
+description = "Prolific PL2303 USB-serial drivers — used by many astronomy mount cables"
 publisher = "Prolific"
 homepage = "https://www.prolific.com.tw"
 category = "usb"
@@ -22,6 +23,3 @@ silent = "/S"
 
 [checkver]
 provider = "manual"
-
-[checkver.autoupdate]
-url = "https://www.prolific.com.tw/UserFiles/files/PL23XX-M_LogoDriver_Setup_v208_20221028.exe"

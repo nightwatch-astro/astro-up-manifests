@@ -14,7 +14,7 @@ registry_key = "SOFTWARE\\ZWO\\ASICamera"
 registry_value = "Version"
 
 [install]
-method = "exe"
+method = "nsis"
 elevation = "required"
 
 [install.switches]

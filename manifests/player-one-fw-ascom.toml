@@ -13,15 +13,16 @@ method = "file"
 path = "{program_dir}/Common Files/ASCOM/FilterWheel/PlayerOne.FilterWheel.dll"
 
 [install]
-method = "zip_wrap"
+method = "exe"
+zip_wrapped = true
 
 [checkver]
 provider = "html_scrape"
 url = "https://player-one-astronomy.com/service/software/"
-regex = '_V(\d+\.\d+\.\d+\.\d+)\.'
+regex = 'ASCOM_PlayerOne_Filter_Wheel_Driver_Setup_V(\d+\.\d+\.\d+\.\d+)\.zip'
 
 [checkver.autoupdate]
-url = "https://player-one-astronomy.com/service/download/PlayerOne_FilterWheel_ASCOM_V$version.zip"
+url = "https://player-one-astronomy.com/download/softwares/ASCOM_PlayerOne_Filter_Wheel_Driver_Setup_V$version.zip"
 
 [dependencies]
 requires = ["ascom-platform"]

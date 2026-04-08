@@ -99,13 +99,36 @@ pub async fn check(_manifest: &Manifest, checkver: &Checkver) -> Result<CheckOut
         let caps = re.captures(&content).ok_or(CheckError::NoMatch)?;
         let version = caps.get(1).ok_or(CheckError::NoMatch)?.as_str().to_string();
 
+        // Extract download URLs from <a href> attributes that match the regex.
+        // This gives us asset URLs (like GitHub's asset_filter) for providers
+        // where the download link is on the page.
+        let mut assets = Vec::new();
+        let document = scraper::Html::parse_document(&content);
+        let a_selector = scraper::Selector::parse("a[href]")
+            .map_err(|e| CheckError::Browser(format!("selector parse error: {e:?}")))?;
+        for element in document.select(&a_selector) {
+            if let Some(href) = element.value().attr("href") {
+                if re.is_match(href) {
+                    let name = href.rsplit('/').next().unwrap_or(href).to_string();
+                    assets.push(super::ReleaseAsset {
+                        name,
+                        url: href.to_string(),
+                        size: 0,
+                    });
+                }
+            }
+        }
+
+        // Use the first matching asset URL as the primary download URL
+        let primary_url = assets.first().map(|a| a.url.clone());
+
         Ok(CheckOutcome::Found(CheckResult {
             version,
-            url: None,
+            url: primary_url,
             sha256: None,
             release_notes_url: None,
             pre_release: false,
-            assets: Vec::new(),
+            assets,
         }))
     }
     .await;

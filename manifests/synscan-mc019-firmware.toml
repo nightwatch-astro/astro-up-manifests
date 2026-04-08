@@ -1,4 +1,5 @@
 manifest_version = 1
+disabled = true  # CDN blocks programmatic downloads (403)
 id = "synscan-mc019-firmware"
 name = "SynScan MC019 Firmware"
 description = "EQ3/EQ5/EQM35 firmware"

@@ -12,7 +12,8 @@ slug = "celestron-cfm"
 method = "file"
 
 [install]
-method = "zip_wrap"
+method = "download_only"
+zip_wrapped = true
 
 [checkver]
 provider = "html_scrape"

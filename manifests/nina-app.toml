@@ -17,7 +17,8 @@ registry_key = "HKCU\\Software\\NINA"
 registry_value = "Version"
 
 [install]
-method = "zip_wrap"
+method = "exe"
+zip_wrapped = true
 scope = "user"
 
 [checkver]

@@ -14,7 +14,7 @@ registry_key = "SOFTWARE\\APT"
 registry_value = "DisplayVersion"
 
 [install]
-method = "inno_setup"
+method = "nsis"
 
 [install.switches]
 silent = "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
@@ -25,4 +25,4 @@ url = "https://astrophotography.app/downloads.php"
 regex = 'UnReg(\d+_\d+(?:_\d+)?)\.exe'
 
 [checkver.autoupdate]
-url = "https://astrophotography.app/UnReg$version.exe"
+url = "https://astrophotography.app/APT_UnReg$version.exe"

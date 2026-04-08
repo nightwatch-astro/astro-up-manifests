@@ -142,7 +142,8 @@ type = "application"
 slug = "simple-tool"
 
 [install]
-method = "zip_wrap"
+method = "exe"
+zip_wrapped = true
 "#;
 
 #[test]

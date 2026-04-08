@@ -19,6 +19,9 @@ pub struct VersionEntry {
     /// can offer asset selection instead of using the single `url` field.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub assets: Vec<VersionAsset>,
+    /// URL reachability status: "reachable", "unreachable", or "unchecked".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url_status: Option<String>,
 }
 
 /// A downloadable asset from a release.

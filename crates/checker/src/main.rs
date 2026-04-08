@@ -45,6 +45,14 @@ struct Cli {
     /// Enable verbose logging
     #[arg(short, long)]
     verbose: bool,
+
+    /// Run in audit mode: validate all manifests and produce a JSON report
+    #[arg(long)]
+    audit: bool,
+
+    /// Skip URL reachability validation (faster runs)
+    #[arg(long)]
+    skip_url_validation: bool,
 }
 
 struct Summary {
@@ -72,14 +80,14 @@ async fn main() -> anyhow::Result<()> {
     // 1. Load manifests
     let all_manifests = load_manifests(&cli.manifests)?;
 
-    // 2. Apply filter
+    // 2. Apply filter (skip disabled manifests)
     let manifests: Vec<&Manifest> = if let Some(ref filter) = cli.filter {
         all_manifests
             .iter()
-            .filter(|m| matches_filter(m, filter))
+            .filter(|m| !m.disabled && matches_filter(m, filter))
             .collect()
     } else {
-        all_manifests.iter().collect()
+        all_manifests.iter().filter(|m| !m.disabled).collect()
     };
 
     tracing::info!(
@@ -87,6 +95,10 @@ async fn main() -> anyhow::Result<()> {
         manifests.len(),
         cli.concurrency
     );
+
+    if cli.audit {
+        return run_audit_mode(&manifests, &cli.versions, cli.skip_url_validation).await;
+    }
 
     // 3. Load state
     let state = Arc::new(Mutex::new(CheckerState::read(&cli.state)?));
@@ -322,6 +334,7 @@ async fn handle_found(
                 size: a.size,
             })
             .collect(),
+        url_status: None,
     };
 
     match discovered.write(versions_dir) {
@@ -428,6 +441,31 @@ fn load_manifests(dir: &Path) -> anyhow::Result<Vec<Manifest>> {
         }
     }
     Ok(manifests)
+}
+
+async fn run_audit_mode(
+    manifests: &[&Manifest],
+    versions_dir: &Path,
+    skip_url_validation: bool,
+) -> anyhow::Result<()> {
+    let client = RetryClient::new(
+        reqwest::Client::builder()
+            .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+            .timeout(std::time::Duration::from_secs(30))
+            .redirect(reqwest::redirect::Policy::limited(10))
+            .build()?,
+        2,
+    );
+    let report =
+        astro_up_checker::audit::run_audit(manifests, &client, versions_dir, skip_url_validation)
+            .await;
+    astro_up_checker::audit::print_summary(&report);
+    let json = serde_json::to_string_pretty(&report)?;
+    println!("{json}");
+    if report.manifests_failed > 0 {
+        std::process::exit(1);
+    }
+    Ok(())
 }
 
 fn matches_filter(manifest: &Manifest, filter: &str) -> bool {

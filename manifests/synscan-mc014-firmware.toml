@@ -1,4 +1,5 @@
 manifest_version = 1
+disabled = true  # CDN blocks programmatic downloads (403)
 id = "synscan-mc014-firmware"
 name = "SynScan MC014 Firmware"
 description = "DC motor firmware for AZ-GTi/AZ-GTe/AZ-GTiX/Virtuoso GTi/Skyliner Dobsonian GOTO/Star Discovery mounts"

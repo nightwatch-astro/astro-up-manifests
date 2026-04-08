@@ -10,6 +10,7 @@ slug = "synscan-wifi-firmware"
 
 [install]
 method = "exe"
+zip_wrapped = true
 elevation = "required"
 
 [checkver]

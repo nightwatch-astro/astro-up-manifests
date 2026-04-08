@@ -13,12 +13,13 @@ method = "file"
 path = "{program_dir}/Player One Astronomy\\DirectShow Driver\\PlayerOneDirectShow.dll"
 
 [install]
-method = "zip_wrap"
+method = "exe"
+zip_wrapped = true
 
 [checkver]
 provider = "html_scrape"
 url = "https://player-one-astronomy.com/service/software/"
-regex = '_V(\d+\.\d+\.\d+\.\d+)\.'
+regex = 'DirectShow_PlayerOne_Camera_Driver_V(\d+\.\d+\.\d+\.\d+)\.zip'
 
 [checkver.autoupdate]
-url = "https://player-one-astronomy.com/service/download/PlayerOne_DirectShow_V$version.zip"
+url = "https://player-one-astronomy.com/download/softwares/DirectShow_PlayerOne_Camera_Driver_V$version.zip"
