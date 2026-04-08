@@ -493,7 +493,10 @@ function Install-Package {
     }
     Write-Log "  Silent args: '$silentArgs'" "INFO"
 
-    if ($Method -eq "msi" -or $extension -eq ".msi") {
+    if ($Method -eq "download_only") {
+        Write-Log "  download_only: skipping installation" "INFO"
+        return @{ Success = $true; ExitCode = 0; Message = "download_only — not an installer" }
+    } elseif ($Method -eq "msi" -or $extension -eq ".msi") {
         $process = Start-Process msiexec.exe -ArgumentList "/i `"$InstallerPath`" /qn /norestart" -PassThru
     } elseif ($Method -eq "zip" -or $extension -eq ".zip") {
         $extractDir = Join-Path $tempDir "extracted"
