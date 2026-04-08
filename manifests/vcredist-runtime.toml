@@ -14,7 +14,7 @@ registry_key = "SOFTWARE\\Microsoft\\VisualStudio\\14.0\\VC\\Runtimes\\X64"
 registry_value = "Version"
 
 [install]
-method = "exe"
+method = "burn"
 elevation = "required"
 
 [install.switches]

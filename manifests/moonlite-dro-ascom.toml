@@ -12,7 +12,7 @@ slug = "moonlite-dro-ascom"
 method = "file"
 
 [install]
-method = "exe"
+method = "inno_setup"
 zip_wrapped = true
 
 [checkver]

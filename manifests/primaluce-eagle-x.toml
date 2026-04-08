@@ -9,7 +9,7 @@ type = "application"
 slug = "primaluce-eagle-x"
 
 [install]
-method = "exe"
+method = "msi"
 zip_wrapped = true
 
 [checkver]

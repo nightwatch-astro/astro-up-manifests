@@ -147,12 +147,14 @@ function Get-InstallerTypeFromBytes {
 
     # Check MZ header (PE executable)
     if ($Bytes[0] -eq 0x4D -and $Bytes[1] -eq 0x5A) {
-        # Scan first 64KB for installer signatures
-        $scanLen = [Math]::Min(65536, $Bytes.Length)
-        $text = [System.Text.Encoding]::ASCII.GetString($Bytes, 0, $scanLen)
-        if ($text -match "Inno Setup") { return "inno_setup" }
-        if ($text -match "Nullsoft|NullsoftInst") { return "nsis" }
-        if ($text -match "WiX|Windows Installer XML|Burn") { return "burn" }
+        # Scan full binary for installer signatures (matches Rust classify_pe behavior)
+        $text = [System.Text.Encoding]::ASCII.GetString($Bytes, 0, $Bytes.Length)
+        # NSIS: NullsoftInst string or DEADBEEF magic (0xEFBEADDE little-endian)
+        $nsisMagic = [System.Text.Encoding]::ASCII.GetString([byte[]]@(0xEF, 0xBE, 0xAD, 0xDE))
+        if ($text.Contains("NullsoftInst") -or $text.Contains($nsisMagic)) { return "nsis" }
+        if ($text.Contains("Inno Setup")) { return "inno_setup" }
+        # WiX Burn: .wixburn section, WixBurn string, or Windows Installer XML
+        if ($text.Contains(".wixburn") -or $text.Contains("WixBurn") -or $text.Contains("Windows Installer XML")) { return "burn" }
         return "generic_exe"
     }
 
