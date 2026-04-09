@@ -268,14 +268,16 @@ async fn process_manifest(
         }
     }
 
-    // Use plain client for downloads when manifest opts out of browser UA
-    let download_client = if manifest.skip_browser_ua() {
+    // Use plain client when manifest opts out of browser UA (e.g., SourceForge)
+    // Applies to both scraping and downloads
+    let scrape_client = if manifest.skip_browser_ua() {
         plain_client
     } else {
         client
     };
+    let download_client = scrape_client;
 
-    match providers::check_manifest(manifest, client).await {
+    match providers::check_manifest(manifest, scrape_client).await {
         Ok(CheckOutcome::Found(result)) => {
             handle_found(
                 manifest,
