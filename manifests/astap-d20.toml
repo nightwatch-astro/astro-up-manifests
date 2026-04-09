@@ -10,7 +10,7 @@ slug = "astap-d20"
 
 [detection]
 method = "file_exists"
-path = "{config_dir}/astap/d20"
+path = "{program_dir}/astap/d20_0101.1476"
 
 [install]
 method = "inno_setup"
