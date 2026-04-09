@@ -9,7 +9,7 @@ type = "database"
 slug = "astap-d50"
 
 [detection]
-method = "file"
+method = "file_exists"
 path = "{config_dir}/astap/d50"
 
 [install]
