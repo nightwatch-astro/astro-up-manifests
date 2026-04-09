@@ -25,5 +25,9 @@ asset_filter = "qt6-win64\\.exe$"
 
 [detection]
 method = "registry"
-registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Stellarium"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Stellarium_is1"
 registry_value = "DisplayVersion"
+
+[detection.fallback]
+method = "pe_file"
+path = "C:\\Program Files\\Stellarium\\stellarium.exe"
