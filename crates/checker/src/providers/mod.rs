@@ -9,6 +9,7 @@ pub mod manual;
 pub mod pe_download;
 pub mod redirect;
 pub mod sharpcap_url;
+pub mod static_version;
 
 use crate::retry_client::RetryClient;
 use astro_up_shared::manifest::Manifest;
@@ -99,6 +100,7 @@ pub async fn check_manifest(
         "pe_download" => pe_download::check(manifest, checkver, client).await,
         "redirect" => redirect::check(manifest, checkver, client).await,
         "manual" => Ok(manual::check(manifest)),
+        "static" => static_version::check(manifest, checkver),
         other => Err(CheckError::Other(format!("unknown provider: {other}"))),
     }
 }
