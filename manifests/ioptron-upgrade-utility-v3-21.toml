@@ -24,6 +24,5 @@ regex = 'Utility_V(\d+)\.exe'
 url = "https://www.ioptron.com/v/firmware/iOptronUpgradeUtility_V321.exe"
 
 [detection]
-method = "registry"
-registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{43B0D101-A022-48F4-9D04-BA404CEB1D53}"
-registry_value = "DisplayVersion"
+method = "pe_file"
+path = "{program_files}/iOptron/UpgradeUtility_V3.21/iOptronUpgrade.exe"

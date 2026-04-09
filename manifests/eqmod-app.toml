@@ -16,9 +16,8 @@ elevation = "required"
 silent = "/S"
 
 [checkver]
-provider = "manual"
-url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/"
-version_format = "raw"
+provider = "static"
+version = "200w"
 
 [checkver.autoupdate]
 url = "https://sourceforge.net/projects/eq-mod/files/EQASCOM/EQASCOM_V200w_Setup.exe/download"

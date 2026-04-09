@@ -100,6 +100,9 @@ pub struct Install {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Checkver {
     pub provider: String,
+    /// Static version string for the `static` provider.
+    #[serde(default)]
+    pub version: Option<String>,
     #[serde(default)]
     pub owner: Option<String>,
     #[serde(default)]
