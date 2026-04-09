@@ -25,7 +25,5 @@ requires = ["ascom-platform"]
 method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{65bb1fc6-0e7c-4d60-bd4a-9003563baad6}_is1"
 registry_value = "DisplayVersion"
-
-[detection.fallback]
-method = "pe_file"
-path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\Focuser\\Moonlite\\ASCOM.Moonlite.Server.exe"
+fallback_method = "pe_file"
+fallback_path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\Focuser\\Moonlite\\ASCOM.Moonlite.Server.exe"

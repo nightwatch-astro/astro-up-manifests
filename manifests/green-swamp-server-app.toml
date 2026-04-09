@@ -27,7 +27,5 @@ asset_filter = "\\.exe$"
 method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{0ff78bd6-6149-4536-9252-3da68b94f7c2}_is1"
 registry_value = "DisplayVersion"
-
-[detection.fallback]
-method = "pe_file"
-path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\Telescope\\GSServer\\GS.ChartViewer.exe"
+fallback_method = "pe_file"
+fallback_path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\Telescope\\GSServer\\GS.ChartViewer.exe"

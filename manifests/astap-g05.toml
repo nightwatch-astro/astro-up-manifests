@@ -27,7 +27,5 @@ requires = ["astap-app"]
 method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ASTAP G05 star database. Star density up to 500 ~6874E3E9_is1"
 registry_value = "DisplayVersion"
-
-[detection.fallback]
-method = "pe_file"
-path = "C:\\Program Files\\astap\\dcraw.exe"
+fallback_method = "pe_file"
+fallback_path = "C:\\Program Files\\astap\\dcraw.exe"
