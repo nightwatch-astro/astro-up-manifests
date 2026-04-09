@@ -23,6 +23,9 @@ regex = '\(v(\d{4}\.\d{2}\.\d{2})\)'
 url = "https://sourceforge.net/projects/astap-program/files/windows_installer/astap_setup.exe/download"
 skip_browser_ua = true
 
+[backup]
+config_paths = ["$LOCALAPPDATA/astap"]
+
 [detection]
 method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\AppName=ASTAP, the Astrometric STAcking Program,~D52A8A79_is1"

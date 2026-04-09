@@ -23,6 +23,9 @@ repo = "stellarium"
 url = "https://github.com/Stellarium/stellarium/releases/download/v$version/stellarium-$version-qt6-win64.exe"
 asset_filter = "qt6-win64\\.exe$"
 
+[backup]
+config_paths = ["$APPDATA/Stellarium"]
+
 [detection]
 method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Stellarium"

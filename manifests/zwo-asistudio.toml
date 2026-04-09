@@ -8,6 +8,9 @@ category = "capture"
 type = "application"
 slug = "zwo-asistudio"
 
+[backup]
+config_paths = ["$LOCALAPPDATA/ZWO"]
+
 [detection]
 method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\ZWO\\ASIStudio"

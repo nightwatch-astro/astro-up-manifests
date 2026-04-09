@@ -22,6 +22,9 @@ repo = "ASCOMRemote"
 [checkver.autoupdate]
 asset_filter = "\\.exe$"
 
+[backup]
+config_paths = ["$LOCALAPPDATA/ASCOM/Platform"]
+
 [dependencies]
 requires = ["ascom-platform"]
 

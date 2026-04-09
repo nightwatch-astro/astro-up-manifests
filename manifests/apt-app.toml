@@ -22,6 +22,9 @@ regex = 'UnReg(\d+_\d+(?:_\d+)?)\.exe'
 [checkver.autoupdate]
 url = "https://astrophotography.app/APT_UnReg$version.exe"
 
+[backup]
+config_paths = ["$LOCALAPPDATA/Astro Photography Tool"]
+
 [detection]
 method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{81F5BD58-9631-4FA7-B85D-C9BA948CF785}_is1"

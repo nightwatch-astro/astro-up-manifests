@@ -23,6 +23,9 @@ repo = "GSServer"
 url = "https://github.com/rmorgan001/GSServer/releases/download/v$version/GreenSwampServer-$version-Setup.exe"
 asset_filter = "\\.exe$"
 
+[backup]
+config_paths = ["$LOCALAPPDATA/GS_Server"]
+
 [detection]
 method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{0ff78bd6-6149-4536-9252-3da68b94f7c2}_is1"

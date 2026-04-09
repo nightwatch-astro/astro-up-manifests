@@ -25,6 +25,9 @@ resolver = "sharpcap"
 [checkver.autoupdate.resolver_args]
 arch = "x64"
 
+[backup]
+config_paths = ["$APPDATA/SharpCap"]
+
 [detection]
 method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{881672E1-F0EA-445C-89ED-78B74013DED2}"
