@@ -9,8 +9,8 @@ type = "database"
 slug = "astap-d20"
 
 [detection]
-method = "file"
-path = "{config_dir}/astap/d20"
+method = "file_exists"
+path = "{program_dir}/astap/d20_0101.1476"
 
 [install]
 method = "inno_setup"
