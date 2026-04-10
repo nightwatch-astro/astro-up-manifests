@@ -5,7 +5,7 @@ description = "Firmware for Lunatico AAG CloudWatcher"
 publisher = "Lunatico Astronomia"
 homepage = "https://lunaticoastro.com"
 category = "driver"
-type = "resource"
+type = "firmware"
 slug = "lunatico-cloudwatcher-firmware"
 
 [install]

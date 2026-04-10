@@ -5,7 +5,7 @@ description = "Firmware for iOptron HEM series harmonic equatorial mounts"
 publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
-type = "resource"
+type = "firmware"
 slug = "ioptron-hem-firmware"
 
 [install]

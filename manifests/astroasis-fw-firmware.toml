@@ -5,7 +5,7 @@ description = "Firmware update for Astroasis Oasis Filter Wheel"
 publisher = "Astroasis"
 homepage = "https://www.astroasis.com"
 category = "driver"
-type = "resource"
+type = "firmware"
 slug = "astroasis-fw-firmware"
 
 [install]

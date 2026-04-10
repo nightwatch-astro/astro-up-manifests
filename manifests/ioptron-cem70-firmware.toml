@@ -5,7 +5,7 @@ description = "Firmware for iOptron CEM70 mount"
 publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
-type = "resource"
+type = "firmware"
 slug = "ioptron-cem70-firmware"
 
 [install]

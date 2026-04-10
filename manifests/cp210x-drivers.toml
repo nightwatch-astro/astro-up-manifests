@@ -4,8 +4,8 @@ name = "Silicon Labs CP210x Drivers"
 description = "Silicon Labs CP210x USB to UART bridge VCP drivers"
 publisher = "Silicon Labs"
 homepage = "https://www.silabs.com"
-category = "usb"
-type = "usb_driver"
+category = "driver"
+type = "driver"
 slug = "cp210x-drivers"
 
 [detection]

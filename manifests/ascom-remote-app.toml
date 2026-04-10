@@ -4,7 +4,7 @@ name = "ASCOM Remote Server"
 description = "ASCOM Remote Server — network access to ASCOM devices"
 publisher = "ASCOM Initiative"
 homepage = "https://ascom-standards.org"
-category = "utilities"
+category = "utility"
 type = "application"
 slug = "ascom-remote-app"
 

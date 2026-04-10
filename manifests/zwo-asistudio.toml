@@ -4,7 +4,7 @@ name = "ZWO ASIStudio"
 description = "ZWO all-in-one imaging suite for ASI cameras"
 publisher = "ZWO"
 homepage = "https://www.zwoastro.com"
-category = "capture"
+category = "imaging"
 type = "application"
 slug = "zwo-asistudio"
 

@@ -5,7 +5,7 @@ description = "Firmware for AZ-GTi/AZ-GTe/AZ-GTiX/Virtuoso GTi/Star Discovery/St
 publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
-type = "resource"
+type = "firmware"
 slug = "synscan-mc029-firmware"
 
 [install]

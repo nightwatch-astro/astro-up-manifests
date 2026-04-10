@@ -4,10 +4,10 @@ name = "N.I.N.A."
 description = "Nighttime Imaging 'N' Astronomy — astrophotography imaging suite"
 publisher = "NINA Contributors"
 homepage = "https://nighttime-imaging.eu"
-category = "capture"
+category = "imaging"
 type = "application"
 slug = "nina-app"
-tags = ["imaging", "capture", "sequencer", "phd2", "platesolving"]
+tags = ["imaging", "capture", "sequencer", "automation"]
 aliases = ["nina"]
 license = "MPL-2.0"
 

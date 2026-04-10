@@ -6,7 +6,7 @@ description = "Firmware for SynScan hand controller"
 publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
-type = "resource"
+type = "firmware"
 slug = "synscan-hc-firmware"
 
 [install]

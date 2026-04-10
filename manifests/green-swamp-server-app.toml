@@ -4,7 +4,7 @@ name = "Green Swamp Server"
 description = "Green Swamp Server (GSServer) — ASCOM telescope driver for SkyWatcher/Orion mounts"
 publisher = "Green Swamp Server"
 homepage = "https://greenswamp.org"
-category = "utilities"
+category = "utility"
 type = "application"
 slug = "green-swamp-server-app"
 

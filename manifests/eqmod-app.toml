@@ -4,7 +4,7 @@ name = "EQMOD"
 description = "EQMOD — ASCOM driver for Synta/SkyWatcher EQ mounts"
 publisher = "EQMOD Project"
 homepage = "https://eq-mod.sourceforge.net"
-category = "utilities"
+category = "utility"
 type = "application"
 slug = "eqmod-app"
 

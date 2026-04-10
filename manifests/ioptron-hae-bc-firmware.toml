@@ -5,7 +5,7 @@ description = "Firmware for iOptron HAE-BC mount"
 publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
-type = "resource"
+type = "firmware"
 slug = "ioptron-hae-bc-firmware"
 
 [install]

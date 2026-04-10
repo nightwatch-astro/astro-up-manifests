@@ -5,7 +5,7 @@ description = "Native USB driver for Player One astronomy cameras"
 publisher = "Player One Astronomy"
 homepage = "https://player-one-astronomy.com"
 category = "driver"
-type = "usb_driver"
+type = "driver"
 slug = "player-one-native-driver"
 
 [detection]

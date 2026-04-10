@@ -5,7 +5,7 @@ description = "Native USB camera driver for all ZWO ASI cameras"
 publisher = "ZWO"
 homepage = "https://www.zwoastro.com"
 category = "driver"
-type = "usb_driver"
+type = "driver"
 slug = "zwo-native-driver"
 
 [detection]
