@@ -6,7 +6,8 @@ description = "Wave 150i/100i firmware"
 publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
-type = "resource"
+type = "firmware"
+tags = ["firmware", "mount", "skywatcher"]
 slug = "synscan-mc030-firmware"
 
 [install]

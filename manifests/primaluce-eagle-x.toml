@@ -4,8 +4,9 @@ name = "PrimaLuce EAGLE X Software Package"
 description = "Software package for PrimaLuce EAGLE X telescope computer"
 publisher = "PrimaLuce Lab"
 homepage = "https://www.primalucelab.com"
-category = "utilities"
+category = "utility"
 type = "application"
+tags = ["observatory", "primaluce"]
 slug = "primaluce-eagle-x"
 
 [install]

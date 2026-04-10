@@ -5,7 +5,8 @@ description = "Firmware update for Astroasis Oasis Focuser Rose"
 publisher = "Astroasis"
 homepage = "https://www.astroasis.com"
 category = "driver"
-type = "resource"
+type = "firmware"
+tags = ["firmware", "focuser", "astroasis"]
 slug = "astroasis-focuser-firmware"
 
 [install]

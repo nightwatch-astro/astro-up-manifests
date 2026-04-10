@@ -6,6 +6,7 @@ publisher = "Pegasus Astro"
 homepage = "https://pegasusastro.com"
 category = "driver"
 type = "application"
+tags = ["power", "focuser", "pegasus"]
 slug = "pegasus-unity-platform"
 aliases = ["Unity3 Platform"]
 

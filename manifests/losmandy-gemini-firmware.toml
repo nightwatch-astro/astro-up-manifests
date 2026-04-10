@@ -5,7 +5,8 @@ description = "Firmware for Losmandy Gemini 2 telescope mount controller"
 publisher = "Losmandy"
 homepage = "https://gemini-2.com"
 category = "driver"
-type = "resource"
+type = "firmware"
+tags = ["firmware", "mount", "losmandy"]
 slug = "losmandy-gemini-firmware"
 
 [install]

@@ -6,6 +6,7 @@ publisher = "ASCOM Initiative"
 homepage = "https://ascom-standards.org"
 category = "prerequisites"
 type = "runtime"
+tags = ["ascom", "driver-framework"]
 slug = "ascom-platform"
 
 [install]

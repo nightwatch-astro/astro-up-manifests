@@ -2,3 +2,8 @@
 # Windows API: Plug and Play
 PnP = "PnP"
 Pn = "Pn"
+# iOptron HAE series mount product name
+hae = "hae"
+HAE = "HAE"
+# Lunatico Astronomia company name
+Astronomia = "Astronomia"

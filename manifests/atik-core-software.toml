@@ -6,6 +6,7 @@ publisher = "Atik Cameras"
 homepage = "https://www.atik-cameras.com"
 category = "driver"
 type = "driver"
+tags = ["camera", "atik"]
 slug = "atik-core-software"
 
 [install]

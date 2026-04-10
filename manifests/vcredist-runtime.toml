@@ -6,6 +6,7 @@ publisher = "Microsoft"
 homepage = "https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist"
 category = "prerequisites"
 type = "runtime"
+tags = ["runtime", "microsoft"]
 slug = "vcredist-runtime"
 
 [install]

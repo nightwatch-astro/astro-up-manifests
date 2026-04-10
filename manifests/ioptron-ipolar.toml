@@ -6,6 +6,7 @@ publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "application"
+tags = ["polar-alignment", "ioptron"]
 slug = "ioptron-ipolar"
 
 [install]

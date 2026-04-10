@@ -6,6 +6,7 @@ publisher = "Lunatico Astronomia"
 homepage = "https://lunaticoastro.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "focuser", "rotator", "lunatico"]
 slug = "lunatico-dragonfly"
 
 [install]

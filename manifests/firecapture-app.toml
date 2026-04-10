@@ -5,8 +5,9 @@ name = "FireCapture"
 description = "FireCapture — planetary imaging capture"
 publisher = "FireCapture"
 homepage = "https://www.firecapture.de"
-category = "capture"
+category = "imaging"
 type = "application"
+tags = ["imaging", "capture", "planetary"]
 slug = "firecapture-app"
 
 [detection]

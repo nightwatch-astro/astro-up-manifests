@@ -6,6 +6,7 @@ publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "application"
+tags = ["firmware", "mount", "skywatcher"]
 slug = "synscan-firmware-loader-wifi"
 
 [detection]

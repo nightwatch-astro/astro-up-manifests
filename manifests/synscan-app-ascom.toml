@@ -6,6 +6,7 @@ publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "mount", "skywatcher"]
 slug = "synscan-app-ascom"
 
 [install]

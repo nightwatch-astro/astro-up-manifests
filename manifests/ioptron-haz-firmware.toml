@@ -5,7 +5,8 @@ description = "Firmware for iOptron HAZ series altazimuth strain wave gear mount
 publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
-type = "resource"
+type = "firmware"
+tags = ["firmware", "mount", "ioptron"]
 slug = "ioptron-haz-firmware"
 
 [install]

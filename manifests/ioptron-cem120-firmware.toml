@@ -5,7 +5,8 @@ description = "Firmware for iOptron CEM120 mount"
 publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
-type = "resource"
+type = "firmware"
+tags = ["firmware", "mount", "ioptron"]
 slug = "ioptron-cem120-firmware"
 
 [install]

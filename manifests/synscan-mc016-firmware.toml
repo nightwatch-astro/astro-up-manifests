@@ -5,7 +5,8 @@ description = "EQ-AL55i Pro firmware"
 publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
-type = "resource"
+type = "firmware"
+tags = ["firmware", "mount", "skywatcher"]
 slug = "synscan-mc016-firmware"
 
 [install]

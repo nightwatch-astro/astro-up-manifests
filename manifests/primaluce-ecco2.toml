@@ -6,6 +6,7 @@ publisher = "PrimaLuce Lab"
 homepage = "https://www.primalucelab.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "dew-heater", "primaluce"]
 slug = "primaluce-ecco2"
 
 [install]

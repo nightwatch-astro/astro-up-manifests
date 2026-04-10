@@ -5,8 +5,9 @@ name = "Prolific PL2303 Drivers"
 description = "Prolific PL2303 USB-serial drivers — used by many astronomy mount cables"
 publisher = "Prolific"
 homepage = "https://www.prolific.com.tw"
-category = "usb"
-type = "usb_driver"
+category = "driver"
+type = "driver"
+tags = ["usb", "serial"]
 slug = "prolific-drivers"
 
 [detection]

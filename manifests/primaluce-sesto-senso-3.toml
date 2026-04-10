@@ -6,6 +6,7 @@ publisher = "PrimaLuce Lab"
 homepage = "https://www.primalucelab.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "focuser", "primaluce"]
 slug = "primaluce-sesto-senso-3"
 
 [install]

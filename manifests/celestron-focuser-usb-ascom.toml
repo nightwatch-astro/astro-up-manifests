@@ -6,6 +6,7 @@ publisher = "Celestron"
 homepage = "https://www.celestron.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "focuser", "celestron"]
 slug = "celestron-focuser-usb-ascom"
 
 [install]

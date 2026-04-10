@@ -4,8 +4,9 @@ name = "NINA Framing Assistant Cache (Northern Sky, Starless)"
 description = "Northern sky narrowband starless offline cache for NINA Framing Assistant (471 MB)"
 publisher = "NINA Contributors"
 homepage = "https://nighttime-imaging.eu"
-category = "capture"
+category = "imaging"
 type = "database"
+tags = ["database", "nina", "framing"]
 slug = "nina-framing-cache-northern-starless"
 
 [detection]

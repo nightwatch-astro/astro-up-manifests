@@ -4,8 +4,9 @@ name = "SharpCap"
 description = "SharpCap — live stacking and planetary/DSO capture"
 publisher = "SharpCap"
 homepage = "https://www.sharpcap.co.uk"
-category = "capture"
+category = "imaging"
 type = "application"
+tags = ["imaging", "capture", "sharpcap"]
 slug = "sharpcap-app"
 
 [install]

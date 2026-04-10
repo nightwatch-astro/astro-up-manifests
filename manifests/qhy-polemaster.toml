@@ -4,8 +4,9 @@ name = "QHY PoleMaster"
 description = "QHY PoleMaster electronic polar alignment software"
 publisher = "QHY"
 homepage = "https://www.qhyccd.com"
-category = "utilities"
+category = "utility"
 type = "application"
+tags = ["polar-alignment", "qhy"]
 slug = "qhy-polemaster"
 
 [install]

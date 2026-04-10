@@ -4,8 +4,9 @@ name = "ZWO Firmware Upgrade Tool"
 description = "Firmware update utility for ZWO devices"
 publisher = "ZWO"
 homepage = "https://www.zwoastro.com"
-category = "utilities"
+category = "utility"
 type = "application"
+tags = ["firmware", "zwo"]
 slug = "zwo-firmware-tool"
 
 [detection]

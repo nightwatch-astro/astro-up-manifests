@@ -5,7 +5,8 @@ description = "Firmware for SynScan WiFi adapter"
 publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
-type = "resource"
+type = "firmware"
+tags = ["firmware", "wifi", "skywatcher"]
 slug = "synscan-wifi-firmware"
 
 [install]

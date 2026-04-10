@@ -6,6 +6,7 @@ publisher = "OpenPHD"
 homepage = "https://openphdguiding.org"
 category = "guiding"
 type = "application"
+tags = ["guiding", "autoguider", "phd2"]
 slug = "phd2-app"
 
 [install]

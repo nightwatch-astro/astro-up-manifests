@@ -6,6 +6,7 @@ publisher = "Stellarium"
 homepage = "https://stellarium.org"
 category = "planetarium"
 type = "application"
+tags = ["planetarium", "star-chart"]
 slug = "stellarium-app"
 
 [install]

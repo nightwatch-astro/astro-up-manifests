@@ -6,6 +6,7 @@ publisher = "QHY"
 homepage = "https://www.qhyccd.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "focuser", "qhy"]
 slug = "qhy-qfocuser"
 
 [install]

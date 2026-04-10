@@ -6,6 +6,7 @@ publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "application"
+tags = ["firmware", "mount", "ioptron"]
 slug = "ioptron-upgrade-utility-v3-21"
 
 [install]

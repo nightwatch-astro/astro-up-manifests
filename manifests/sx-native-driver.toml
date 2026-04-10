@@ -5,7 +5,8 @@ description = "Native USB driver for Starlight Xpress CCD cameras"
 publisher = "Starlight Xpress"
 homepage = "https://www.sxccd.com"
 category = "driver"
-type = "usb_driver"
+type = "driver"
+tags = ["camera", "starlight-xpress"]
 slug = "sx-native-driver"
 
 [detection]

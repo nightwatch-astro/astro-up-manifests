@@ -7,7 +7,7 @@ homepage = "https://www.zwoastro.com"
 category = "driver"
 type = "driver"
 slug = "zwo-asi-driver"
-tags = ["driver", "camera", "zwo", "asi"]
+tags = ["camera", "zwo"]
 
 [install]
 method = "nsis"

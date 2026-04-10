@@ -5,7 +5,8 @@ description = "Firmware for iOptron CEM26 and GEM28 mounts"
 publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
-type = "resource"
+type = "firmware"
+tags = ["firmware", "mount", "ioptron"]
 slug = "ioptron-cem26-firmware"
 
 [install]

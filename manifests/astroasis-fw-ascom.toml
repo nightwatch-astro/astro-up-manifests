@@ -6,6 +6,7 @@ publisher = "Astroasis"
 homepage = "https://www.astroasis.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "filterwheel", "astroasis"]
 slug = "astroasis-fw-ascom"
 
 [install]

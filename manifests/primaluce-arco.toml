@@ -6,6 +6,7 @@ publisher = "PrimaLuce Lab"
 homepage = "https://www.primalucelab.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "rotator", "primaluce"]
 slug = "primaluce-arco"
 
 [install]
