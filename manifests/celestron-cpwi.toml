@@ -6,6 +6,7 @@ publisher = "Celestron"
 homepage = "https://www.celestron.com"
 category = "driver"
 type = "application"
+tags = ["mount", "celestron"]
 slug = "celestron-cpwi"
 
 [install]

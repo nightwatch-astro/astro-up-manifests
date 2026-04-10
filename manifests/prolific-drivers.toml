@@ -7,6 +7,7 @@ publisher = "Prolific"
 homepage = "https://www.prolific.com.tw"
 category = "driver"
 type = "driver"
+tags = ["usb", "serial"]
 slug = "prolific-drivers"
 
 [detection]

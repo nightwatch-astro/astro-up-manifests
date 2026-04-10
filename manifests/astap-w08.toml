@@ -6,6 +6,7 @@ publisher = "ASTAP"
 homepage = "https://www.hnsky.org/astap.htm"
 category = "platesolving"
 type = "database"
+tags = ["database", "astap", "platesolving"]
 slug = "astap-w08"
 
 [install]

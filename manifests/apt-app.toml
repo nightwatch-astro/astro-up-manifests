@@ -6,6 +6,7 @@ publisher = "APT"
 homepage = "https://astrophotography.app"
 category = "imaging"
 type = "application"
+tags = ["imaging", "capture", "sequencer", "apt"]
 slug = "apt-app"
 
 [install]

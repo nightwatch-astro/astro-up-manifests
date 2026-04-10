@@ -6,6 +6,7 @@ publisher = "Microsoft"
 homepage = "https://dotnet.microsoft.com"
 category = "prerequisites"
 type = "runtime"
+tags = ["dotnet", "runtime", "microsoft"]
 slug = "dotnet-desktop-8"
 
 [detection]

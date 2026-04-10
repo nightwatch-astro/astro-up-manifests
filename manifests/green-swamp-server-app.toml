@@ -6,6 +6,7 @@ publisher = "Green Swamp Server"
 homepage = "https://greenswamp.org"
 category = "utility"
 type = "application"
+tags = ["mount", "ascom", "gss"]
 slug = "green-swamp-server-app"
 
 [install]

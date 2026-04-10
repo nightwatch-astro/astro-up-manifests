@@ -6,6 +6,7 @@ publisher = "Sky-Watcher"
 homepage = "https://www.skywatcher.com"
 category = "driver"
 type = "firmware"
+tags = ["firmware", "mount", "skywatcher"]
 slug = "synscan-mc016-firmware"
 
 [install]

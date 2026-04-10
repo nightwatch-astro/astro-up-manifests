@@ -6,6 +6,7 @@ publisher = "Losmandy"
 homepage = "https://gemini-2.com"
 category = "driver"
 type = "firmware"
+tags = ["firmware", "mount", "losmandy"]
 slug = "losmandy-gemini-firmware"
 
 [install]

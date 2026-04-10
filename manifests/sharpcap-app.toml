@@ -6,6 +6,7 @@ publisher = "SharpCap"
 homepage = "https://www.sharpcap.co.uk"
 category = "imaging"
 type = "application"
+tags = ["imaging", "capture", "sharpcap"]
 slug = "sharpcap-app"
 
 [install]

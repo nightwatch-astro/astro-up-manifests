@@ -6,6 +6,7 @@ publisher = "Lunatico Astronomia"
 homepage = "https://lunaticoastro.com"
 category = "driver"
 type = "firmware"
+tags = ["firmware", "weather", "lunatico"]
 slug = "lunatico-cloudwatcher-firmware"
 
 [install]

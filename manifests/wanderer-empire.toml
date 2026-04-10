@@ -6,6 +6,7 @@ publisher = "Wanderer Astro"
 homepage = "https://www.wandererastro.com"
 category = "driver"
 type = "application"
+tags = ["power", "dew-heater", "wanderer"]
 slug = "wanderer-empire"
 
 [install]

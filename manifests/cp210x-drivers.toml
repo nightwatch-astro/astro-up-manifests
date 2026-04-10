@@ -6,6 +6,7 @@ publisher = "Silicon Labs"
 homepage = "https://www.silabs.com"
 category = "driver"
 type = "driver"
+tags = ["usb", "serial"]
 slug = "cp210x-drivers"
 
 [detection]

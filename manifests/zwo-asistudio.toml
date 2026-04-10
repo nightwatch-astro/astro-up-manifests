@@ -6,6 +6,7 @@ publisher = "ZWO"
 homepage = "https://www.zwoastro.com"
 category = "imaging"
 type = "application"
+tags = ["imaging", "capture", "zwo"]
 slug = "zwo-asistudio"
 
 [detection]

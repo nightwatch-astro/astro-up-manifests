@@ -6,6 +6,7 @@ publisher = "PrimaLuce Lab"
 homepage = "https://www.primalucelab.com"
 category = "utility"
 type = "application"
+tags = ["observatory", "primaluce"]
 slug = "primaluce-eagle-x"
 
 [install]

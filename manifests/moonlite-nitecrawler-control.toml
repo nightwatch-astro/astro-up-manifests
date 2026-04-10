@@ -6,6 +6,7 @@ publisher = "MoonLite"
 homepage = "https://focuser.com"
 category = "driver"
 type = "application"
+tags = ["focuser", "moonlite"]
 slug = "moonlite-nitecrawler-control"
 
 [detection]

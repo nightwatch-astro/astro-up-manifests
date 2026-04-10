@@ -6,6 +6,7 @@ publisher = "ZWO"
 homepage = "https://www.zwoastro.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "camera", "filterwheel", "zwo"]
 slug = "zwo-ascom-driver-pack"
 
 [install]

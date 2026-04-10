@@ -6,6 +6,7 @@ publisher = "Starlight Xpress"
 homepage = "https://www.sxccd.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "camera", "starlight-xpress"]
 slug = "sx-camera-ascom"
 
 [install]

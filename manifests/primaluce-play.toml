@@ -6,6 +6,7 @@ publisher = "PrimaLuce Lab"
 homepage = "https://www.primalucelab.com"
 category = "imaging"
 type = "application"
+tags = ["imaging", "capture", "primaluce"]
 slug = "primaluce-play"
 
 [install]

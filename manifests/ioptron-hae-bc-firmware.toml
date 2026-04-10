@@ -6,6 +6,7 @@ publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "firmware"
+tags = ["firmware", "mount", "ioptron"]
 slug = "ioptron-hae-bc-firmware"
 
 [install]

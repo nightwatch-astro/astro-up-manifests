@@ -6,6 +6,7 @@ publisher = "NexDome"
 homepage = "https://nexdome.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "observatory", "dome", "nexdome"]
 slug = "nexdome-ascom"
 
 [install]

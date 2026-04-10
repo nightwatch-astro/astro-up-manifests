@@ -6,6 +6,7 @@ publisher = "Player One Astronomy"
 homepage = "https://player-one-astronomy.com"
 category = "driver"
 type = "driver"
+tags = ["camera", "playerone"]
 slug = "player-one-directshow"
 
 [install]

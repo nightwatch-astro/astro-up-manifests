@@ -6,6 +6,7 @@ publisher = "QHY"
 homepage = "https://www.qhyccd.com"
 category = "utility"
 type = "application"
+tags = ["polar-alignment", "qhy"]
 slug = "qhy-polemaster"
 
 [install]

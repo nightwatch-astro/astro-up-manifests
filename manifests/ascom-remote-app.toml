@@ -6,6 +6,7 @@ publisher = "ASCOM Initiative"
 homepage = "https://ascom-standards.org"
 category = "utility"
 type = "application"
+tags = ["ascom", "remote", "alpaca"]
 slug = "ascom-remote-app"
 
 [install]

@@ -6,6 +6,7 @@ publisher = "NINA Contributors"
 homepage = "https://nighttime-imaging.eu"
 category = "imaging"
 type = "database"
+tags = ["database", "nina", "framing"]
 slug = "nina-framing-cache-full"
 
 [detection]

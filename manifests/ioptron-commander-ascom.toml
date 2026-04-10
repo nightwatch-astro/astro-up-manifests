@@ -6,6 +6,7 @@ publisher = "iOptron"
 homepage = "https://www.ioptron.com"
 category = "driver"
 type = "application"
+tags = ["ascom", "mount", "ioptron"]
 slug = "ioptron-commander-ascom"
 
 [install]

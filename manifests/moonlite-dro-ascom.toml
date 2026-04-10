@@ -6,6 +6,7 @@ publisher = "MoonLite"
 homepage = "https://focuser.com"
 category = "driver"
 type = "driver"
+tags = ["ascom", "focuser", "moonlite"]
 slug = "moonlite-dro-ascom"
 
 [install]
