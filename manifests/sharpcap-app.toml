@@ -28,5 +28,8 @@ arch = "x64"
 
 [detection]
 method = "registry"
-registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{881672E1-F0EA-445C-89ED-78B74013DED2}"
+registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{0deb4972-8ce8-49d0-bd85-4d9bf5290e6c}"
 registry_value = "DisplayVersion"
+# NOTE: fallback path hardcodes version 4.1; update when a new major version releases.
+fallback_method = "pe_file"
+fallback_path = "C:\\Program Files\\SharpCap 4.1 (64 bit)\\SharpCap.exe"

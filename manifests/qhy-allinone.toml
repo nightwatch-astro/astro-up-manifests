@@ -34,6 +34,5 @@ method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{4BE2CEB1-D9AF-46F6-8410-C87F172A587D}_is1"
 registry_value = "DisplayVersion"
 
-[detection.fallback]
-method = "pe_file"
-path = "C:\\Program Files\\QHYCCD\\AllInOne\\ascom\\QHYCCD-ASCOM-Platform6.5-V25.06.16.16.exe"
+fallback_method = "pe_file"
+fallback_path = "C:\\Program Files\\QHYCCD\\AllInOne\\ascom\\QHYCCD-ASCOM-Platform6.5-V25.06.16.16.exe"

@@ -1,0 +1,27 @@
+manifest_version = 1
+id = "skycal-app"
+name = "SkyCal Focus and Collimation Tool"
+description = "SkyCal — Bahtinov mask focus and collimation analysis tool"
+publisher = "Chris Dowd"
+homepage = "https://github.com/insertnamehere1/Bahtinov-Collimator"
+category = "utility"
+type = "application"
+tags = ["focus", "collimation", "bahtinov"]
+slug = "skycal-app"
+
+[install]
+method = "download_only"
+
+[checkver]
+provider = "github"
+owner = "insertnamehere1"
+repo = "Bahtinov-Collimator"
+
+[checkver.autoupdate]
+asset_filter = "\\.exe$"
+
+# ClickOnce app — registry key is a stable hash derived from app identity + publisher key
+[detection]
+method = "registry"
+registry_key = "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\38a4fc905a0a73a1"
+registry_value = "DisplayVersion"

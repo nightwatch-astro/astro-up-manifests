@@ -26,6 +26,5 @@ method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{6f22f133-5a31-4cd6-9e51-3ad456eeb98f}_is1"
 registry_value = "DisplayVersion"
 
-[detection.fallback]
-method = "pe_file"
-path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\CoverCalibrator\\PLL\\ASCOM.Giotto.exe"
+fallback_method = "pe_file"
+fallback_path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\CoverCalibrator\\PLL\\ASCOM.Giotto.exe"
