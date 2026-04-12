@@ -10,7 +10,7 @@ tags = ["focus", "collimation", "bahtinov"]
 slug = "skycal-app"
 
 [install]
-method = "download_only"
+method = "exe"
 
 [checkver]
 provider = "github"

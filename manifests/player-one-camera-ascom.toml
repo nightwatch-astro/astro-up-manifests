@@ -10,7 +10,7 @@ tags = ["ascom", "camera", "playerone"]
 slug = "player-one-camera-ascom"
 
 [install]
-method = "exe"
+method = "inno_setup"
 zip_wrapped = true
 
 [checkver]

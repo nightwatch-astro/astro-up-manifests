@@ -10,12 +10,9 @@ tags = ["ascom", "focuser", "astroasis"]
 slug = "astroasis-focuser-ascom"
 
 [install]
-method = "exe"
+method = "inno_setup"
 zip_wrapped = true
 elevation = "required"
-
-[install.switches]
-silent = "/S"
 
 [checkver]
 provider = "html_scrape"

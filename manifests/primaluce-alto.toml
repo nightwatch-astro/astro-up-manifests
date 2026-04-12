@@ -10,7 +10,7 @@ tags = ["ascom", "focuser", "primaluce"]
 slug = "primaluce-alto"
 
 [install]
-method = "exe"
+method = "inno_setup"
 zip_wrapped = true
 
 [checkver]
