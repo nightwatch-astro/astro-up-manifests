@@ -10,12 +10,9 @@ tags = ["ascom", "filterwheel", "astroasis"]
 slug = "astroasis-fw-ascom"
 
 [install]
-method = "exe"
+method = "inno_setup"
 zip_wrapped = true
 elevation = "required"
-
-[install.switches]
-silent = "/S"
 
 [checkver]
 provider = "html_scrape"

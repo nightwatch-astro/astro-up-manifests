@@ -10,7 +10,7 @@ tags = ["ascom", "focuser", "primaluce"]
 slug = "primaluce-sesto-senso-3"
 
 [install]
-method = "exe"
+method = "inno_setup"
 zip_wrapped = true
 
 [checkver]

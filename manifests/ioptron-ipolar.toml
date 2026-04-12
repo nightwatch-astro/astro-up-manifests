@@ -10,11 +10,8 @@ tags = ["polar-alignment", "ioptron"]
 slug = "ioptron-ipolar"
 
 [install]
-method = "exe"
+method = "inno_setup"
 elevation = "required"
-
-[install.switches]
-silent = "/S"
 
 [checkver]
 provider = "pe_download"
