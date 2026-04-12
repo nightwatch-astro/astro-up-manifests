@@ -29,6 +29,5 @@ method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{a4a31249-f8c9-4890-9dd5-7e6070270038}_is1"
 registry_value = "DisplayVersion"
 
-[detection.fallback]
-method = "pe_file"
-path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\Focuser\\NiteCrawler\\ASCOM.NiteCrawler.Server.exe"
+fallback_method = "pe_file"
+fallback_path = "C:\\Program Files (x86)\\Common Files\\ASCOM\\Focuser\\NiteCrawler\\ASCOM.NiteCrawler.Server.exe"

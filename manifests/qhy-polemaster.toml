@@ -26,6 +26,5 @@ method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{0552F2CD-F94D-43E0-9DC6-0008716B5112}_is1"
 registry_value = "DisplayVersion"
 
-[detection.fallback]
-method = "pe_file"
-path = "C:\\Program Files (x86)\\QHYCCD\\PoleMaster_Qt\\PoleMaster_Qt\\PoleMaster.exe"
+fallback_method = "pe_file"
+fallback_path = "C:\\Program Files (x86)\\QHYCCD\\PoleMaster_Qt\\PoleMaster_Qt\\PoleMaster.exe"

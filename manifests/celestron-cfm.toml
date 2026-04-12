@@ -26,6 +26,5 @@ method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{701FE845-D79C-35E9-8DB8-A0E2834B4BC5}"
 registry_value = "DisplayVersion"
 
-[detection.fallback]
-method = "pe_file"
-path = "C:\\Program Files\\Celestron\\CelestronFirmwareManager.exe"
+fallback_method = "pe_file"
+fallback_path = "C:\\Program Files\\Celestron\\CelestronFirmwareManager.exe"

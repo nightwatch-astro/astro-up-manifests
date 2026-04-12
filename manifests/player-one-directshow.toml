@@ -26,6 +26,5 @@ method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{AFFA9880-7881-4DB5-AD03-8FA3B369D39B}_is1"
 registry_value = "DisplayVersion"
 
-[detection.fallback]
-method = "pe_file"
-path = "C:\\Program Files (x86)\\PlayerOneAstronomyDshow\\POACamService.exe"
+fallback_method = "pe_file"
+fallback_path = "C:\\Program Files (x86)\\PlayerOneAstronomyDshow\\POACamService.exe"

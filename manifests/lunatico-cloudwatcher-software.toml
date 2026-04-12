@@ -28,6 +28,5 @@ method = "registry"
 registry_key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\CloudWatcher Data Display_is1"
 registry_value = "DisplayVersion"
 
-[detection.fallback]
-method = "pe_file"
-path = "C:\\Program Files (x86)\\CWDataDisplay\\CloudWatcherDataDisplay.exe"
+fallback_method = "pe_file"
+fallback_path = "C:\\Program Files (x86)\\CWDataDisplay\\CloudWatcherDataDisplay.exe"
