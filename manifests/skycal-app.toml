@@ -9,6 +9,7 @@ type = "application"
 tags = ["focus", "collimation", "bahtinov"]
 slug = "skycal-app"
 
+# ClickOnce bootstrapper — downloads and installs via ClickOnce
 [install]
 method = "exe"
 
@@ -18,7 +19,7 @@ owner = "insertnamehere1"
 repo = "Bahtinov-Collimator"
 
 [checkver.autoupdate]
-asset_filter = "\\.exe$"
+asset_filter = "SkyCal-Setup\\.exe$"
 
 # ClickOnce app — registry key is a stable hash derived from app identity + publisher key
 [detection]
