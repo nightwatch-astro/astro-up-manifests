@@ -21,7 +21,10 @@ url = "https://www.sharpcap.co.uk/wp-json/wp/v2/pages/13"
 regex = 'version=(\d+\.\d+\.\d+\.\d+)'
 
 [checkver.autoupdate]
-url = "https://d.sharpcap.co.uk/download.html?version=$version&arch=x64"
+resolver = "sharpcap"
+
+[checkver.autoupdate.resolver_args]
+arch = "x64"
 
 [detection]
 method = "registry"
