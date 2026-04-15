@@ -31,3 +31,6 @@ registry_value = "DisplayVersion"
 
 fallback_method = "pe_file"
 fallback_path = "C:\\Program Files\\astap\\astap.exe"
+# PE VersionInfo is 1.0.0 (placeholder). The real date-based version is
+# embedded as "ASTAP version YYYY.MM.DD" in the binary's string constants.
+fallback_version_regex = 'ASTAP version (\d{4}\.\d{2}\.\d{2})'

@@ -71,6 +71,8 @@ pub struct Detection {
     pub fallback_path: Option<String>,
     #[serde(default)]
     pub fallback_method: Option<String>,
+    #[serde(default)]
+    pub fallback_version_regex: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

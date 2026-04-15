@@ -158,6 +158,12 @@ fn insert_detection(
             if let Some(p) = path {
                 map.insert("file_path".into(), serde_json::Value::String(p.clone()));
             }
+            if let Some(ref re) = detection.fallback_version_regex {
+                map.insert(
+                    "version_regex".into(),
+                    serde_json::Value::String(re.clone()),
+                );
+            }
             Some(serde_json::Value::Object(map).to_string())
         }
         _ => None,
