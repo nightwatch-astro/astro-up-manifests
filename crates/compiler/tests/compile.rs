@@ -57,7 +57,7 @@ fn query_by_category() {
         .prepare("SELECT id FROM packages WHERE category = ?1")
         .expect("category query should prepare");
     let ids: Vec<String> = stmt
-        .query_map(["capture"], |row| row.get(0))
+        .query_map(["imaging"], |row| row.get(0))
         .expect("category query should execute")
         .filter_map(std::result::Result::ok)
         .collect();
