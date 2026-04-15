@@ -99,6 +99,21 @@ pub fn aggregate_versions(conn: &Connection, versions_dir: &Path) -> anyhow::Res
         }
     }
 
+    // Strip assets for packages that use a download URL resolver.
+    // The html_scrape provider populates assets from <a href> matches which
+    // are garbage when a resolver generates the correct download URL.
+    let cleared = tx.execute(
+        "UPDATE versions SET assets = NULL
+         WHERE package_id IN (
+             SELECT c.package_id FROM checkver c
+             WHERE c.autoupdate LIKE '%\"resolver\"%'
+         ) AND assets IS NOT NULL",
+        [],
+    )?;
+    if cleared > 0 {
+        tracing::info!("cleared assets from {cleared} version entries (resolver-managed packages)");
+    }
+
     tx.commit()?;
     tracing::info!("aggregated {count} version entries");
     Ok(count)
