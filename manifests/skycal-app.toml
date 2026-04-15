@@ -21,8 +21,8 @@ repo = "Bahtinov-Collimator"
 [checkver.autoupdate]
 asset_filter = "SkyCal-Setup\\.exe$"
 
-# ClickOnce app — registry key is a stable hash derived from app identity + publisher key
+# v4 uses standalone Setup.exe installer (not ClickOnce)
 [detection]
 method = "registry"
-registry_key = "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\38a4fc905a0a73a1"
+registry_key = "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\b51949853d8f19f1"
 registry_value = "DisplayVersion"

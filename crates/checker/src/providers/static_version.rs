@@ -2,6 +2,9 @@ use astro_up_shared::manifest::{Checkver, Manifest};
 
 use super::{CheckError, CheckOutcome, CheckResult};
 
+/// # Errors
+///
+/// Returns `CheckError::Other` if the `version` field is missing from checkver.
 pub fn check(manifest: &Manifest, checkver: &Checkver) -> Result<CheckOutcome, CheckError> {
     let version = checkver.version.as_deref().ok_or_else(|| {
         CheckError::Other(format!(
