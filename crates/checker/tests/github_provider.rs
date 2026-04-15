@@ -35,6 +35,7 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
         install: Install {
             method: "exe".into(),
             zip_wrapped: true,
+            zip_inner_path: None,
             scope: None,
             elevation: None,
             switches: HashMap::default(),
@@ -43,6 +44,7 @@ fn github_manifest(owner: &str, repo: &str) -> Manifest {
         },
         checkver: Some(Checkver {
             provider: "github".into(),
+            version: None,
             owner: Some(owner.into()),
             repo: Some(repo.into()),
             url: None,
