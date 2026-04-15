@@ -381,6 +381,16 @@ async fn handle_found(
         }
     };
 
+    // When a resolver is configured, the scraper's assets are irrelevant —
+    // the resolver generates the correct download URL. Drop them to prevent
+    // the client from showing a broken asset selection dialog.
+    let has_resolver = manifest
+        .checkver
+        .as_ref()
+        .and_then(|cv| cv.autoupdate.as_ref())
+        .and_then(|au| au.resolver.as_ref())
+        .is_some();
+
     let discovered = DiscoveredVersion {
         package_id: manifest.id.clone(),
         version: result.version.clone(),
@@ -388,15 +398,19 @@ async fn handle_found(
         sha256,
         release_notes_url: result.release_notes_url.clone(),
         pre_release: result.pre_release,
-        assets: result
-            .assets
-            .iter()
-            .map(|a| astro_up_shared::version_file::VersionAsset {
-                name: a.name.clone(),
-                url: a.url.clone(),
-                size: a.size,
-            })
-            .collect(),
+        assets: if has_resolver {
+            Vec::new()
+        } else {
+            result
+                .assets
+                .iter()
+                .map(|a| astro_up_shared::version_file::VersionAsset {
+                    name: a.name.clone(),
+                    url: a.url.clone(),
+                    size: a.size,
+                })
+                .collect()
+        },
         url_status,
     };
 
