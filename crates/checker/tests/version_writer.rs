@@ -1,4 +1,8 @@
 #![allow(clippy::expect_used)]
+
+// Copyright (C) 2024-2026 Sjors Robroek
+// SPDX-License-Identifier: AGPL-3.0-only
+
 use astro_up_shared::version_file::{VersionAsset, VersionEntry};
 // Import from the checker crate
 use astro_up_checker::version_writer::DiscoveredVersion;

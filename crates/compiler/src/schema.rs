@@ -1,3 +1,6 @@
+// Copyright (C) 2024-2026 Sjors Robroek
+// SPDX-License-Identifier: AGPL-3.0-only
+
 use rusqlite::Connection;
 
 /// Create all tables, indexes, and FTS5 virtual table in the catalog database.

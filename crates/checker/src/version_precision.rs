@@ -1,3 +1,6 @@
+// Copyright (C) 2024-2026 Sjors Robroek
+// SPDX-License-Identifier: AGPL-3.0-only
+
 use astro_up_shared::audit_types::{CheckStatus, PrecisionCheck};
 
 /// Check whether the discovered version has sufficient precision for the resolved URL.

@@ -1,4 +1,8 @@
 #![allow(clippy::expect_used)]
+
+// Copyright (C) 2024-2026 Sjors Robroek
+// SPDX-License-Identifier: AGPL-3.0-only
+
 use astro_up_checker::providers::{self, CheckOutcome};
 use astro_up_checker::retry_client::RetryClient;
 use astro_up_shared::manifest::{Checkver, Install, Manifest};
