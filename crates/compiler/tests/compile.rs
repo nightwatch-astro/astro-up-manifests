@@ -1,4 +1,8 @@
 #![allow(clippy::expect_used)]
+
+// Copyright (C) 2024-2026 Sjors Robroek
+// SPDX-License-Identifier: AGPL-3.0-only
+
 use astro_up_compiler::{compile, manifest, schema, version_file};
 use astro_up_shared::version_file::VersionEntry;
 use chrono::Utc;

@@ -1,3 +1,6 @@
+// Copyright (C) 2024-2026 Sjors Robroek
+// SPDX-License-Identifier: AGPL-3.0-only
+
 use crate::audit_types::FileType;
 
 /// Minimum bytes needed for magic byte detection.

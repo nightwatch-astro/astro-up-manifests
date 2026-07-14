@@ -1,3 +1,6 @@
+// Copyright (C) 2024-2026 Sjors Robroek
+// SPDX-License-Identifier: AGPL-3.0-only
+
 use astro_up_shared::manifest::Manifest;
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD;

@@ -1,3 +1,6 @@
+// Copyright (C) 2024-2026 Sjors Robroek
+// SPDX-License-Identifier: AGPL-3.0-only
+
 use crate::manifest::{Install, Manifest};
 use std::collections::HashMap;
 use thiserror::Error;
