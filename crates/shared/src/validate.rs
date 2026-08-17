@@ -35,6 +35,9 @@ const KNOWN_INSTALL_METHODS: &[&str] = &[
     "download_only",
 ];
 
+// Must stay in step with the dispatch arms in `checker::providers::check`; a
+// provider the checker runs but this list omits fails validation instead, which
+// is how `static` reached a shipped manifest and broke `load_sample_manifests`.
 const KNOWN_PROVIDERS: &[&str] = &[
     "github",
     "gitlab",
@@ -45,6 +48,7 @@ const KNOWN_PROVIDERS: &[&str] = &[
     "pe_download",
     "redirect",
     "manual",
+    "static",
 ];
 
 /// Default silent install switches per installer type.
