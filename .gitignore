@@ -11,3 +11,7 @@ catalog.db.minisig
 versions/*
 !versions/.gitkeep
 lifecycle-results/
+
+# APM dependencies (installed cache — not source; apm.yml + apm.lock.yaml are tracked)
+apm_modules/
+.claude/settings.local.json
