@@ -34,7 +34,7 @@ bytes = "1"
 http = "1"
 chromiumoxide = { version = "0.8", features = ["tokio"] }
 lenient_semver = "0.4"
-base64 = "0.22"
+base64 = "0.23"
 tempfile = "3"
 url = "2"
 rand = "0.10"
