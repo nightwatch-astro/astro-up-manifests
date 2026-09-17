@@ -1,0 +1,12 @@
+name: astro-up-manifests
+version: 1.0.0
+description: Manifest pipeline — compiles TOML package manifests to SQLite catalog and checks for updates
+author: Sjors Robroek
+dependencies:
+  apm:
+  - srobroek/agentic-packages/.apm/wrappers/core#00085d5
+  - srobroek/agentic-packages/.apm/wrappers/language-rust#00085d5
+  - srobroek/agentic-packages/.apm/wrappers/speckit#00085d5
+  mcp: []
+includes: auto
+scripts: {}
