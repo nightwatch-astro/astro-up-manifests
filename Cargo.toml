@@ -24,7 +24,7 @@ semver = { version = "1", features = ["serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-minisign-verify = "0.2"
+minisign-verify = "0.3"
 globset = "0.4"
 walkdir = "2"
 regex = "1"
